@@ -1,0 +1,44 @@
+
+# config
+config-path: "/etc/ingress" # configuration file path for apinto-ingress-controller
+
+# log option
+log_level: "info"    # error log level
+log_output: "stderr" # error log output file
+log-period: 1 # error log file split period
+log-expire: 1 # error log file after several days
+
+# listen
+http_listen: ":8080"   # the HTTP Server listen address, default is ":8080"
+https_listen: ":8443"   # the HTTPS Server listen address, default is ":8443"
+
+# profiling
+enable_profiling: true # enable profiling via web interfaces
+# host:port/debug/pprof, default is true.
+  
+# Kubernetes related configurations.
+kubernetes:
+  kubeconfig: ""                       # the Kubernetes configuration file path, default is
+  # "", so the in-cluster configuration will be used.
+  app_namespaces: ["*"]                # namespace list that controller will watch for resources,
+    # by default all namespaces (represented by "*") are watched.
+  # The `app_namespace` is deprecated, using `namespace_selector` instead since version 1.4.0
+  namespace_selector: [""]             # namespace_selector represent basis for selecting managed namespaces.
+    # the field is support since version 1.4.0
+  # For example, "apinto.ingress=watching", so ingress will watching the namespaces which labels "apinto.ingress=watching"
+  election_id: "ingress-apinto-leader" # the election id for the controller leader campaign,
+    # only the leader will watch and delivery resource changes,
+  # other instances (as candidates) stand by.
+  ingress_class: "apinto"              # the class of an Ingress object is set using the field
+    # IngressClassName in Kubernetes clusters version v1.18.0
+    # or higher or the annotation "kubernetes.io/ingress.class"
+  # (deprecated).
+  ingress_version: "networking/v1"     # the supported ingress api group version, can be "networking/v1beta1"
+    # , "networking/v1" (for Kubernetes version v1.19.0 or higher), and
+  # "extensions/v1beta1", default is "networking/v1".
+
+# APINTO related configurations.
+apinto:
+  default-apinto-cluster-base-url: "http://127.0.0.1:9400" # the base URL of admin api / manager api for the default APINTO cluster
+
+  default-apinto-cluster-admin-key: "" # admin key used for the authorization of admin api / manager api for the default APINTO cluster
