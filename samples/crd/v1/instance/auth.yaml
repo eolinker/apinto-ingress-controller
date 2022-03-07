@@ -1,0 +1,35 @@
+apiVersion: apinto.com/v1beta
+kind: ApintoAuth
+metadata:
+  name: test-aa
+spec:
+  - name: demo_aa_aksk
+    driver: aksk
+    user:
+      - expire: 168714456465
+        ak: test
+        sk: test
+  - name: demo_aa_apikey
+    driver: apikey
+    user:
+      - expire: 168714456465
+        apikey: test
+  - name: demo_aa_basic
+    driver: basic
+    user:
+      - expire: 168714456465
+        username: test
+        password: test
+  - name: demo_aa_jwt
+    driver: jwt
+    signature_is_base64: false
+    run_on_preflight: true
+    claims_to_verify:
+      - exp
+    credentials:
+      - iss: test1
+        secret: test
+        algorithm: HS256
+      - iss: test2
+        rsa_public_key: test_rsa
+        algorithm: RS256
