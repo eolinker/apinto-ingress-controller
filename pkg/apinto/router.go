@@ -3,13 +3,13 @@ package apinto
 import (
 	"context"
 	"fmt"
-	v1 "github.com/eolinker/apinto-ingress-controller/pkg/apis/apinto/v1"
+	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 )
 
 type Router interface {
 	Get(ctx context.Context, name string) (*v1.Router, error)
 	List(ctx context.Context) (*[]v1.Router, error)
-	Delete(ctx context.Context, name *v1.Router) error
+	Delete(ctx context.Context, name string) error
 	// Update 反馈id
 	Update(ctx context.Context, router *v1.Router) (string, error)
 	Create(ctx context.Context, router *v1.Router) (string, error)
@@ -37,7 +37,7 @@ func (r *router) List(ctx context.Context) (*[]v1.Router, error) {
 	panic("implement me")
 }
 
-func (r *router) Delete(ctx context.Context, name *v1.Router) error {
+func (r *router) Delete(ctx context.Context, name string) error {
 	//TODO implement me
 	panic("implement me")
 }

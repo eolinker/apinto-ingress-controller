@@ -3,7 +3,7 @@ package apinto
 import (
 	"context"
 	"fmt"
-	v1 "github.com/eolinker/apinto-ingress-controller/pkg/apis/apinto/v1"
+	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 )
 
 type Output interface {

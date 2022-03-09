@@ -8,7 +8,7 @@ import (
 type getResponse json.RawMessage
 
 // list接口待定
-type listResponse []json.RawMessage
+type listResponse []baseResponse
 
 type baseResponse struct {
 	Name       string        `json:"name"`
