@@ -17,11 +17,11 @@ type Output struct {
 }
 
 type OutputSpec struct {
-	FileOutput  []FileOutput  `json:"file_output" yaml:"file_output"`
-	Nsqd        []NsqdOutput  `json:"nsqd" yaml:"nsqd"`
-	HttpOutput  []HttpOutput  `json:"http_output" yaml:"http_output"`
-	SysOutput   []SysOutput   `json:"syslog_output" yaml:"syslog_output"`
-	KafkaOutput []KafkaOutput `json:"kafka_output" yaml:"kafka_output"`
+	FileOutput  []FileOutput  `json:"file_output,omitempty" yaml:"file_output,omitempty"`
+	Nsqd        []NsqdOutput  `json:"nsqd,omitempty" yaml:"nsqd,omitempty"`
+	HttpOutput  []HttpOutput  `json:"http_output,omitempty" yaml:"http_output,omitempty"`
+	SysOutput   []SysOutput   `json:"syslog_output,omitempty" yaml:"syslog_output,omitempty"`
+	KafkaOutput []KafkaOutput `json:"kafka_output,omitempty" yaml:"kafka_output,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -29,72 +29,72 @@ type OutputSpec struct {
 type OutputList struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Items             []Output `json:"items" yaml:"items"`
+	Items             []Output `json:"items,omitempty" yaml:"items,omitempty"`
 }
 
 type FileOutput struct {
-	Name   string     `json:"name" yaml:"name"`
-	Driver string     `json:"driver" yaml:"driver"`
-	Config FileConfig `json:"config" yaml:"config"`
+	Name   string     `json:"name,omitempty" yaml:"name,omitempty"`
+	Driver string     `json:"driver,omitempty" yaml:"driver,omitempty"`
+	Config FileConfig `json:"config,omitempty" yaml:"config,omitempty"`
 }
 type FileConfig struct {
-	File      string          `json:"file" yaml:"file"`
-	Dir       string          `json:"dir" yaml:"dir"`
-	Period    string          `json:"period" yaml:"period"`
-	Expire    int             `json:"expire" yaml:"expire"`
-	Type      string          `json:"type" yaml:"type"`
-	Formatter FormatterConfig `json:"formatter" yaml:"formatter"`
+	File      string          `json:"file,omitempty" yaml:"file,omitempty"`
+	Dir       string          `json:"dir,omitempty" yaml:"dir,omitempty"`
+	Period    string          `json:"period,omitempty" yaml:"period,omitempty"`
+	Expire    int             `json:"expire,omitempty" yaml:"expire,omitempty"`
+	Type      string          `json:"type,omitempty" yaml:"type,omitempty"`
+	Formatter FormatterConfig `json:"formatter,omitempty" yaml:"formatter,omitempty"`
 }
 type NsqdOutput struct {
-	Name   string     `json:"name" yaml:"name"`
-	Driver string     `json:"driver" yaml:"driver"`
-	Config NsqdConfig `json:"config" yaml:"config"`
+	Name   string     `json:"name,omitempty" yaml:"name,omitempty"`
+	Driver string     `json:"driver,omitempty" yaml:"driver,omitempty"`
+	Config NsqdConfig `json:"config,omitempty" yaml:"config,omitempty"`
 }
 type NsqdConfig struct {
-	Topic      string          `json:"topic" yaml:"topic"`
-	Address    []string        `json:"address" yaml:"address"`
-	ClientConf Config          `json:"nsq_conf" yaml:"nsq_conf"`
-	Type       string          `json:"type" yaml:"type"`
-	Formatter  FormatterConfig `json:"formatter" yaml:"formatter"`
+	Topic      string          `json:"topic,omitempty" yaml:"topic,omitempty"`
+	Address    []string        `json:"address,omitempty" yaml:"address,omitempty"`
+	ClientConf Config          `json:"nsq_conf,omitempty" yaml:"nsq_conf,omitempty"`
+	Type       string          `json:"type,omitempty" yaml:"type,omitempty"`
+	Formatter  FormatterConfig `json:"formatter,omitempty" yaml:"formatter,omitempty"`
 }
 type HttpOutput struct {
-	Name   string     `json:"name" yaml:"name"`
-	Driver string     `json:"driver" yaml:"driver"`
-	Config HttpConfig `json:"config" yaml:"config"`
+	Name   string     `json:"name,omitempty" yaml:"name,omitempty"`
+	Driver string     `json:"driver,omitempty" yaml:"driver,omitempty"`
+	Config HttpConfig `json:"config,omitempty" yaml:"config,omitempty"`
 }
 type HttpConfig struct {
-	Method    string            `json:"method" yaml:"method"`
-	Url       string            `json:"url" yaml:"url"`
-	Headers   map[string]string `json:"headers" yaml:"headers"`
-	Type      string            `json:"type" yaml:"type"`
-	Formatter FormatterConfig   `json:"formatter" yaml:"formatter"`
+	Method    string            `json:"method,omitempty" yaml:"method,omitempty"`
+	Url       string            `json:"url,omitempty" yaml:"url,omitempty"`
+	Headers   map[string]string `json:"headers,omitempty" yaml:"headers,omitempty"`
+	Type      string            `json:"type,omitempty" yaml:"type,omitempty"`
+	Formatter FormatterConfig   `json:"formatter,omitempty" yaml:"formatter,omitempty"`
 }
 type SysOutput struct {
-	Name   string    `json:"name" yaml:"name"`
-	Driver string    `json:"driver" yaml:"driver"`
-	Config SysConfig `json:"config" yaml:"config"`
+	Name   string    `json:"name,omitempty" yaml:"name,omitempty"`
+	Driver string    `json:"driver,omitempty" yaml:"driver,omitempty"`
+	Config SysConfig `json:"config,omitempty" yaml:"config,omitempty"`
 }
 type SysConfig struct {
-	Network   string          `json:"network" yaml:"network"`
-	Address   string          `json:"address" yaml:"address"`
-	Level     string          `json:"level" yaml:"level"`
-	Type      string          `json:"type" yaml:"type"`
-	Formatter FormatterConfig `json:"formatter" yaml:"formatter"`
+	Network   string          `json:"network,omitempty" yaml:"network,omitempty"`
+	Address   string          `json:"address,omitempty" yaml:"address,omitempty"`
+	Level     string          `json:"level,omitempty" yaml:"level,omitempty"`
+	Type      string          `json:"type,omitempty" yaml:"type,omitempty"`
+	Formatter FormatterConfig `json:"formatter,omitempty" yaml:"formatter,omitempty"`
 }
 type KafkaOutput struct {
-	Name   string      `json:"name" yaml:"name"`
-	Driver string      `json:"driver" yaml:"driver"`
-	Config KafkaConfig `json:"config" yaml:"config"`
+	Name   string      `json:"name,omitempty" yaml:"name,omitempty"`
+	Driver string      `json:"driver,omitempty" yaml:"driver,omitempty"`
+	Config KafkaConfig `json:"config,omitempty" yaml:"config,omitempty"`
 }
 
 type KafkaConfig struct {
-	Topic         string          `json:"topic" yaml:"topic"`
-	Address       string          `json:"address" yaml:"address"`
-	Timeout       int             `json:"timeout" yaml:"timeout"`
-	Version       string          `json:"version" yaml:"version"`
-	PartitionType string          `json:"partition_type" yaml:"partition_type"`
-	Partition     int32           `json:"partition" yaml:"partition"`
-	PartitionKey  string          `json:"partition_key" yaml:"partition_key"`
-	Type          string          `json:"type" yaml:"type"`
-	Formatter     FormatterConfig `json:"formatter" yaml:"formatter"`
+	Topic         string          `json:"topic,omitempty" yaml:"topic,omitempty"`
+	Address       string          `json:"address,omitempty" yaml:"address,omitempty"`
+	Timeout       int             `json:"timeout" yaml:"timeout,omitempty"`
+	Version       string          `json:"version,omitempty" yaml:"version,omitempty"`
+	PartitionType string          `json:"partition_type,omitempty" yaml:"partition_type,omitempty"`
+	Partition     int32           `json:"partition,omitempty" yaml:"partition,omitempty"`
+	PartitionKey  string          `json:"partition_key,omitempty" yaml:"partition_key,omitempty"`
+	Type          string          `json:"type,omitempty" yaml:"type,omitempty"`
+	Formatter     FormatterConfig `json:"formatter,omitempty" yaml:"formatter,omitempty"`
 }
