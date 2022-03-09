@@ -4,16 +4,8 @@ import (
 	"context"
 	"fmt"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
+	"github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1/response"
 )
-
-type Router interface {
-	Get(ctx context.Context, name string) (*v1.Router, error)
-	List(ctx context.Context) (*[]v1.Router, error)
-	Delete(ctx context.Context, name string) error
-	// Update 反馈id
-	Update(ctx context.Context, router *v1.Router) (string, error)
-	Create(ctx context.Context, router *v1.Router) (string, error)
-}
 
 type router struct {
 	client Client
@@ -32,7 +24,7 @@ func (r *router) Get(ctx context.Context, name string) (*v1.Router, error) {
 	panic("implement me")
 }
 
-func (r *router) List(ctx context.Context) (*[]v1.Router, error) {
+func (r *router) List(ctx context.Context) (*[]response.Response, error) {
 	//TODO implement me
 	panic("implement me")
 }

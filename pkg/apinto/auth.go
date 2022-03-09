@@ -4,15 +4,8 @@ import (
 	"context"
 	"fmt"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
+	"github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1/response"
 )
-
-type Auth interface {
-	Get(ctx context.Context, name string) (*v1.Auth, error)
-	List(ctx context.Context) (*[]v1.Auth, error)
-	Delete(ctx context.Context, auth *v1.Auth) error
-	Update(ctx context.Context, auth *v1.Auth) (string, error)
-	Create(ctx context.Context, auth *v1.Auth) (string, error)
-}
 
 type auth struct {
 	client Client
@@ -24,7 +17,7 @@ func (a *auth) Get(ctx context.Context, name string) (*v1.Auth, error) {
 	panic("implement me")
 }
 
-func (a *auth) List(ctx context.Context) (*[]v1.Auth, error) {
+func (a *auth) List(ctx context.Context) (*[]response.Response, error) {
 	//TODO implement me
 	panic("implement me")
 }

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1/response"
 	"github.com/eolinker/eosc/log"
 	"go.uber.org/multierr"
 	"io"
@@ -33,28 +34,6 @@ var (
 		ExpectContinueTimeout: 1 * time.Second,
 	}
 )
-
-// Cluster 集群服务接口
-type Cluster interface {
-	Router() Router
-	Upstream() Upstream
-	Service() Service
-	Discovery() Discovery
-	Output() Output
-	Auth() Auth
-	Setting() Setting
-}
-
-// Client 发送apinto接口请求
-// 发送请求时注意是否有admin key
-type Client interface {
-	Url() string
-	Get(ctx context.Context, url string) (*getResponse, error)
-	List(ctx context.Context, url string) (*listResponse, error)
-	Create(ctx context.Context, url string, body io.Reader) (*createResponse, error)
-	Delete(ctx context.Context, url string) (*deleteResponse, error)
-	Update(ctx context.Context, url string, body io.Reader) (*updateResponse, error)
-}
 
 type cluster struct {
 	name      string
@@ -198,7 +177,7 @@ func readBody(r io.ReadCloser, url string) string {
 func (c *client) Url() string {
 	return c.baseURL
 }
-func (c *client) Get(ctx context.Context, url string) (*getResponse, error) {
+func (c *client) Get(ctx context.Context, url string) (*response.RawResponse, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -217,7 +196,8 @@ func (c *client) Get(ctx context.Context, url string) (*getResponse, error) {
 		}
 		return nil, err
 	}
-	var res getResponse
+
+	var res response.RawResponse
 	dec := json.NewDecoder(resp.Body)
 	if err := dec.Decode(&res); err != nil {
 		return nil, err
@@ -225,7 +205,7 @@ func (c *client) Get(ctx context.Context, url string) (*getResponse, error) {
 	return &res, nil
 }
 
-func (c *client) List(ctx context.Context, url string) (*listResponse, error) {
+func (c *client) List(ctx context.Context, url string) (*[]response.Response, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -240,7 +220,7 @@ func (c *client) List(ctx context.Context, url string) (*listResponse, error) {
 		err = multierr.Append(err, fmt.Errorf("error message: %s", readBody(resp.Body, url)))
 		return nil, err
 	}
-	var list listResponse
+	var list []response.Response
 	dec := json.NewDecoder(resp.Body)
 	if err := dec.Decode(&list); err != nil {
 		return nil, err
@@ -248,7 +228,7 @@ func (c *client) List(ctx context.Context, url string) (*listResponse, error) {
 	return &list, nil
 }
 
-func (c *client) Create(ctx context.Context, url string, body io.Reader) (*createResponse, error) {
+func (c *client) Create(ctx context.Context, url string, body io.Reader) (*response.Response, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodPut, url, body)
 	if err != nil {
 		return nil, err
@@ -267,7 +247,7 @@ func (c *client) Create(ctx context.Context, url string, body io.Reader) (*creat
 		return nil, err
 	}
 
-	var cr createResponse
+	var cr response.Response
 	dec := json.NewDecoder(resp.Body)
 	if err := dec.Decode(&cr); err != nil {
 		return nil, err
@@ -275,7 +255,7 @@ func (c *client) Create(ctx context.Context, url string, body io.Reader) (*creat
 	return &cr, nil
 }
 
-func (c *client) Delete(ctx context.Context, url string) (*deleteResponse, error) {
+func (c *client) Delete(ctx context.Context, url string) (*response.Response, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, url, nil)
 	if err != nil {
 		return nil, err
@@ -296,7 +276,7 @@ func (c *client) Delete(ctx context.Context, url string) (*deleteResponse, error
 		err = multierr.Append(err, fmt.Errorf("unexpected status code %d", resp.StatusCode))
 		return nil, err
 	}
-	var res deleteResponse
+	var res response.Response
 	dec := json.NewDecoder(resp.Body)
 	if err := dec.Decode(&res); err != nil {
 		return nil, err
@@ -304,7 +284,7 @@ func (c *client) Delete(ctx context.Context, url string) (*deleteResponse, error
 	return &res, nil
 }
 
-func (c *client) Update(ctx context.Context, url string, body io.Reader) (*updateResponse, error) {
+func (c *client) Update(ctx context.Context, url string, body io.Reader) (*response.Response, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodPut, url, body)
 	if err != nil {
 		return nil, err
@@ -322,7 +302,7 @@ func (c *client) Update(ctx context.Context, url string, body io.Reader) (*updat
 		err = multierr.Append(err, fmt.Errorf("error message: %s", readBody(resp.Body, url)))
 		return nil, err
 	}
-	var ur updateResponse
+	var ur response.Response
 	dec := json.NewDecoder(resp.Body)
 	if err := dec.Decode(&ur); err != nil {
 		return nil, err

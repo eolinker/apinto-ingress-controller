@@ -1,16 +1,11 @@
-package apinto
+package response
 
 import (
 	"encoding/json"
 	"time"
 )
 
-type getResponse json.RawMessage
-
-// list接口待定
-type listResponse []baseResponse
-
-type baseResponse struct {
+type Response struct {
 	Name       string        `json:"name"`
 	Profession string        `json:"profession"`
 	Driver     string        `json:"driver"`
@@ -18,6 +13,5 @@ type baseResponse struct {
 	Create     time.Duration `json:"create"`
 	Update     time.Duration `json:"update"`
 }
-type updateResponse baseResponse
-type deleteResponse baseResponse
-type createResponse baseResponse
+
+type RawResponse json.RawMessage

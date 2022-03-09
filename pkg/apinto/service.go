@@ -4,15 +4,8 @@ import (
 	"context"
 	"fmt"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
+	"github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1/response"
 )
-
-type Service interface {
-	Get(ctx context.Context, name string) (*v1.Service, error)
-	List(ctx context.Context) (*[]v1.Service, error)
-	Delete(ctx context.Context, service *v1.Service) error
-	Update(ctx context.Context, service *v1.Service) (string, error)
-	Create(ctx context.Context, service *v1.Service) (string, error)
-}
 
 type service struct {
 	client Client
@@ -24,7 +17,7 @@ func (s *service) Get(ctx context.Context, name string) (*v1.Service, error) {
 	panic("implement me")
 }
 
-func (s *service) List(ctx context.Context) (*[]v1.Service, error) {
+func (s *service) List(ctx context.Context) (*[]response.Response, error) {
 	//TODO implement me
 	panic("implement me")
 }
