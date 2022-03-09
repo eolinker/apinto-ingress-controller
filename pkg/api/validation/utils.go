@@ -9,7 +9,9 @@ import (
 	kwhvalidating "github.com/slok/kubewebhook/v2/pkg/webhook/validating"
 	"io"
 	"io/ioutil"
+	"net"
 	"net/http"
+	"time"
 )
 
 type SourceClient struct {
@@ -18,10 +20,30 @@ type SourceClient struct {
 
 type listResponse []json.RawMessage
 
+const _defaultTimeout = 5 * time.Second
+
 var (
 	_errReadOnClosedResBody = errors.New("http: read on closed response body")
-	client                  *SourceClient
+	sourceClient            *SourceClient
+
+	_defaultTransport = &http.Transport{
+		Proxy: http.ProxyFromEnvironment,
+		DialContext: (&net.Dialer{
+			Timeout: 3 * time.Second,
+		}).DialContext,
+		ResponseHeaderTimeout: 30 * time.Second,
+		ExpectContinueTimeout: 1 * time.Second,
+	}
 )
+
+func InitSourceClient() {
+	sourceClient = &SourceClient{
+		cli: &http.Client{
+			Timeout:   _defaultTimeout,
+			Transport: _defaultTransport,
+		},
+	}
+}
 
 func NewHandler(ID string, validator kwhvalidating.Validator) gin.HandlerFunc {
 	wh, err := kwhvalidating.NewWebhook(kwhvalidating.WebhookConfig{

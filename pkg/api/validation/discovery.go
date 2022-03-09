@@ -15,6 +15,12 @@ func SetDiscoveryListUrl(baseURl string) {
 
 var ApintoDiscoveryValidator = kwhvalidating.ValidatorFunc(
 	func(ctx context.Context, review *kwhmodel.AdmissionReview, object metav1.Object) (result *kwhvalidating.ValidatorResult, err error) {
-		return nil, nil
+		valid := true
+
+		switch review.Operation {
+		case "delete":
+			//TODO 检查是否有upstream在使用这个discovery
+		}
+		return &kwhvalidating.ValidatorResult{Valid: valid, Message: ""}, nil
 	},
 )

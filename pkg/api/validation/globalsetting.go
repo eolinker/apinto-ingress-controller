@@ -15,6 +15,12 @@ func SetGlobalSettingListUrl(baseURl string) {
 
 var ApintoGlobalSettingValidator = kwhvalidating.ValidatorFunc(
 	func(ctx context.Context, review *kwhmodel.AdmissionReview, object metav1.Object) (result *kwhvalidating.ValidatorResult, err error) {
-		return nil, nil
+		valid := true
+
+		switch review.Operation {
+		case "create":
+			// TODO 创建前检查是否已经存在有一个对象
+		}
+		return &kwhvalidating.ValidatorResult{Valid: valid, Message: ""}, nil
 	},
 )

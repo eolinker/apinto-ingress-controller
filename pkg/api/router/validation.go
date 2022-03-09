@@ -27,4 +27,5 @@ func ValidatingWebhook(g *gin.Engine, cfg config.APINTOConfig) {
 	validation.SetOutputListUrl(cfg.DefaultClusterBaseURL)
 	validation.SetGlobalSettingListUrl(cfg.DefaultClusterBaseURL)
 
+	validation.InitSourceClient()
 }

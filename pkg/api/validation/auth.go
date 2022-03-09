@@ -15,6 +15,12 @@ func SetAuthListUrl(baseURl string) {
 
 var ApintoAuthValidator = kwhvalidating.ValidatorFunc(
 	func(ctx context.Context, review *kwhmodel.AdmissionReview, object metav1.Object) (result *kwhvalidating.ValidatorResult, err error) {
-		return nil, nil
+		valid := true
+
+		switch review.Operation {
+		case "delete":
+			//TODO 暂时不处理
+		}
+		return &kwhvalidating.ValidatorResult{Valid: valid, Message: ""}, nil
 	},
 )
