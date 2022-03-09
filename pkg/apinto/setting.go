@@ -1,7 +1,9 @@
 package apinto
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 )
@@ -18,12 +20,28 @@ func NewSetting(client Client) *setting {
 	}
 }
 
-func (s *setting) GetPlugin(ctx context.Context, name string) (*v1.Setting, error) {
-	//TODO implement me
-	panic("implement me")
+func (s *setting) GetPlugin(ctx context.Context) (*v1.Setting, error) {
+	url := s.url
+	resp, err := s.client.Get(ctx, url)
+	if err != nil {
+		return nil, err
+	}
+	var res *v1.Setting
+	err = json.Unmarshal(*resp, res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }
 
-func (s *setting) UpdatePlugin(ctx context.Context, upstream *v1.Setting) (string, error) {
-	//TODO implement me
-	panic("implement me")
+func (s *setting) UpdatePlugin(ctx context.Context, setting *v1.Setting) (string, error) {
+	data, err := json.Marshal(setting)
+	if err != nil {
+		return "", err
+	}
+	resp, err := s.client.Create(ctx, s.url, bytes.NewReader(data))
+	if err != nil {
+		return "", err
+	}
+	return resp.ID, nil
 }

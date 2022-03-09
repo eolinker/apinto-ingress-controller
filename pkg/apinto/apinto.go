@@ -50,14 +50,13 @@ type Router interface {
 	Lister
 	Get(ctx context.Context, name string) (*v1.Router, error)
 	Delete(ctx context.Context, name string) error
-	// Update 反馈id
 	Update(ctx context.Context, router *v1.Router) (string, error)
 	Create(ctx context.Context, router *v1.Router) (string, error)
 }
 type Service interface {
 	Lister
 	Get(ctx context.Context, name string) (*v1.Service, error)
-	Delete(ctx context.Context, service *v1.Service) error
+	Delete(ctx context.Context, name string) error
 	Update(ctx context.Context, service *v1.Service) (string, error)
 	Create(ctx context.Context, service *v1.Service) (string, error)
 }
@@ -65,35 +64,35 @@ type Service interface {
 type Output interface {
 	Lister
 	Get(ctx context.Context, name string) (*v1.Output, error)
-	Delete(ctx context.Context, output *v1.Output) error
+	Delete(ctx context.Context, name string) error
 	Update(ctx context.Context, output *v1.Output) (string, error)
 	Create(ctx context.Context, output *v1.Output) (string, error)
 }
 type Auth interface {
 	Lister
 	Get(ctx context.Context, name string) (*v1.Auth, error)
-	Delete(ctx context.Context, auth *v1.Auth) error
+	Delete(ctx context.Context, name string) error
 	Update(ctx context.Context, auth *v1.Auth) (string, error)
 	Create(ctx context.Context, auth *v1.Auth) (string, error)
 }
 type Discovery interface {
 	Lister
 	Get(ctx context.Context, name string) (*v1.Discovery, error)
-	Delete(ctx context.Context, discovery *v1.Discovery) error
+	Delete(ctx context.Context, name string) error
 	Update(ctx context.Context, discovery *v1.Discovery) (string, error)
 	Create(ctx context.Context, discovery *v1.Discovery) (string, error)
 }
 
 // Setting 全局插件配置，只有更新和查询
 type Setting interface {
-	GetPlugin(ctx context.Context, name string) (*v1.Setting, error)
-	UpdatePlugin(ctx context.Context, upstream *v1.Setting) (string, error)
+	GetPlugin(ctx context.Context) (*v1.Setting, error)
+	UpdatePlugin(ctx context.Context, setting *v1.Setting) (string, error)
 }
 
 type Upstream interface {
 	Lister
 	Get(ctx context.Context, name string) (*v1.Upstream, error)
-	Delete(ctx context.Context, upstream *v1.Upstream) error
+	Delete(ctx context.Context, name string) error
 	Update(ctx context.Context, upstream *v1.Upstream) (string, error)
 	Create(ctx context.Context, upstream *v1.Upstream) (string, error)
 }
@@ -101,6 +100,13 @@ type Upstream interface {
 type apinto struct {
 	mu   sync.RWMutex
 	data map[string]Cluster
+}
+
+func NewApinto() (Apinto, error) {
+	cli := &apinto{
+		data: make(map[string]Cluster),
+	}
+	return cli, nil
 }
 
 func (a *apinto) Cluster(name string) (Cluster, error) {

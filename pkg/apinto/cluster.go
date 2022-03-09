@@ -199,7 +199,7 @@ func (c *client) Get(ctx context.Context, url string) (*response.RawResponse, er
 
 	var res response.RawResponse
 	dec := json.NewDecoder(resp.Body)
-	if err := dec.Decode(&res); err != nil {
+	if err = dec.Decode(&res); err != nil {
 		return nil, err
 	}
 	return &res, nil
@@ -222,14 +222,14 @@ func (c *client) List(ctx context.Context, url string) (*[]response.Response, er
 	}
 	var list []response.Response
 	dec := json.NewDecoder(resp.Body)
-	if err := dec.Decode(&list); err != nil {
+	if err = dec.Decode(&list); err != nil {
 		return nil, err
 	}
 	return &list, nil
 }
 
 func (c *client) Create(ctx context.Context, url string, body io.Reader) (*response.Response, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, url, body)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, body)
 	if err != nil {
 		return nil, err
 	}
@@ -249,7 +249,7 @@ func (c *client) Create(ctx context.Context, url string, body io.Reader) (*respo
 
 	var cr response.Response
 	dec := json.NewDecoder(resp.Body)
-	if err := dec.Decode(&cr); err != nil {
+	if err = dec.Decode(&cr); err != nil {
 		return nil, err
 	}
 	return &cr, nil
@@ -278,7 +278,7 @@ func (c *client) Delete(ctx context.Context, url string) (*response.Response, er
 	}
 	var res response.Response
 	dec := json.NewDecoder(resp.Body)
-	if err := dec.Decode(&res); err != nil {
+	if err = dec.Decode(&res); err != nil {
 		return nil, err
 	}
 	return &res, nil
@@ -304,7 +304,7 @@ func (c *client) Update(ctx context.Context, url string, body io.Reader) (*respo
 	}
 	var ur response.Response
 	dec := json.NewDecoder(resp.Body)
-	if err := dec.Decode(&ur); err != nil {
+	if err = dec.Decode(&ur); err != nil {
 		return nil, err
 	}
 	return &ur, nil
