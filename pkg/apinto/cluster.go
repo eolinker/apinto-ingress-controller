@@ -22,7 +22,7 @@ const (
 
 var (
 	_errReadOnClosedResBody = errors.New("http: read on closed response body")
-	_errNotFound            = fmt.Errorf("not found")
+	_errNotFound            = errors.New("not found")
 	_errStillInUse          = errors.New("still in use")
 	_defaultTransport       = &http.Transport{
 		Proxy: http.ProxyFromEnvironment,
@@ -67,14 +67,20 @@ type cluster struct {
 	auth      Auth
 	setting   Setting
 }
+type ClusterOptions struct {
+	Name     string
+	AdminKey string
+	BaseURL  string
+	Timeout  time.Duration
+}
 
-func NewCluster(name string, url string, timeout time.Duration, adminKey string) (*cluster, error) {
-	cli, err := NewClient(url, timeout, adminKey)
+func NewCluster(c *ClusterOptions) (*cluster, error) {
+	cli, err := NewClient(c.BaseURL, c.Timeout, c.AdminKey)
 	if err != nil {
 		return nil, err
 	}
 	return &cluster{
-		name:      name,
+		name:      c.Name,
 		client:    cli,
 		router:    NewRouter(cli),
 		service:   NewService(cli),
