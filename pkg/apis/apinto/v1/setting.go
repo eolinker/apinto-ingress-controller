@@ -13,10 +13,11 @@ import (
 type Setting struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Spec              []SettingSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
+	Spec              SettingSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
 }
 
 type SettingSpec struct {
+	Plugins []SettingPlugins `json:"plugins" yaml:"plugins"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
