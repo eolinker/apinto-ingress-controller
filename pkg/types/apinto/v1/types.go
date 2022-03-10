@@ -91,10 +91,10 @@ type Discovery struct {
 
 // +k8s:deepcopy-gen=true
 type Setting struct {
-	Name       string           `json:"name,omitempty" yaml:"name,omitempty"`
-	Profession string           `json:"profession,omitempty" yaml:"profession,omitempty"`
-	Driver     string           `json:"driver,omitempty" yaml:"driver,omitempty"`
-	Plugins    []SettingPlugins `json:"plugins,omitempty" yaml:"plugins,omitempty"`
+	Name       string         `json:"name,omitempty" yaml:"name,omitempty"`
+	Profession string         `json:"profession,omitempty" yaml:"profession,omitempty"`
+	Driver     string         `json:"driver,omitempty" yaml:"driver,omitempty"`
+	Plugins    SettingPlugins `json:"plugins,omitempty" yaml:"plugins,omitempty"`
 }
 
 //Cert http路由驱动配置证书Cert结构体
@@ -132,11 +132,12 @@ type AnonymousConfig struct {
 type SettingPlugins []SettingPlugin
 
 type SettingPlugin struct {
-	ID     string `json:"id,omitempty" yaml:"id,omitempty"`
-	Name   string `json:"name,omitempty" yaml:"name,omitempty"`
-	Type   string `json:"type,omitempty" yaml:"type,omitempty"`
-	Status string `json:"status,omitempty" yaml:"status,omitempty"`
-	Config Config `json:"config,omitempty" yaml:"config,omitempty"`
+	ID         string `json:"id,omitempty" yaml:"id,omitempty"`
+	Name       string `json:"name,omitempty" yaml:"name,omitempty"`
+	Type       string `json:"type,omitempty" yaml:"type,omitempty"`
+	Status     string `json:"status,omitempty" yaml:"status,omitempty"`
+	Config     Config `json:"config,omitempty" yaml:"config,omitempty"`
+	InitConfig Config `json:"init_config,omitempty" yaml:"init_config,omitempty"`
 }
 
 func (c *SettingPlugin) DeepCopyInto(out *SettingPlugin) {
