@@ -2,10 +2,6 @@ package v1
 
 import "encoding/json"
 
-// +genclient
-
-// +genclient:noStatus
-
 type PluginConfig struct {
 	Disable bool        `json:"disable,omitempty" yaml:"disable,omitempty"`
 	Config  interface{} `json:"config,omitempty" yaml:"config,omitempty"`
