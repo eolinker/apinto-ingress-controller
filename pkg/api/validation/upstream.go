@@ -71,14 +71,13 @@ var ApintoUpstreamValidator = kwhvalidating.ValidatorFunc(
 				return &kwhvalidating.ValidatorResult{Valid: false, Message: "Get ServiceList fail. " + err.Error()}, nil
 			}
 
-			//将对应负载的所有服务记录到map中
+			//将对应负载下的所有服务记录到map中
 			usMap := make(map[string][]string)
-			for _, routerJson := range *objList {
-				//TODO 反序列化 并且将service id存入serviceSet中
+			for _, serviceJson := range *objList {
 				var service v1.Service
-				err = json.Unmarshal(routerJson, &service)
+				err = json.Unmarshal(serviceJson, &service)
 				if err != nil {
-					return &kwhvalidating.ValidatorResult{Valid: false, Message: fmt.Sprintf("unmarshal service fail. RouterJson: %s. err: %s", routerJson, err)}, nil
+					return &kwhvalidating.ValidatorResult{Valid: false, Message: fmt.Sprintf("unmarshal service fail. serviceJson: %s. err: %s", serviceJson, err)}, nil
 				}
 
 				//TODO 定义返回体 usMap[service.upstream] = append(srMap[service.upstream], service.name)

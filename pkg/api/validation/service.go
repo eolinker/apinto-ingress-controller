@@ -71,10 +71,9 @@ var ApintoServiceValidator = kwhvalidating.ValidatorFunc(
 				return &kwhvalidating.ValidatorResult{Valid: false, Message: "Get RouterList fail. " + err.Error()}, nil
 			}
 
-			//将对应服务的所有路由记录到map中
+			//将对应服务下的所有路由记录到map中
 			srMap := make(map[string][]string)
 			for _, routerJson := range *objList {
-				//TODO 反序列化 并且将service id存入serviceSet中
 				var router v1.Router
 				err = json.Unmarshal(routerJson, &router)
 				if err != nil {
