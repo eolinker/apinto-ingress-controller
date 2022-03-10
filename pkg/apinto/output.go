@@ -14,6 +14,16 @@ type output struct {
 	url    string
 }
 
+func (o *output) DelCheck(name string) (*response.Response, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (o *output) UpdateCheck(name string, value interface{}) (*response.Response, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (o *output) Get(ctx context.Context, name string) (*v1.Output, error) {
 	url := o.url + "/" + name
 	resp, err := o.client.Get(ctx, url)

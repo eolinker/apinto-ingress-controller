@@ -24,48 +24,45 @@ spec:
           type: object
           properties:
             spec:
-              type: array
-              minItems: 1
-              items:
-                type: object
-                oneOf:
-                  - required: ["name","driver","scheme","health_on","health"]
-                  - required: ["name","driver","scheme","config"]
-                properties:
-                  name:
-                    type: string
-                    minLength: 1
-                  driver:
-                    type: string
-                    enum: ["static","consul","nacos","eureka"]
-                  scheme:
-                    type: string
-                    enum: ["http","https"]
-                  config:
-                    type: object
-                    x-kubernetes-preserve-unknown-fields: true
-                  health_on:
-                    type: boolean
-                    default: false
-                  health:
-                    type: object
-                    required: ["scheme", "method", "url", "success_code", "period", "timeout"]
-                    properties:
-                      scheme:
-                        type: string
-                        enum: ["http","https"]
-                      method:
-                        type: string
-                        enum: ["CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE"]
-                      url:
-                        type: string
-                        pattern: '^http://([\w-]+\.)+[\w-]+(/[\w-./?%&=]*)?$'
-                      success_code:
-                        type: integer
-                        minimum: 1
-                      period:
-                        type: integer
-                        minimum: 1
-                      timeout:
-                        type: integer
-                        minimum: 1
+              type: object
+              oneOf:
+                - required: ["name","driver","scheme","health_on","health"]
+                - required: ["name","driver","scheme","config"]
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                driver:
+                  type: string
+                  enum: ["static","consul","nacos","eureka"]
+                scheme:
+                  type: string
+                  enum: ["http","https"]
+                config:
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+                health_on:
+                  type: boolean
+                  default: false
+                health:
+                  type: object
+                  required: ["scheme", "method", "url", "success_code", "period", "timeout"]
+                  properties:
+                    scheme:
+                      type: string
+                      enum: ["http","https"]
+                    method:
+                      type: string
+                      enum: ["CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE"]
+                    url:
+                      type: string
+                      pattern: '^http://([\w-]+\.)+[\w-]+(/[\w-./?%&=]*)?$'
+                    success_code:
+                      type: integer
+                      minimum: 1
+                    period:
+                      type: integer
+                      minimum: 1
+                    timeout:
+                      type: integer
+                      minimum: 1

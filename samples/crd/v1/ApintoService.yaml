@@ -21,49 +21,46 @@ spec:
           type: object
           properties:
             spec:
-              type: array
-              minItems: 1
-              items:
-                type: object
-                oneOf:
-                  - required: ["name", "driver", "upstream"]
-                  - required: ["name", "driver", "annoymous"]
-                properties:
-                  name:
-                    type: string
-                    minLength: 1
-                  desc:
-                    type: string
-                  driver:
-                    type: string
-                    enum: ["http-service"]
-                  timeout:
-                    type: integer
-                  upstream:
-                    type: string
-                    pattern: '\w+(@upstream)$'
-                  annoymous:
-                    type: object
-                    properties:
-                      type:
-                        type: string
-                        enum: ["round-robin"]
-                      config:
-                        type: string
-                        minLength: 1
-                    required:
-                      - type
-                      - config
-                  retry:
-                    type: integer
-                  rewrite_url:
-                    type: string
-                    minLength: 1
-                  scheme:
-                    type: string
-                    default: http
-                    enum: ["http","https"]
-                  plugins:
-                    type: object
-                    nullable: true
-                    x-kubernetes-preserve-unknown-fields: true
+              type: object
+              oneOf:
+                - required: ["name", "driver", "upstream"]
+                - required: ["name", "driver", "annoymous"]
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                desc:
+                  type: string
+                driver:
+                  type: string
+                  enum: ["http-service"]
+                timeout:
+                  type: integer
+                upstream:
+                  type: string
+                  pattern: '\w+(@upstream)$'
+                annoymous:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      enum: ["round-robin"]
+                    config:
+                      type: string
+                      minLength: 1
+                  required:
+                    - type
+                    - config
+                retry:
+                  type: integer
+                rewrite_url:
+                  type: string
+                  minLength: 1
+                scheme:
+                  type: string
+                  default: http
+                  enum: ["http","https"]
+                plugins:
+                  type: object
+                  nullable: true
+                  x-kubernetes-preserve-unknown-fields: true

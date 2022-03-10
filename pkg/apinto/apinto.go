@@ -22,8 +22,17 @@ type Apinto interface {
 	DeleteCluster(name string) error
 }
 
-// Cluster 集群服务接口
-type Cluster interface {
+type ProfessionCheck interface {
+	RouterChecker() Checker
+	ServiceChecker() Checker
+	UpstreamChecker() Checker
+	DiscoveryChecker() Checker
+	OutputChecker() Checker
+	AuthChecker() Checker
+	SettingChecker() Checker
+}
+
+type Profession interface {
 	Router() Router
 	Upstream() Upstream
 	Service() Service
@@ -31,6 +40,12 @@ type Cluster interface {
 	Output() Output
 	Auth() Auth
 	Setting() Setting
+}
+
+// Cluster 集群服务接口
+type Cluster interface {
+	ProfessionCheck
+	Profession
 }
 
 // Client 发送apinto接口请求
@@ -46,6 +61,12 @@ type Client interface {
 type Lister interface {
 	List(ctx context.Context) ([]*response.Response, error)
 }
+
+type Checker interface {
+	DelCheck(name string) (*response.Response, error)
+	UpdateCheck(name string, value interface{}) (*response.Response, error)
+}
+
 type Router interface {
 	Lister
 	Get(ctx context.Context, name string) (*v1.Router, error)

@@ -73,3 +73,13 @@ func (r *router) Create(ctx context.Context, router *v1.Router) (string, error) 
 	}
 	return resp.ID, nil
 }
+
+func (r *router) DelCheck(name string) (*response.Response, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r *router) UpdateCheck(name string, value interface{}) (*response.Response, error) {
+	//TODO implement me
+	panic("implement me")
+}

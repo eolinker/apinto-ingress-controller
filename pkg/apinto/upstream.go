@@ -14,6 +14,16 @@ type upstream struct {
 	url    string
 }
 
+func (u *upstream) DelCheck(name string) (*response.Response, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (u *upstream) UpdateCheck(name string, value interface{}) (*response.Response, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (u *upstream) Get(ctx context.Context, name string) (*v1.Upstream, error) {
 	url := u.url + "/" + name
 	resp, err := u.client.Get(ctx, url)

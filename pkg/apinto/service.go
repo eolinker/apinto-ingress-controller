@@ -14,6 +14,16 @@ type service struct {
 	url    string
 }
 
+func (s *service) DelCheck(name string) (*response.Response, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *service) UpdateCheck(name string, value interface{}) (*response.Response, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (s *service) Get(ctx context.Context, name string) (*v1.Service, error) {
 	url := s.url + "/" + name
 	resp, err := s.client.Get(ctx, url)

@@ -6,11 +6,22 @@ import (
 	"encoding/json"
 	"fmt"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
+	"github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1/response"
 )
 
 type setting struct {
 	client Client
 	url    string
+}
+
+func (s *setting) DelCheck(name string) (*response.Response, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *setting) UpdateCheck(name string, value interface{}) (*response.Response, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
 func NewSetting(client Client) *setting {

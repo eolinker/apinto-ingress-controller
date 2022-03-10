@@ -24,78 +24,75 @@ spec:
           type: object
           properties:
             spec:
-              type: array
-              minItems: 1
-              items:
-                type: object
-                oneOf:
-                  - required: ["name","driver","hide_credentials","user"]
-                  - required: ["name","driver","hide_credentials","signature_is_base64","run_on_preflight","credentials"]
-                properties:
-                  name:
+              type: object
+              oneOf:
+                - required: ["name","driver","hide_credentials","user"]
+                - required: ["name","driver","hide_credentials","signature_is_base64","run_on_preflight","credentials"]
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                driver:
+                  type: string
+                  enum: ["aksk","apikey","basic","jwt"]
+                hide_credentials:
+                  type: boolean
+                  default: false
+                user:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    oneOf:
+                      - required: ["expire","ak","sk"]
+                      - required: ["expire","apikey"]
+                      - required: ["expire","username","password"]
+                    properties:
+                      expire:
+                        type: integer
+                        minimum: 0
+                      ak:
+                        type: string
+                        minLength: 1
+                      sk:
+                        type: string
+                        minLength: 1
+                      apikey:
+                        type: string
+                        minLength: 1
+                      username:
+                        type: string
+                        minLength: 1
+                      password:
+                        type: string
+                        minLength: 1
+                signature_is_base64:
+                  type: boolean
+                run_on_preflight:
+                  type: boolean
+                claims_to_verify:
+                  type: array
+                  items:
                     type: string
-                    minLength: 1
-                  driver:
-                    type: string
-                    enum: ["aksk","apikey","basic","jwt"]
-                  hide_credentials:
-                    type: boolean
-                    default: false
-                  user:
-                    type: array
-                    minItems: 1
-                    items:
-                      type: object
-                      oneOf:
-                        - required: ["expire","ak","sk"]
-                        - required: ["expire","apikey"]
-                        - required: ["expire","username","password"]
-                      properties:
-                        expire:
-                          type: integer
-                          minimum: 0
-                        ak:
-                          type: string
-                          minLength: 1
-                        sk:
-                          type: string
-                          minLength: 1
-                        apikey:
-                          type: string
-                          minLength: 1
-                        username:
-                          type: string
-                          minLength: 1
-                        password:
-                          type: string
-                          minLength: 1
-                  signature_is_base64:
-                    type: boolean
-                  run_on_preflight:
-                    type: boolean
-                  claims_to_verify:
-                    type: array
-                    items:
-                      type: string
-                      enum: ["exp","nbf"]
-                  credentials:
-                    type: array
-                    minItems: 1
-                    items:
-                      type: object
-                      oneOf:
-                        - required: ["iss","secret","algorithm"]
-                        - required: ["iss","rsa_public_key","algorithm"]
-                      properties:
-                        iss:
-                          type: string
-                          minLength: 1
-                        secret:
-                          type: string
-                          minLength: 1
-                        rsa_public_key:
-                          type: string
-                          minLength: 1
-                        algorithm:
-                          type: string
-                          enum: ["HS256","HS384","HS512","RS256","RS384","RS512","ES256","ES384","ES512"]
+                    enum: ["exp","nbf"]
+                credentials:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    oneOf:
+                      - required: ["iss","secret","algorithm"]
+                      - required: ["iss","rsa_public_key","algorithm"]
+                    properties:
+                      iss:
+                        type: string
+                        minLength: 1
+                      secret:
+                        type: string
+                        minLength: 1
+                      rsa_public_key:
+                        type: string
+                        minLength: 1
+                      algorithm:
+                        type: string
+                        enum: ["HS256","HS384","HS512","RS256","RS384","RS512","ES256","ES384","ES512"]

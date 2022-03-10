@@ -14,6 +14,16 @@ type discovery struct {
 	url    string
 }
 
+func (d *discovery) DelCheck(name string) (*response.Response, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (d *discovery) UpdateCheck(name string, value interface{}) (*response.Response, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (d *discovery) Get(ctx context.Context, name string) (*v1.Discovery, error) {
 	// 先查缓存
 	url := d.url + "/" + name

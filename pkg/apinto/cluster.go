@@ -38,14 +38,43 @@ var (
 type cluster struct {
 	name      string
 	client    Client
-	router    Router
-	upstream  Upstream
-	service   Service
-	discovery Discovery
-	output    Output
-	auth      Auth
-	setting   Setting
+	router    *router
+	upstream  *upstream
+	service   *service
+	discovery *discovery
+	output    *output
+	auth      *auth
+	setting   *setting
 }
+
+func (c *cluster) RouterChecker() Checker {
+	return c.router
+}
+
+func (c *cluster) ServiceChecker() Checker {
+	return c.service
+}
+
+func (c *cluster) UpstreamChecker() Checker {
+	return c.upstream
+}
+
+func (c *cluster) DiscoveryChecker() Checker {
+	return c.upstream
+}
+
+func (c *cluster) OutputChecker() Checker {
+	return c.output
+}
+
+func (c *cluster) AuthChecker() Checker {
+	return c.auth
+}
+
+func (c *cluster) SettingChecker() Checker {
+	return c.setting
+}
+
 type ClusterOptions struct {
 	Name     string
 	AdminKey string
