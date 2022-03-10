@@ -21,15 +21,15 @@ func (d *discovery) Get(ctx context.Context, name string) (*v1.Discovery, error)
 	if err != nil {
 		return nil, err
 	}
-	var res *v1.Discovery
-	err = json.Unmarshal(*resp, res)
+	var res v1.Discovery
+	err = json.Unmarshal(resp, &res)
 	if err != nil {
 		return nil, err
 	}
-	return res, nil
+	return &res, nil
 }
 
-func (d *discovery) List(ctx context.Context) (*[]response.Response, error) {
+func (d *discovery) List(ctx context.Context) ([]*response.Response, error) {
 	return d.client.List(ctx, d.url)
 }
 

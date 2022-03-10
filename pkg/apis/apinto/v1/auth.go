@@ -9,7 +9,7 @@ import (
 type Auth struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Spec              []AuthSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
+	Spec              AuthSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
 }
 
 type AuthSpec struct {

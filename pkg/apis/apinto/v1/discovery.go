@@ -10,7 +10,7 @@ import (
 type Discovery struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Spec              []DiscoverySpec `json:"spec,omitempty" yaml:"spec,omitempty"`
+	Spec              DiscoverySpec `json:"spec,omitempty" yaml:"spec,omitempty"`
 }
 
 type DiscoverySpec struct {

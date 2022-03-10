@@ -10,15 +10,15 @@ import (
 type Output struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Spec              []OutputSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
+	Spec              OutputSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
 }
 
 type OutputSpec struct {
-	FileOutput  []FileOutput  `json:"file_output,omitempty" yaml:"file_output,omitempty"`
-	Nsqd        []NsqdOutput  `json:"nsqd,omitempty" yaml:"nsqd,omitempty"`
-	HttpOutput  []HttpOutput  `json:"http_output,omitempty" yaml:"http_output,omitempty"`
-	SysOutput   []SysOutput   `json:"syslog_output,omitempty" yaml:"syslog_output,omitempty"`
-	KafkaOutput []KafkaOutput `json:"kafka_output,omitempty" yaml:"kafka_output,omitempty"`
+	FileOutput  FileOutput  `json:"file_output,omitempty" yaml:"file_output,omitempty"`
+	Nsqd        NsqdOutput  `json:"nsqd,omitempty" yaml:"nsqd,omitempty"`
+	HttpOutput  HttpOutput  `json:"http_output,omitempty" yaml:"http_output,omitempty"`
+	SysOutput   SysOutput   `json:"syslog_output,omitempty" yaml:"syslog_output,omitempty"`
+	KafkaOutput KafkaOutput `json:"kafka_output,omitempty" yaml:"kafka_output,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

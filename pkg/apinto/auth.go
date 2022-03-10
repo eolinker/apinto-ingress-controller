@@ -21,15 +21,15 @@ func (a *auth) Get(ctx context.Context, name string) (*v1.Auth, error) {
 	if err != nil {
 		return nil, err
 	}
-	var res *v1.Auth
-	err = json.Unmarshal(*resp, res)
+	var res v1.Auth
+	err = json.Unmarshal(resp, &res)
 	if err != nil {
 		return nil, err
 	}
-	return res, nil
+	return &res, nil
 }
 
-func (a *auth) List(ctx context.Context) (*[]response.Response, error) {
+func (a *auth) List(ctx context.Context) ([]*response.Response, error) {
 	return a.client.List(ctx, a.url)
 }
 

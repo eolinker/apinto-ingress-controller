@@ -10,7 +10,7 @@ import (
 type Upstream struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Spec              []UpstreamSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
+	Spec              UpstreamSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
 }
 
 type UpstreamSpec struct {

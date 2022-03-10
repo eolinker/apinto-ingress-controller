@@ -26,12 +26,12 @@ func (s *setting) GetPlugin(ctx context.Context) (*v1.Setting, error) {
 	if err != nil {
 		return nil, err
 	}
-	var res *v1.Setting
-	err = json.Unmarshal(*resp, res)
+	var res v1.Setting
+	err = json.Unmarshal(resp, &res)
 	if err != nil {
 		return nil, err
 	}
-	return res, nil
+	return &res, nil
 }
 
 func (s *setting) UpdatePlugin(ctx context.Context, setting *v1.Setting) (string, error) {

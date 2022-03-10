@@ -20,15 +20,15 @@ func (o *output) Get(ctx context.Context, name string) (*v1.Output, error) {
 	if err != nil {
 		return nil, err
 	}
-	var res *v1.Output
-	err = json.Unmarshal(*resp, res)
+	var res v1.Output
+	err = json.Unmarshal(resp, &res)
 	if err != nil {
 		return nil, err
 	}
-	return res, nil
+	return &res, nil
 }
 
-func (o *output) List(ctx context.Context) (*[]response.Response, error) {
+func (o *output) List(ctx context.Context) ([]*response.Response, error) {
 	return o.client.List(ctx, o.url)
 }
 
