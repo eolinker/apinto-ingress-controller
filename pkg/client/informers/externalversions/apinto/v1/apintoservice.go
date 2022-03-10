@@ -32,59 +32,59 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// AuthInformer provides access to a shared informer and lister for
-// Auths.
-type AuthInformer interface {
+// ApintoServiceInformer provides access to a shared informer and lister for
+// ApintoServices.
+type ApintoServiceInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1.AuthLister
+	Lister() v1.ApintoServiceLister
 }
 
-type authInformer struct {
+type apintoServiceInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 	namespace        string
 }
 
-// NewAuthInformer constructs a new informer for Auth type.
+// NewApintoServiceInformer constructs a new informer for ApintoService type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewAuthInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredAuthInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewApintoServiceInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredApintoServiceInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredAuthInformer constructs a new informer for Auth type.
+// NewFilteredApintoServiceInformer constructs a new informer for ApintoService type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredAuthInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredApintoServiceInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options metav1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.ApintoV1().Auths(namespace).List(context.TODO(), options)
+				return client.ApintoV1().ApintoServices(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options metav1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.ApintoV1().Auths(namespace).Watch(context.TODO(), options)
+				return client.ApintoV1().ApintoServices(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&apintov1.Auth{},
+		&apintov1.ApintoService{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *authInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredAuthInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *apintoServiceInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredApintoServiceInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *authInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&apintov1.Auth{}, f.defaultInformer)
+func (f *apintoServiceInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&apintov1.ApintoService{}, f.defaultInformer)
 }
 
-func (f *authInformer) Lister() v1.AuthLister {
-	return v1.NewAuthLister(f.Informer().GetIndexer())
+func (f *apintoServiceInformer) Lister() v1.ApintoServiceLister {
+	return v1.NewApintoServiceLister(f.Informer().GetIndexer())
 }

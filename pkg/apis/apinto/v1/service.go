@@ -5,7 +5,7 @@ import metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-type Service struct {
+type ApintoService struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 	Spec              ServiceSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
@@ -27,10 +27,10 @@ type ServiceSpec struct {
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-type ServiceList struct {
+type ApintoServiceList struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Items             []Service `json:"items,omitempty" yaml:"items,omitempty"`
+	Items             []ApintoService `json:"items,omitempty" yaml:"items,omitempty"`
 }
 
 type AnonymousConfig struct {

@@ -28,13 +28,13 @@ import (
 
 type ApintoV1Interface interface {
 	RESTClient() rest.Interface
-	AuthsGetter
-	DiscoveriesGetter
-	OutputsGetter
-	RoutersGetter
-	ServicesGetter
-	SettingsGetter
-	UpstreamsGetter
+	ApintoAuthsGetter
+	ApintoDiscoveriesGetter
+	ApintoOutputsGetter
+	ApintoRoutersGetter
+	ApintoServicesGetter
+	ApintoSettingsGetter
+	ApintoUpstreamsGetter
 }
 
 // ApintoV1Client is used to interact with features provided by the apinto.com group.
@@ -42,32 +42,32 @@ type ApintoV1Client struct {
 	restClient rest.Interface
 }
 
-func (c *ApintoV1Client) Auths(namespace string) AuthInterface {
-	return newAuths(c, namespace)
+func (c *ApintoV1Client) ApintoAuths(namespace string) ApintoAuthInterface {
+	return newApintoAuths(c, namespace)
 }
 
-func (c *ApintoV1Client) Discoveries(namespace string) DiscoveryInterface {
-	return newDiscoveries(c, namespace)
+func (c *ApintoV1Client) ApintoDiscoveries(namespace string) ApintoDiscoveryInterface {
+	return newApintoDiscoveries(c, namespace)
 }
 
-func (c *ApintoV1Client) Outputs(namespace string) OutputInterface {
-	return newOutputs(c, namespace)
+func (c *ApintoV1Client) ApintoOutputs(namespace string) ApintoOutputInterface {
+	return newApintoOutputs(c, namespace)
 }
 
-func (c *ApintoV1Client) Routers(namespace string) RouterInterface {
-	return newRouters(c, namespace)
+func (c *ApintoV1Client) ApintoRouters(namespace string) ApintoRouterInterface {
+	return newApintoRouters(c, namespace)
 }
 
-func (c *ApintoV1Client) Services(namespace string) ServiceInterface {
-	return newServices(c, namespace)
+func (c *ApintoV1Client) ApintoServices(namespace string) ApintoServiceInterface {
+	return newApintoServices(c, namespace)
 }
 
-func (c *ApintoV1Client) Settings(namespace string) SettingInterface {
-	return newSettings(c, namespace)
+func (c *ApintoV1Client) ApintoSettings(namespace string) ApintoSettingInterface {
+	return newApintoSettings(c, namespace)
 }
 
-func (c *ApintoV1Client) Upstreams(namespace string) UpstreamInterface {
-	return newUpstreams(c, namespace)
+func (c *ApintoV1Client) ApintoUpstreams(namespace string) ApintoUpstreamInterface {
+	return newApintoUpstreams(c, namespace)
 }
 
 // NewForConfig creates a new ApintoV1Client for the given config.

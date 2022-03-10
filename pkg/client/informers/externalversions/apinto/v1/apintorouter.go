@@ -32,59 +32,59 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// UpstreamInformer provides access to a shared informer and lister for
-// Upstreams.
-type UpstreamInformer interface {
+// ApintoRouterInformer provides access to a shared informer and lister for
+// ApintoRouters.
+type ApintoRouterInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1.UpstreamLister
+	Lister() v1.ApintoRouterLister
 }
 
-type upstreamInformer struct {
+type apintoRouterInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 	namespace        string
 }
 
-// NewUpstreamInformer constructs a new informer for Upstream type.
+// NewApintoRouterInformer constructs a new informer for ApintoRouter type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewUpstreamInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredUpstreamInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewApintoRouterInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredApintoRouterInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredUpstreamInformer constructs a new informer for Upstream type.
+// NewFilteredApintoRouterInformer constructs a new informer for ApintoRouter type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredUpstreamInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredApintoRouterInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options metav1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.ApintoV1().Upstreams(namespace).List(context.TODO(), options)
+				return client.ApintoV1().ApintoRouters(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options metav1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.ApintoV1().Upstreams(namespace).Watch(context.TODO(), options)
+				return client.ApintoV1().ApintoRouters(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&apintov1.Upstream{},
+		&apintov1.ApintoRouter{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *upstreamInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredUpstreamInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *apintoRouterInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredApintoRouterInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *upstreamInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&apintov1.Upstream{}, f.defaultInformer)
+func (f *apintoRouterInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&apintov1.ApintoRouter{}, f.defaultInformer)
 }
 
-func (f *upstreamInformer) Lister() v1.UpstreamLister {
-	return v1.NewUpstreamLister(f.Informer().GetIndexer())
+func (f *apintoRouterInformer) Lister() v1.ApintoRouterLister {
+	return v1.NewApintoRouterLister(f.Informer().GetIndexer())
 }

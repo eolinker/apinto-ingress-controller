@@ -18,58 +18,58 @@ limitations under the License.
 
 package v1
 
-// AuthListerExpansion allows custom methods to be added to
-// AuthLister.
-type AuthListerExpansion interface{}
+// ApintoAuthListerExpansion allows custom methods to be added to
+// ApintoAuthLister.
+type ApintoAuthListerExpansion interface{}
 
-// AuthNamespaceListerExpansion allows custom methods to be added to
-// AuthNamespaceLister.
-type AuthNamespaceListerExpansion interface{}
+// ApintoAuthNamespaceListerExpansion allows custom methods to be added to
+// ApintoAuthNamespaceLister.
+type ApintoAuthNamespaceListerExpansion interface{}
 
-// DiscoveryListerExpansion allows custom methods to be added to
-// DiscoveryLister.
-type DiscoveryListerExpansion interface{}
+// ApintoDiscoveryListerExpansion allows custom methods to be added to
+// ApintoDiscoveryLister.
+type ApintoDiscoveryListerExpansion interface{}
 
-// DiscoveryNamespaceListerExpansion allows custom methods to be added to
-// DiscoveryNamespaceLister.
-type DiscoveryNamespaceListerExpansion interface{}
+// ApintoDiscoveryNamespaceListerExpansion allows custom methods to be added to
+// ApintoDiscoveryNamespaceLister.
+type ApintoDiscoveryNamespaceListerExpansion interface{}
 
-// OutputListerExpansion allows custom methods to be added to
-// OutputLister.
-type OutputListerExpansion interface{}
+// ApintoOutputListerExpansion allows custom methods to be added to
+// ApintoOutputLister.
+type ApintoOutputListerExpansion interface{}
 
-// OutputNamespaceListerExpansion allows custom methods to be added to
-// OutputNamespaceLister.
-type OutputNamespaceListerExpansion interface{}
+// ApintoOutputNamespaceListerExpansion allows custom methods to be added to
+// ApintoOutputNamespaceLister.
+type ApintoOutputNamespaceListerExpansion interface{}
 
-// RouterListerExpansion allows custom methods to be added to
-// RouterLister.
-type RouterListerExpansion interface{}
+// ApintoRouterListerExpansion allows custom methods to be added to
+// ApintoRouterLister.
+type ApintoRouterListerExpansion interface{}
 
-// RouterNamespaceListerExpansion allows custom methods to be added to
-// RouterNamespaceLister.
-type RouterNamespaceListerExpansion interface{}
+// ApintoRouterNamespaceListerExpansion allows custom methods to be added to
+// ApintoRouterNamespaceLister.
+type ApintoRouterNamespaceListerExpansion interface{}
 
-// ServiceListerExpansion allows custom methods to be added to
-// ServiceLister.
-type ServiceListerExpansion interface{}
+// ApintoServiceListerExpansion allows custom methods to be added to
+// ApintoServiceLister.
+type ApintoServiceListerExpansion interface{}
 
-// ServiceNamespaceListerExpansion allows custom methods to be added to
-// ServiceNamespaceLister.
-type ServiceNamespaceListerExpansion interface{}
+// ApintoServiceNamespaceListerExpansion allows custom methods to be added to
+// ApintoServiceNamespaceLister.
+type ApintoServiceNamespaceListerExpansion interface{}
 
-// SettingListerExpansion allows custom methods to be added to
-// SettingLister.
-type SettingListerExpansion interface{}
+// ApintoSettingListerExpansion allows custom methods to be added to
+// ApintoSettingLister.
+type ApintoSettingListerExpansion interface{}
 
-// SettingNamespaceListerExpansion allows custom methods to be added to
-// SettingNamespaceLister.
-type SettingNamespaceListerExpansion interface{}
+// ApintoSettingNamespaceListerExpansion allows custom methods to be added to
+// ApintoSettingNamespaceLister.
+type ApintoSettingNamespaceListerExpansion interface{}
 
-// UpstreamListerExpansion allows custom methods to be added to
-// UpstreamLister.
-type UpstreamListerExpansion interface{}
+// ApintoUpstreamListerExpansion allows custom methods to be added to
+// ApintoUpstreamLister.
+type ApintoUpstreamListerExpansion interface{}
 
-// UpstreamNamespaceListerExpansion allows custom methods to be added to
-// UpstreamNamespaceLister.
-type UpstreamNamespaceListerExpansion interface{}
+// ApintoUpstreamNamespaceListerExpansion allows custom methods to be added to
+// ApintoUpstreamNamespaceLister.
+type ApintoUpstreamNamespaceListerExpansion interface{}
