@@ -177,7 +177,7 @@ func readBody(r io.ReadCloser, url string) string {
 func (c *client) Url() string {
 	return c.baseURL
 }
-func (c *client) Get(ctx context.Context, url string) (*response.RawResponse, error) {
+func (c *client) Get(ctx context.Context, url string) ([]byte, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -196,16 +196,10 @@ func (c *client) Get(ctx context.Context, url string) (*response.RawResponse, er
 		}
 		return nil, err
 	}
-
-	var res response.RawResponse
-	dec := json.NewDecoder(resp.Body)
-	if err = dec.Decode(&res); err != nil {
-		return nil, err
-	}
-	return &res, nil
+	return ioutil.ReadAll(resp.Body)
 }
 
-func (c *client) List(ctx context.Context, url string) (*[]response.Response, error) {
+func (c *client) List(ctx context.Context, url string) ([]*response.Response, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -220,12 +214,12 @@ func (c *client) List(ctx context.Context, url string) (*[]response.Response, er
 		err = multierr.Append(err, fmt.Errorf("error message: %s", readBody(resp.Body, url)))
 		return nil, err
 	}
-	var list []response.Response
+	var list []*response.Response
 	dec := json.NewDecoder(resp.Body)
 	if err = dec.Decode(&list); err != nil {
 		return nil, err
 	}
-	return &list, nil
+	return list, nil
 }
 
 func (c *client) Create(ctx context.Context, url string, body io.Reader) (*response.Response, error) {

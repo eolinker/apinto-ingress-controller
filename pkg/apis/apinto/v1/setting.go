@@ -5,9 +5,6 @@ import (
 )
 
 // +genclient
-
-// +genclient:noStatus
-
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 type Setting struct {
@@ -17,7 +14,7 @@ type Setting struct {
 }
 
 type SettingSpec struct {
-	Plugins []SettingPlugins `json:"plugins" yaml:"plugins"`
+	Plugins []SettingPlugins `json:"plugins,omitempty" yaml:"plugins,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -25,15 +22,15 @@ type SettingSpec struct {
 type SettingList struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Items             []Setting `json:"items" yaml:"items"`
+	Items             []Setting `json:"items,omitempty" yaml:"items,omitempty"`
 }
 
 type SettingPlugins []SettingPlugin
 
 type SettingPlugin struct {
-	ID     string `json:"id" yaml:"id"`
-	Name   string `json:"name" yaml:"name"`
-	Type   string `json:"type" yaml:"type"`
-	Status string `json:"status" yaml:"status"`
-	Config Config `json:"config" yaml:"config"`
+	ID     string `json:"id,omitempty" yaml:"id,omitempty"`
+	Name   string `json:"name,omitempty" yaml:"name,omitempty"`
+	Type   string `json:"type,omitempty" yaml:"type,omitempty"`
+	Status string `json:"status,omitempty" yaml:"status,omitempty"`
+	Config Config `json:"config,omitempty" yaml:"config,omitempty"`
 }

@@ -2,13 +2,9 @@ package v1
 
 import "encoding/json"
 
-// +genclient
-
-// +genclient:noStatus
-
 type PluginConfig struct {
-	Disable bool        `json:"disable"`
-	Config  interface{} `json:"config"`
+	Disable bool        `json:"disable,omitempty" yaml:"disable,omitempty"`
+	Config  interface{} `json:"config,omitempty" yaml:"config,omitempty"`
 }
 
 func (p *PluginConfig) DeepCopyInto(out *PluginConfig) {

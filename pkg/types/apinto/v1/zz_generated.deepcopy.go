@@ -28,7 +28,9 @@ func (in *Auth) DeepCopyInto(out *Auth) {
 	if in.Credentials != nil {
 		in, out := &in.Credentials, &out.Credentials
 		*out = make(Credentials, len(*in))
-		copy(*out, *in)
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
 	}
 	if in.User != nil {
 		in, out := &in.User, &out.User

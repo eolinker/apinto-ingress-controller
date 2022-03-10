@@ -37,14 +37,14 @@ type Cluster interface {
 // 发送请求时注意是否有admin key
 type Client interface {
 	Url() string
-	Get(ctx context.Context, url string) (*response.RawResponse, error)
-	List(ctx context.Context, url string) (*[]response.Response, error)
+	Get(ctx context.Context, url string) ([]byte, error)
+	List(ctx context.Context, url string) ([]*response.Response, error)
 	Create(ctx context.Context, url string, body io.Reader) (*response.Response, error)
 	Delete(ctx context.Context, url string) (*response.Response, error)
 	Update(ctx context.Context, url string, body io.Reader) (*response.Response, error)
 }
 type Lister interface {
-	List(ctx context.Context) (*[]response.Response, error)
+	List(ctx context.Context) ([]*response.Response, error)
 }
 type Router interface {
 	Lister
