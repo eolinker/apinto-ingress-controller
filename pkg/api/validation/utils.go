@@ -1,14 +1,11 @@
 package validation
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"github.com/gin-gonic/gin"
 	kwhhttp "github.com/slok/kubewebhook/v2/pkg/http"
 	kwhvalidating "github.com/slok/kubewebhook/v2/pkg/webhook/validating"
-	"io"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"time"
@@ -21,29 +18,6 @@ type SourceClient struct {
 type listResponse []json.RawMessage
 
 const _defaultTimeout = 5 * time.Second
-
-var (
-	_errReadOnClosedResBody = errors.New("http: read on closed response body")
-	sourceClient            *SourceClient
-
-	_defaultTransport = &http.Transport{
-		Proxy: http.ProxyFromEnvironment,
-		DialContext: (&net.Dialer{
-			Timeout: 3 * time.Second,
-		}).DialContext,
-		ResponseHeaderTimeout: 30 * time.Second,
-		ExpectContinueTimeout: 1 * time.Second,
-	}
-)
-
-func InitSourceClient() {
-	sourceClient = &SourceClient{
-		cli: &http.Client{
-			Timeout:   _defaultTimeout,
-			Transport: _defaultTransport,
-		},
-	}
-}
 
 func NewHandler(ID string, validator kwhvalidating.Validator) gin.HandlerFunc {
 	wh, err := kwhvalidating.NewWebhook(kwhvalidating.WebhookConfig{
@@ -63,59 +37,4 @@ func NewHandler(ID string, validator kwhvalidating.Validator) gin.HandlerFunc {
 	}
 
 	return gin.WrapH(h)
-}
-
-func (s *SourceClient) GetResource(ctx context.Context, url string) (*listResponse, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := s.do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	defer drainBody(resp.Body, url)
-	if resp.StatusCode != http.StatusOK {
-		if resp.StatusCode == http.StatusNotFound {
-			return nil, errors.New("No found. ")
-		} else {
-			//err = multierr.Append(err, fmt.Errorf("unexpected status code %d", resp.StatusCode))
-			//err = multierr.Append(err, fmt.Errorf("error message: %s", readBody(resp.Body, url)))
-		}
-		return nil, err
-	}
-
-	var list listResponse
-
-	dec := json.NewDecoder(resp.Body)
-	if err := dec.Decode(&list); err != nil {
-		return nil, err
-	}
-	return &list, nil
-}
-
-func (s *SourceClient) do(req *http.Request) (*http.Response, error) {
-	//TODO applyAuth(req)
-	return s.cli.Do(req)
-}
-
-func drainBody(r io.ReadCloser, url string) {
-	_, err := io.Copy(ioutil.Discard, r)
-	if err != nil {
-		if err.Error() != _errReadOnClosedResBody.Error() {
-			//log.Warnw("failed to drain body (read)",
-			//	zap.String("url", url),
-			//	zap.Error(err),
-			//)
-		}
-	}
-
-	if err := r.Close(); err != nil {
-		//log.Warnw("failed to drain body (close)",
-		//	zap.String("url", url),
-		//	zap.Error(err),
-		//)
-	}
 }

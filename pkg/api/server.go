@@ -17,7 +17,10 @@ func NewAdmissionServer(cfg *config.Config) (*http.Server, error) {
 	} else {
 		admission := gin.New()
 		admission.Use(gin.Recovery(), gin.Logger())
-		router.ValidatingWebhook(admission, cfg.APINTO)
+		err = router.ValidatingWebhook(admission, cfg)
+		if err != nil {
+			return nil, err
+		}
 
 		admissionServer := &http.Server{
 			Addr:    cfg.HTTPSListen,

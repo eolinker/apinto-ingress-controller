@@ -2,13 +2,23 @@ package router
 
 import (
 	"github.com/eolinker/apinto-ingress-controller/pkg/api/validation"
+	"github.com/eolinker/apinto-ingress-controller/pkg/apinto"
 	"github.com/eolinker/apinto-ingress-controller/pkg/config"
 	"github.com/gin-gonic/gin"
 )
 
-func ValidatingWebhook(g *gin.Engine, cfg config.APINTOConfig) {
-	vGroup := g.Group("/validation")
+func ValidatingWebhook(g *gin.Engine, cfg *config.Config) error {
+	err := validation.InitAdmissionChecker(&apinto.ClusterOptions{
+		Name:     "default",
+		AdminKey: cfg.APINTO.DefaultClusterAdminKey,
+		BaseURL:  cfg.APINTO.DefaultClusterBaseURL,
+	})
 
+	if err != nil {
+		return err
+	}
+
+	vGroup := g.Group("/validation")
 	{
 		vGroup.POST("/apintorouters", validation.NewHandler("ApintoRouter", validation.ApintoRouterValidator))
 		vGroup.POST("/apintoservices", validation.NewHandler("ApintoService", validation.ApintoServiceValidator))
@@ -19,13 +29,5 @@ func ValidatingWebhook(g *gin.Engine, cfg config.APINTOConfig) {
 		vGroup.POST("/apintoglobalsettings", validation.NewHandler("ApintoGlobalSetting", validation.ApintoGlobalSettingValidator))
 	}
 
-	validation.SetRouterListUrl(cfg.DefaultClusterBaseURL)
-	validation.SetServiceListUrl(cfg.DefaultClusterBaseURL)
-	validation.SetUpstreamListUrl(cfg.DefaultClusterBaseURL)
-	validation.SetDiscoveryListUrl(cfg.DefaultClusterBaseURL)
-	validation.SetAuthListUrl(cfg.DefaultClusterBaseURL)
-	validation.SetOutputListUrl(cfg.DefaultClusterBaseURL)
-	validation.SetGlobalSettingListUrl(cfg.DefaultClusterBaseURL)
-
-	validation.InitSourceClient()
+	return nil
 }
