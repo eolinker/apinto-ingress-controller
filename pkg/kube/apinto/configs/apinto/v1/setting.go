@@ -14,7 +14,7 @@ type ApintoSetting struct {
 }
 
 type SettingSpec struct {
-	Plugins []SettingPlugins `json:"plugins,omitempty" yaml:"plugins,omitempty"`
+	Plugins SettingPlugins `json:"plugins,omitempty" yaml:"plugins,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -28,9 +28,10 @@ type ApintoSettingList struct {
 type SettingPlugins []SettingPlugin
 
 type SettingPlugin struct {
-	ID     string `json:"id,omitempty" yaml:"id,omitempty"`
-	Name   string `json:"name,omitempty" yaml:"name,omitempty"`
-	Type   string `json:"type,omitempty" yaml:"type,omitempty"`
-	Status string `json:"status,omitempty" yaml:"status,omitempty"`
-	Config Config `json:"config,omitempty" yaml:"config,omitempty"`
+	ID         string `json:"id,omitempty" yaml:"id,omitempty"`
+	Name       string `json:"name,omitempty" yaml:"name,omitempty"`
+	Type       string `json:"type,omitempty" yaml:"type,omitempty"`
+	Status     string `json:"status,omitempty" yaml:"status,omitempty"`
+	Config     Config `json:"config,omitempty" yaml:"config,omitempty"`
+	InitConfig Config `json:"init_config,omitempty" yaml:"init_config,omitempty"`
 }

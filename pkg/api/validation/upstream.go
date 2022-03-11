@@ -3,12 +3,11 @@ package validation
 import (
 	"context"
 	"errors"
-	kubev1 "github.com/eolinker/apinto-ingress-controller/pkg/apis/apinto/v1"
-	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
+	kubev1 "github.com/eolinker/apinto-ingress-controller/pkg/kube/apinto/configs/apinto/v1"
+	apintov1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	kwhmodel "github.com/slok/kubewebhook/v2/pkg/model"
 	kwhvalidating "github.com/slok/kubewebhook/v2/pkg/webhook/validating"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"strings"
 )
 
 var (
@@ -18,21 +17,50 @@ var (
 var ApintoUpstreamValidator = kwhvalidating.ValidatorFunc(
 	func(ctx context.Context, review *kwhmodel.AdmissionReview, object metav1.Object) (result *kwhvalidating.ValidatorResult, err error) {
 		valid := true
-		var msgs []string
+		var msg string
 
 		//将object转化成upstream
 		au, ok := object.(*kubev1.ApintoUpstream)
 		if !ok {
-			return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoUpstream.Error()}, nil
+			return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoUpstream.Error()}, errNotApintoUpstream
 		}
-		upstreamList := au.Spec
+		kUpstream := au.Spec
 
 		switch review.Operation {
 		case "create", "update":
 
-		case "delete":
+			//拷贝Plugins
+			plugins := make(map[string]apintov1.PluginConfig)
+			for k, v := range kUpstream.Plugins {
+				plugins[k] = apintov1.PluginConfig{Disable: v.Disable, Config: v.Config}
+			}
 
+			apintoUpstream := apintov1.Upstream{
+				Metadata: apintov1.Metadata{
+					Name:       kUpstream.Name,
+					Profession: "upstream",
+					Driver:     kUpstream.Driver,
+				},
+				Discovery: kUpstream.Discovery,
+				Config:    kUpstream.Config,
+				Scheme:    kUpstream.Scheme,
+				Type:      kUpstream.Type,
+				Plugins:   plugins,
+			}
+
+			_, err = validator.UpstreamChecker().UpdateCheck(kUpstream.Name, apintoUpstream)
+			if err != nil {
+				valid = false
+				msg = err.Error()
+			}
+
+		case "delete":
+			_, err = validator.UpstreamChecker().DelCheck(kUpstream.Name)
+			if err != nil {
+				valid = false
+				msg = err.Error()
+			}
 		}
-		return &kwhvalidating.ValidatorResult{Valid: valid, Message: strings.Join(msgs, "\n")}, nil
+		return &kwhvalidating.ValidatorResult{Valid: valid, Message: msg}, err
 	},
 )

@@ -2,11 +2,9 @@ package validation
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/gin-gonic/gin"
 	kwhhttp "github.com/slok/kubewebhook/v2/pkg/http"
 	kwhvalidating "github.com/slok/kubewebhook/v2/pkg/webhook/validating"
-	"net"
 	"net/http"
 	"time"
 )

@@ -42,12 +42,12 @@ type Router struct {
 
 // +k8s:deepcopy-gen=true
 type Upstream struct {
-	Metadata `json:",inline" yaml:",inline"`
-	Discover string                  `json:"discover,omitempty" yaml:"discover,omitempty"`
-	Config   string                  `json:"config,omitempty" yaml:"config,omitempty"`
-	Scheme   string                  `json:"scheme,omitempty" yaml:"scheme,omitempty"`
-	Type     string                  `json:"type,omitempty" yaml:"type,omitempty"`
-	Plugins  map[string]PluginConfig `json:"plugins,omitempty" yaml:"plugins,omitempty"`
+	Metadata  `json:",inline" yaml:",inline"`
+	Discovery string                  `json:"discovery,omitempty" yaml:"discovery,omitempty"`
+	Config    string                  `json:"config,omitempty" yaml:"config,omitempty"`
+	Scheme    string                  `json:"scheme,omitempty" yaml:"scheme,omitempty"`
+	Type      string                  `json:"type,omitempty" yaml:"type,omitempty"`
+	Plugins   map[string]PluginConfig `json:"plugins,omitempty" yaml:"plugins,omitempty"`
 }
 
 // +k8s:deepcopy-gen=true
@@ -59,7 +59,7 @@ type Service struct {
 	Scheme      string                  `json:"scheme,omitempty" yaml:"scheme,omitempty"`
 	ProxyMethod string                  `json:"proxy_method,omitempty" yaml:"proxy_method,omitempty"`
 	Upstream    string                  `json:"upstream,omitempty" yaml:"upstream,omitempty"`
-	Anonymous   AnonymousConfig         `json:"anonymous,omitempty" yaml:"anonymous,omitempty"`
+	Anonymous   *AnonymousConfig        `json:"anonymous,omitempty" yaml:"anonymous,omitempty"`
 	Plugins     map[string]PluginConfig `json:"plugins,omitempty" yaml:"plugins,omitempty"`
 }
 

@@ -21,7 +21,7 @@ type ServiceSpec struct {
 	Scheme      string                  `json:"scheme,omitempty" yaml:"scheme,omitempty"`
 	ProxyMethod string                  `json:"proxy_method,omitempty" yaml:"proxy_method,omitempty"`
 	Upstream    string                  `json:"upstream,omitempty" yaml:"upstream,omitempty"`
-	Anonymous   AnonymousConfig         `json:"anonymous,omitempty" yaml:"anonymous,omitempty"`
+	Anonymous   *AnonymousConfig        `json:"anonymous,omitempty" yaml:"anonymous,omitempty"`
 	Plugins     map[string]PluginConfig `json:"plugins,omitempty" yaml:"plugins,omitempty"`
 }
 

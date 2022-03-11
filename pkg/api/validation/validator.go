@@ -1,22 +1,25 @@
 package validation
 
-import "github.com/eolinker/apinto-ingress-controller/pkg/apinto"
+import (
+	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/cluster"
+	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/profession"
+)
 
 type admissionCheck interface {
-	apinto.ProfessionCheck
+	profession.ProfessionCheck
 }
 
 type admissionChecker struct {
-	cluster apinto.Cluster
+	cluster cluster.Cluster
 }
 
 var (
 	validator admissionCheck
 )
 
-func InitAdmissionChecker(c *apinto.ClusterOptions) error {
+func InitAdmissionChecker(cfg *cluster.ClusterOptions) error {
 
-	cluster, err := apinto.NewCluster(c)
+	c, err := cluster.NewCluster(cfg)
 	if err != nil {
 		//TODO 打印日志
 
@@ -24,36 +27,36 @@ func InitAdmissionChecker(c *apinto.ClusterOptions) error {
 	}
 
 	validator = &admissionChecker{
-		cluster,
+		c,
 	}
 
 	return nil
 }
 
-func (a *admissionChecker) RouterChecker() apinto.Checker {
+func (a *admissionChecker) RouterChecker() profession.Checker {
 	return a.RouterChecker()
 }
 
-func (a *admissionChecker) ServiceChecker() apinto.Checker {
+func (a *admissionChecker) ServiceChecker() profession.Checker {
 	return a.ServiceChecker()
 }
 
-func (a *admissionChecker) UpstreamChecker() apinto.Checker {
+func (a *admissionChecker) UpstreamChecker() profession.Checker {
 	return a.UpstreamChecker()
 }
 
-func (a *admissionChecker) DiscoveryChecker() apinto.Checker {
+func (a *admissionChecker) DiscoveryChecker() profession.Checker {
 	return a.DiscoveryChecker()
 }
 
-func (a *admissionChecker) OutputChecker() apinto.Checker {
+func (a *admissionChecker) OutputChecker() profession.Checker {
 	return a.OutputChecker()
 }
 
-func (a *admissionChecker) AuthChecker() apinto.Checker {
+func (a *admissionChecker) AuthChecker() profession.Checker {
 	return a.AuthChecker()
 }
 
-func (a *admissionChecker) SettingChecker() apinto.Checker {
+func (a *admissionChecker) SettingChecker() profession.Checker {
 	return a.SettingChecker()
 }
