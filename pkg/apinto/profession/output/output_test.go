@@ -1,9 +1,10 @@
-package apinto
+package output
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/client"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/nettest"
@@ -15,20 +16,20 @@ import (
 	"testing"
 )
 
-type routers struct {
+type outputs struct {
 	mu   sync.RWMutex
-	data map[string]*v1.Router
+	data map[string]*v1.Output
 }
 
-func (ro *routers) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (ro *outputs) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	if !strings.HasPrefix(r.URL.Path, "/api/router") {
+	if !strings.HasPrefix(r.URL.Path, "/api/Output") {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	switch r.Method {
 	case http.MethodGet:
-		name := strings.TrimPrefix(r.URL.Path, "/api/router")
+		name := strings.TrimPrefix(r.URL.Path, "/api/Output")
 		if len(name) == 0 {
 			// list
 			resp := ro.list()
@@ -48,9 +49,9 @@ func (ro *routers) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPut:
-		name := strings.TrimPrefix(r.URL.Path, "/api/router/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/Output/")
 		data, _ := ioutil.ReadAll(r.Body)
-		var update v1.Router
+		var update v1.Output
 		err := json.Unmarshal(data, &update)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -64,7 +65,7 @@ func (ro *routers) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	case http.MethodPost:
 		data, _ := ioutil.ReadAll(r.Body)
-		var create v1.Router
+		var create v1.Output
 		err := json.Unmarshal(data, &create)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -77,7 +78,7 @@ func (ro *routers) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write(res)
 		return
 	case http.MethodDelete:
-		name := strings.TrimPrefix(r.URL.Path, "/api/router/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/Output/")
 		d, err := ro.del(name)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -92,44 +93,44 @@ func (ro *routers) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (ro *routers) genID(name string) string {
-	return fmt.Sprintf("%s@router", name)
+func (ro *outputs) genID(name string) string {
+	return fmt.Sprintf("%s@Output", name)
 }
 
-func (r *routers) get(name string) (*v1.Router, error) {
+func (r *outputs) get(name string) (*v1.Output, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 	v, ok := r.data[r.genID(name)]
 	if ok {
 		return v, nil
 	}
-	return nil, fmt.Errorf("router %s not exist", name)
+	return nil, fmt.Errorf("Output %s not exist", name)
 }
 
-func (r *routers) list() []*v1.Router {
+func (r *outputs) list() []*v1.Output {
 	r.mu.RLock()
-	res := make([]*v1.Router, 0, len(r.data))
+	res := make([]*v1.Output, 0, len(r.data))
 	for _, v := range r.data {
 		res = append(res, v)
 	}
 	r.mu.RUnlock()
 	return res
 }
-func (r *routers) update(name string, router *v1.Router) string {
+func (r *outputs) update(name string, output *v1.Output) string {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	router.ID = r.genID(name)
-	r.data[router.ID] = router
-	return router.ID
+	output.ID = r.genID(name)
+	r.data[output.ID] = output
+	return output.ID
 }
-func (r *routers) create(router *v1.Router) string {
+func (r *outputs) create(output *v1.Output) string {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	router.ID = r.genID(router.Name)
-	r.data[router.ID] = router
-	return router.ID
+	output.ID = r.genID(output.Name)
+	r.data[output.ID] = output
+	return output.ID
 }
-func (r *routers) del(name string) (*v1.Router, error) {
+func (r *outputs) del(name string) (*v1.Output, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	v, ok := r.data[r.genID(name)]
@@ -139,12 +140,12 @@ func (r *routers) del(name string) (*v1.Router, error) {
 	delete(r.data, r.genID(name))
 	return v, nil
 }
-func runRouterServer(t *testing.T) *http.Server {
+func runOutputServer(t *testing.T) *http.Server {
 	ln, _ := nettest.NewLocalListener("tcp")
 	httpSrv := &http.Server{
 		Addr: ln.Addr().String(),
-		Handler: &routers{
-			data: make(map[string]*v1.Router),
+		Handler: &outputs{
+			data: make(map[string]*v1.Output),
 		},
 	}
 	go func() {
@@ -154,8 +155,8 @@ func runRouterServer(t *testing.T) *http.Server {
 	}()
 	return httpSrv
 }
-func TestRouter(t *testing.T) {
-	ser := runRouterServer(t)
+func TestOutput(t *testing.T) {
+	ser := runOutputServer(t)
 	defer func() {
 		assert.Nil(t, ser.Shutdown(context.Background()))
 	}()
@@ -164,56 +165,42 @@ func TestRouter(t *testing.T) {
 		Host:   ser.Addr,
 		Path:   "/api",
 	}
-	cli, err := NewClient(u.String(), 0, "")
+	cli, err := client.NewClient(u.String(), 0, "")
 	if err != nil {
 		t.Fatal(err)
 	}
-	cases := []*v1.Router{
+	cases := []*v1.Output{
 		{
 			Metadata: v1.Metadata{
 				Name:       "demo1",
-				Profession: "router",
-				Driver:     "http",
+				Profession: "Output",
+				Driver:     "nsqd",
 			},
-			Method:   []string{"GET"},
-			Host:     []string{"www.demo.com"},
-			Protocol: "http",
-			Listen:   8080,
-			Rules: []v1.Rule{
-				{
-					Location: "/demo",
-				},
+			Config: map[string]interface{}{
+				"Topic": "test_nsqd",
 			},
-			Target: "demo1@service",
 		},
 		{
 			Metadata: v1.Metadata{
 				Name:       "demo2",
-				Profession: "router",
-				Driver:     "http",
+				Profession: "Output",
+				Driver:     "kafka",
 			},
-			Method:   []string{"POST"},
-			Host:     []string{"www.demo2.com"},
-			Protocol: "http",
-			Listen:   8081,
-			Rules: []v1.Rule{
-				{
-					Location: "/demo2",
-				},
+			Config: map[string]interface{}{
+				"Topic": "test_kafka",
 			},
-			Target: "demo2@service",
 		},
 	}
-	r := NewRouter(cli)
+	r := NewOutput(cli)
 	c := context.Background()
 	// test create
 	id, err := r.Create(c, cases[0])
 	assert.Nil(t, err)
-	assert.Equal(t, "demo1@router", id)
+	assert.Equal(t, "demo1@Output", id)
 	cases[0].ID = id
 	id, err = r.Create(c, cases[1])
 	assert.Nil(t, err)
-	assert.Equal(t, "demo2@router", id)
+	assert.Equal(t, "demo2@Output", id)
 	cases[1].ID = id
 	t.Log("test create successfully")
 	// test get
@@ -227,13 +214,14 @@ func TestRouter(t *testing.T) {
 	assert.Equal(t, 2, len(list))
 	t.Log("test list successfully")
 	// test update
-	cases[0].Target = "update@service"
-	_, err = r.Update(c, cases[0])
+	cases[1].Config["partition_type"] = "robin"
+	_, err = r.Update(c, cases[1])
 	assert.Nil(t, err)
-	res, err = r.Get(c, cases[0].Name)
+	res, err = r.Get(c, cases[1].Name)
 	assert.Nil(t, err)
-	assert.Equal(t, cases[0], res)
+	assert.Equal(t, cases[1], res)
 	t.Log("test update successfully")
+	// test delete
 	err = r.Delete(c, cases[1].Name)
 	assert.Nil(t, err)
 	err = r.Delete(c, cases[0].Name)

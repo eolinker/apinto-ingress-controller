@@ -1,30 +1,31 @@
-package apinto
+package auth
 
 import (
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/client"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	"github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1/response"
 )
 
-type auth struct {
-	client Client
+type Auth struct {
+	client client.Client
 	url    string
 }
 
-func (a *auth) DelCheck(name string) (*response.Response, error) {
+func (a *Auth) DelCheck(name string) (*response.Response, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (a *auth) UpdateCheck(name string, value interface{}) (*response.Response, error) {
+func (a *Auth) UpdateCheck(name string, value interface{}) (*response.Response, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (a *auth) Get(ctx context.Context, name string) (*v1.Auth, error) {
+func (a *Auth) Get(ctx context.Context, name string) (*v1.Auth, error) {
 	// 先查缓存
 	url := a.url + "/" + name
 	resp, err := a.client.Get(ctx, url)
@@ -39,17 +40,17 @@ func (a *auth) Get(ctx context.Context, name string) (*v1.Auth, error) {
 	return &res, nil
 }
 
-func (a *auth) List(ctx context.Context) ([]*response.Response, error) {
+func (a *Auth) List(ctx context.Context) ([]*response.Response, error) {
 	return a.client.List(ctx, a.url)
 }
 
-func (a *auth) Delete(ctx context.Context, name string) error {
+func (a *Auth) Delete(ctx context.Context, name string) error {
 	url := a.url + "/" + name
 	_, err := a.client.Delete(ctx, url)
 	return err
 }
 
-func (a *auth) Update(ctx context.Context, auth *v1.Auth) (string, error) {
+func (a *Auth) Update(ctx context.Context, auth *v1.Auth) (string, error) {
 	data, err := json.Marshal(auth)
 	if err != nil {
 		return "", err
@@ -62,7 +63,7 @@ func (a *auth) Update(ctx context.Context, auth *v1.Auth) (string, error) {
 	return resp.ID, nil
 }
 
-func (a *auth) Create(ctx context.Context, auth *v1.Auth) (string, error) {
+func (a *Auth) Create(ctx context.Context, auth *v1.Auth) (string, error) {
 	data, err := json.Marshal(auth)
 	if err != nil {
 		return "", err
@@ -74,9 +75,9 @@ func (a *auth) Create(ctx context.Context, auth *v1.Auth) (string, error) {
 	return resp.ID, nil
 }
 
-func NewAuth(client Client) *auth {
-	return &auth{
-		url:    fmt.Sprintf("%s/%s", client.Url(), "auth"),
+func NewAuth(client client.Client) *Auth {
+	return &Auth{
+		url:    fmt.Sprintf("%s/%s", client.Url(), "Auth"),
 		client: client,
 	}
 }

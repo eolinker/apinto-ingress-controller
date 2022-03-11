@@ -1,30 +1,31 @@
-package apinto
+package upstream
 
 import (
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/client"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	"github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1/response"
 )
 
-type upstream struct {
-	client Client
+type Upstream struct {
+	client client.Client
 	url    string
 }
 
-func (u *upstream) DelCheck(name string) (*response.Response, error) {
+func (u *Upstream) DelCheck(name string) (*response.Response, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (u *upstream) UpdateCheck(name string, value interface{}) (*response.Response, error) {
+func (u *Upstream) UpdateCheck(name string, value interface{}) (*response.Response, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (u *upstream) Get(ctx context.Context, name string) (*v1.Upstream, error) {
+func (u *Upstream) Get(ctx context.Context, name string) (*v1.Upstream, error) {
 	url := u.url + "/" + name
 	resp, err := u.client.Get(ctx, url)
 	if err != nil {
@@ -38,17 +39,17 @@ func (u *upstream) Get(ctx context.Context, name string) (*v1.Upstream, error) {
 	return &res, nil
 }
 
-func (u *upstream) List(ctx context.Context) ([]*response.Response, error) {
+func (u *Upstream) List(ctx context.Context) ([]*response.Response, error) {
 	return u.client.List(ctx, u.url)
 }
 
-func (u *upstream) Delete(ctx context.Context, name string) error {
+func (u *Upstream) Delete(ctx context.Context, name string) error {
 	url := u.url + "/" + name
 	_, err := u.client.Delete(ctx, url)
 	return err
 }
 
-func (u *upstream) Update(ctx context.Context, upstream *v1.Upstream) (string, error) {
+func (u *Upstream) Update(ctx context.Context, upstream *v1.Upstream) (string, error) {
 	data, err := json.Marshal(upstream)
 	if err != nil {
 		return "", err
@@ -61,7 +62,7 @@ func (u *upstream) Update(ctx context.Context, upstream *v1.Upstream) (string, e
 	return resp.ID, nil
 }
 
-func (u *upstream) Create(ctx context.Context, upstream *v1.Upstream) (string, error) {
+func (u *Upstream) Create(ctx context.Context, upstream *v1.Upstream) (string, error) {
 	data, err := json.Marshal(upstream)
 	if err != nil {
 		return "", err
@@ -73,9 +74,9 @@ func (u *upstream) Create(ctx context.Context, upstream *v1.Upstream) (string, e
 	return resp.ID, nil
 }
 
-func NewUpstream(client Client) *upstream {
-	return &upstream{
-		url:    fmt.Sprintf("%s/%s", client.Url(), "upstream"),
+func NewUpstream(client client.Client) *Upstream {
+	return &Upstream{
+		url:    fmt.Sprintf("%s/%s", client.Url(), "Upstream"),
 		client: client,
 	}
 }

@@ -1,9 +1,10 @@
-package apinto
+package router
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/client"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/nettest"
@@ -15,20 +16,20 @@ import (
 	"testing"
 )
 
-type discoverys struct {
+type routers struct {
 	mu   sync.RWMutex
-	data map[string]*v1.Discovery
+	data map[string]*v1.Router
 }
 
-func (ro *discoverys) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (ro *routers) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	if !strings.HasPrefix(r.URL.Path, "/api/discovery") {
+	if !strings.HasPrefix(r.URL.Path, "/api/Router") {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	switch r.Method {
 	case http.MethodGet:
-		name := strings.TrimPrefix(r.URL.Path, "/api/discovery")
+		name := strings.TrimPrefix(r.URL.Path, "/api/Router")
 		if len(name) == 0 {
 			// list
 			resp := ro.list()
@@ -48,9 +49,9 @@ func (ro *discoverys) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPut:
-		name := strings.TrimPrefix(r.URL.Path, "/api/discovery/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/Router/")
 		data, _ := ioutil.ReadAll(r.Body)
-		var update v1.Discovery
+		var update v1.Router
 		err := json.Unmarshal(data, &update)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -64,7 +65,7 @@ func (ro *discoverys) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	case http.MethodPost:
 		data, _ := ioutil.ReadAll(r.Body)
-		var create v1.Discovery
+		var create v1.Router
 		err := json.Unmarshal(data, &create)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -77,7 +78,7 @@ func (ro *discoverys) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write(res)
 		return
 	case http.MethodDelete:
-		name := strings.TrimPrefix(r.URL.Path, "/api/discovery/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/Router/")
 		d, err := ro.del(name)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -92,44 +93,44 @@ func (ro *discoverys) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (ro *discoverys) genID(name string) string {
-	return fmt.Sprintf("%s@discovery", name)
+func (ro *routers) genID(name string) string {
+	return fmt.Sprintf("%s@Router", name)
 }
 
-func (r *discoverys) get(name string) (*v1.Discovery, error) {
+func (r *routers) get(name string) (*v1.Router, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 	v, ok := r.data[r.genID(name)]
 	if ok {
 		return v, nil
 	}
-	return nil, fmt.Errorf("discovery %s not exist", name)
+	return nil, fmt.Errorf("Router %s not exist", name)
 }
 
-func (r *discoverys) list() []*v1.Discovery {
+func (r *routers) list() []*v1.Router {
 	r.mu.RLock()
-	res := make([]*v1.Discovery, 0, len(r.data))
+	res := make([]*v1.Router, 0, len(r.data))
 	for _, v := range r.data {
 		res = append(res, v)
 	}
 	r.mu.RUnlock()
 	return res
 }
-func (r *discoverys) update(name string, discovery *v1.Discovery) string {
+func (r *routers) update(name string, router *v1.Router) string {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	discovery.ID = r.genID(name)
-	r.data[discovery.ID] = discovery
-	return discovery.ID
+	router.ID = r.genID(name)
+	r.data[router.ID] = router
+	return router.ID
 }
-func (r *discoverys) create(discovery *v1.Discovery) string {
+func (r *routers) create(router *v1.Router) string {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	discovery.ID = r.genID(discovery.Name)
-	r.data[discovery.ID] = discovery
-	return discovery.ID
+	router.ID = r.genID(router.Name)
+	r.data[router.ID] = router
+	return router.ID
 }
-func (r *discoverys) del(name string) (*v1.Discovery, error) {
+func (r *routers) del(name string) (*v1.Router, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	v, ok := r.data[r.genID(name)]
@@ -139,12 +140,12 @@ func (r *discoverys) del(name string) (*v1.Discovery, error) {
 	delete(r.data, r.genID(name))
 	return v, nil
 }
-func runDiscoveryServer(t *testing.T) *http.Server {
+func runRouterServer(t *testing.T) *http.Server {
 	ln, _ := nettest.NewLocalListener("tcp")
 	httpSrv := &http.Server{
 		Addr: ln.Addr().String(),
-		Handler: &discoverys{
-			data: make(map[string]*v1.Discovery),
+		Handler: &routers{
+			data: make(map[string]*v1.Router),
 		},
 	}
 	go func() {
@@ -154,8 +155,8 @@ func runDiscoveryServer(t *testing.T) *http.Server {
 	}()
 	return httpSrv
 }
-func TestDiscovery(t *testing.T) {
-	ser := runDiscoveryServer(t)
+func TestRouter(t *testing.T) {
+	ser := runRouterServer(t)
 	defer func() {
 		assert.Nil(t, ser.Shutdown(context.Background()))
 	}()
@@ -164,42 +165,56 @@ func TestDiscovery(t *testing.T) {
 		Host:   ser.Addr,
 		Path:   "/api",
 	}
-	cli, err := NewClient(u.String(), 0, "")
+	cli, err := client.NewClient(u.String(), 0, "")
 	if err != nil {
 		t.Fatal(err)
 	}
-	cases := []*v1.Discovery{
+	cases := []*v1.Router{
 		{
 			Metadata: v1.Metadata{
 				Name:       "demo1",
-				Profession: "discovery",
-				Driver:     "static",
+				Profession: "Router",
+				Driver:     "http",
 			},
-			HealthON: true,
-			Health: v1.HealthConfig{
-				Method:      "GET",
-				SuccessCode: 200,
+			Method:   []string{"GET"},
+			Host:     []string{"www.demo.com"},
+			Protocol: "http",
+			Listen:   8080,
+			Rules: []v1.Rule{
+				{
+					Location: "/demo",
+				},
 			},
+			Target: "demo1@service",
 		},
 		{
 			Metadata: v1.Metadata{
 				Name:       "demo2",
-				Profession: "discovery",
-				Driver:     "nacos",
+				Profession: "Router",
+				Driver:     "http",
 			},
-			HealthON: false,
+			Method:   []string{"POST"},
+			Host:     []string{"www.demo2.com"},
+			Protocol: "http",
+			Listen:   8081,
+			Rules: []v1.Rule{
+				{
+					Location: "/demo2",
+				},
+			},
+			Target: "demo2@service",
 		},
 	}
-	r := NewDiscovery(cli)
+	r := NewRouter(cli)
 	c := context.Background()
 	// test create
 	id, err := r.Create(c, cases[0])
 	assert.Nil(t, err)
-	assert.Equal(t, "demo1@discovery", id)
+	assert.Equal(t, "demo1@Router", id)
 	cases[0].ID = id
 	id, err = r.Create(c, cases[1])
 	assert.Nil(t, err)
-	assert.Equal(t, "demo2@discovery", id)
+	assert.Equal(t, "demo2@Router", id)
 	cases[1].ID = id
 	t.Log("test create successfully")
 	// test get
@@ -213,14 +228,13 @@ func TestDiscovery(t *testing.T) {
 	assert.Equal(t, 2, len(list))
 	t.Log("test list successfully")
 	// test update
-	cases[0].Scheme = "https"
+	cases[0].Target = "update@service"
 	_, err = r.Update(c, cases[0])
 	assert.Nil(t, err)
 	res, err = r.Get(c, cases[0].Name)
 	assert.Nil(t, err)
 	assert.Equal(t, cases[0], res)
 	t.Log("test update successfully")
-	// test delete
 	err = r.Delete(c, cases[1].Name)
 	assert.Nil(t, err)
 	err = r.Delete(c, cases[0].Name)

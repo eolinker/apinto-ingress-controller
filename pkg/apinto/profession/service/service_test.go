@@ -1,9 +1,10 @@
-package apinto
+package service
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/client"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/nettest"
@@ -22,13 +23,13 @@ type services struct {
 
 func (ro *services) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	if !strings.HasPrefix(r.URL.Path, "/api/service") {
+	if !strings.HasPrefix(r.URL.Path, "/api/Service") {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	switch r.Method {
 	case http.MethodGet:
-		name := strings.TrimPrefix(r.URL.Path, "/api/service")
+		name := strings.TrimPrefix(r.URL.Path, "/api/Service")
 		if len(name) == 0 {
 			// list
 			resp := ro.list()
@@ -48,7 +49,7 @@ func (ro *services) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPut:
-		name := strings.TrimPrefix(r.URL.Path, "/api/service/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/Service/")
 		data, _ := ioutil.ReadAll(r.Body)
 		var update v1.Service
 		err := json.Unmarshal(data, &update)
@@ -77,7 +78,7 @@ func (ro *services) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write(res)
 		return
 	case http.MethodDelete:
-		name := strings.TrimPrefix(r.URL.Path, "/api/service/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/Service/")
 		d, err := ro.del(name)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -93,7 +94,7 @@ func (ro *services) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ro *services) genID(name string) string {
-	return fmt.Sprintf("%s@service", name)
+	return fmt.Sprintf("%s@Service", name)
 }
 
 func (r *services) get(name string) (*v1.Service, error) {
@@ -103,7 +104,7 @@ func (r *services) get(name string) (*v1.Service, error) {
 	if ok {
 		return v, nil
 	}
-	return nil, fmt.Errorf("service %s not exist", name)
+	return nil, fmt.Errorf("Service %s not exist", name)
 }
 
 func (r *services) list() []*v1.Service {
@@ -164,7 +165,7 @@ func TestService(t *testing.T) {
 		Host:   ser.Addr,
 		Path:   "/api",
 	}
-	cli, err := NewClient(u.String(), 0, "")
+	cli, err := client.NewClient(u.String(), 0, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -172,7 +173,7 @@ func TestService(t *testing.T) {
 		{
 			Metadata: v1.Metadata{
 				Name:       "demo1",
-				Profession: "service",
+				Profession: "Service",
 				Driver:     "http",
 			},
 			Upstream: "demo1@upstream",
@@ -180,7 +181,7 @@ func TestService(t *testing.T) {
 		{
 			Metadata: v1.Metadata{
 				Name:       "demo2",
-				Profession: "service",
+				Profession: "Service",
 				Driver:     "http",
 			},
 			Anonymous: v1.AnonymousConfig{
@@ -194,11 +195,11 @@ func TestService(t *testing.T) {
 	// test create
 	id, err := r.Create(c, cases[0])
 	assert.Nil(t, err)
-	assert.Equal(t, "demo1@service", id)
+	assert.Equal(t, "demo1@Service", id)
 	cases[0].ID = id
 	id, err = r.Create(c, cases[1])
 	assert.Nil(t, err)
-	assert.Equal(t, "demo2@service", id)
+	assert.Equal(t, "demo2@Service", id)
 	cases[1].ID = id
 	t.Log("test create successfully")
 	// test get

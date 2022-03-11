@@ -1,37 +1,38 @@
-package apinto
+package setting
 
 import (
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/client"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	"github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1/response"
 )
 
-type setting struct {
-	client Client
+type Setting struct {
+	client client.Client
 	url    string
 }
 
-func (s *setting) DelCheck(name string) (*response.Response, error) {
+func (s *Setting) DelCheck(name string) (*response.Response, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s *setting) UpdateCheck(name string, value interface{}) (*response.Response, error) {
+func (s *Setting) UpdateCheck(name string, value interface{}) (*response.Response, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func NewSetting(client Client) *setting {
-	return &setting{
-		url:    fmt.Sprintf("%s/%s", client.Url(), "setting/plugin"),
+func NewSetting(client client.Client) *Setting {
+	return &Setting{
+		url:    fmt.Sprintf("%s/%s", client.Url(), "Setting/plugin"),
 		client: client,
 	}
 }
 
-func (s *setting) GetPlugin(ctx context.Context) (*v1.Setting, error) {
+func (s *Setting) GetPlugin(ctx context.Context) (*v1.Setting, error) {
 	url := s.url
 	resp, err := s.client.Get(ctx, url)
 	if err != nil {
@@ -45,7 +46,7 @@ func (s *setting) GetPlugin(ctx context.Context) (*v1.Setting, error) {
 	return &res, nil
 }
 
-func (s *setting) UpdatePlugin(ctx context.Context, setting *v1.Setting) (string, error) {
+func (s *Setting) UpdatePlugin(ctx context.Context, setting *v1.Setting) (string, error) {
 	data, err := json.Marshal(setting)
 	if err != nil {
 		return "", err

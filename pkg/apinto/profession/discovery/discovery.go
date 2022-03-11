@@ -1,30 +1,31 @@
-package apinto
+package discovery
 
 import (
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/client"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	"github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1/response"
 )
 
-type discovery struct {
-	client Client
+type Discovery struct {
+	client client.Client
 	url    string
 }
 
-func (d *discovery) DelCheck(name string) (*response.Response, error) {
+func (d *Discovery) DelCheck(name string) (*response.Response, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (d *discovery) UpdateCheck(name string, value interface{}) (*response.Response, error) {
+func (d *Discovery) UpdateCheck(name string, value interface{}) (*response.Response, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (d *discovery) Get(ctx context.Context, name string) (*v1.Discovery, error) {
+func (d *Discovery) Get(ctx context.Context, name string) (*v1.Discovery, error) {
 	// 先查缓存
 	url := d.url + "/" + name
 	resp, err := d.client.Get(ctx, url)
@@ -39,17 +40,17 @@ func (d *discovery) Get(ctx context.Context, name string) (*v1.Discovery, error)
 	return &res, nil
 }
 
-func (d *discovery) List(ctx context.Context) ([]*response.Response, error) {
+func (d *Discovery) List(ctx context.Context) ([]*response.Response, error) {
 	return d.client.List(ctx, d.url)
 }
 
-func (d *discovery) Delete(ctx context.Context, name string) error {
+func (d *Discovery) Delete(ctx context.Context, name string) error {
 	url := d.url + "/" + name
 	_, err := d.client.Delete(ctx, url)
 	return err
 }
 
-func (d *discovery) Update(ctx context.Context, discovery *v1.Discovery) (string, error) {
+func (d *Discovery) Update(ctx context.Context, discovery *v1.Discovery) (string, error) {
 	data, err := json.Marshal(discovery)
 	if err != nil {
 		return "", err
@@ -62,7 +63,7 @@ func (d *discovery) Update(ctx context.Context, discovery *v1.Discovery) (string
 	return resp.ID, nil
 }
 
-func (d *discovery) Create(ctx context.Context, discovery *v1.Discovery) (string, error) {
+func (d *Discovery) Create(ctx context.Context, discovery *v1.Discovery) (string, error) {
 	data, err := json.Marshal(discovery)
 	if err != nil {
 		return "", err
@@ -74,9 +75,9 @@ func (d *discovery) Create(ctx context.Context, discovery *v1.Discovery) (string
 	return resp.ID, nil
 }
 
-func NewDiscovery(client Client) *discovery {
-	return &discovery{
-		url:    fmt.Sprintf("%s/%s", client.Url(), "discovery"),
+func NewDiscovery(client client.Client) *Discovery {
+	return &Discovery{
+		url:    fmt.Sprintf("%s/%s", client.Url(), "Discovery"),
 		client: client,
 	}
 }

@@ -1,8 +1,9 @@
-package apinto
+package setting
 
 import (
 	"context"
 	"encoding/json"
+	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/client"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/nettest"
@@ -19,7 +20,7 @@ type settings struct {
 
 func (ro *settings) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	if !strings.HasPrefix(r.URL.Path, "/api/setting/plugin") {
+	if !strings.HasPrefix(r.URL.Path, "/api/Setting/plugin") {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -61,8 +62,8 @@ func runSettingServer(t *testing.T) *http.Server {
 		Addr: ln.Addr().String(),
 		Handler: &settings{
 			data: &v1.Setting{
-				Name:       "setting",
-				Profession: "setting",
+				Name:       "Setting",
+				Profession: "Setting",
 				Driver:     "plugins",
 				Plugins: v1.SettingPlugins{
 					{
@@ -108,7 +109,7 @@ func TestSetting(t *testing.T) {
 		Host:   ser.Addr,
 		Path:   "/api",
 	}
-	cli, err := NewClient(u.String(), 0, "")
+	cli, err := client.NewClient(u.String(), 0, "")
 	if err != nil {
 		t.Fatal(err)
 	}

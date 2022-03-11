@@ -1,4 +1,4 @@
-package apinto
+package client
 
 import (
 	"context"
@@ -35,97 +35,15 @@ var (
 	}
 )
 
-type cluster struct {
-	name      string
-	client    Client
-	router    *router
-	upstream  *upstream
-	service   *service
-	discovery *discovery
-	output    *output
-	auth      *auth
-	setting   *setting
-}
-
-func (c *cluster) RouterChecker() Checker {
-	return c.router
-}
-
-func (c *cluster) ServiceChecker() Checker {
-	return c.service
-}
-
-func (c *cluster) UpstreamChecker() Checker {
-	return c.upstream
-}
-
-func (c *cluster) DiscoveryChecker() Checker {
-	return c.upstream
-}
-
-func (c *cluster) OutputChecker() Checker {
-	return c.output
-}
-
-func (c *cluster) AuthChecker() Checker {
-	return c.auth
-}
-
-func (c *cluster) SettingChecker() Checker {
-	return c.setting
-}
-
-type ClusterOptions struct {
-	Name     string
-	AdminKey string
-	BaseURL  string
-	Timeout  time.Duration
-}
-
-func NewCluster(c *ClusterOptions) (*cluster, error) {
-	cli, err := NewClient(c.BaseURL, c.Timeout, c.AdminKey)
-	if err != nil {
-		return nil, err
-	}
-	return &cluster{
-		name:      c.Name,
-		client:    cli,
-		router:    NewRouter(cli),
-		service:   NewService(cli),
-		upstream:  NewUpstream(cli),
-		auth:      NewAuth(cli),
-		output:    NewOutput(cli),
-		discovery: NewDiscovery(cli),
-		setting:   NewSetting(cli),
-	}, nil
-}
-
-func (c *cluster) Router() Router {
-	return c.router
-}
-
-func (c *cluster) Upstream() Upstream {
-	return c.upstream
-}
-
-func (c *cluster) Service() Service {
-	return c.service
-}
-
-func (c *cluster) Discovery() Discovery {
-	return c.discovery
-}
-
-func (c *cluster) Output() Output {
-	return c.output
-}
-
-func (c *cluster) Auth() Auth {
-	return c.auth
-}
-
-func (c *cluster) Setting() Setting {
-	return c.setting
+// Client 发送apinto接口请求
+// 发送请求时注意是否有admin key
+type Client interface {
+	Url() string
+	Get(ctx context.Context, url string) ([]byte, error)
+	List(ctx context.Context, url string) ([]*response.Response, error)
+	Create(ctx context.Context, url string, body io.Reader) (*response.Response, error)
+	Delete(ctx context.Context, url string) (*response.Response, error)
+	Update(ctx context.Context, url string, body io.Reader) (*response.Response, error)
 }
 
 type client struct {

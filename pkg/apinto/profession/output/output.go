@@ -1,30 +1,31 @@
-package apinto
+package output
 
 import (
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/client"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	"github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1/response"
 )
 
-type output struct {
-	client Client
+type Output struct {
+	client client.Client
 	url    string
 }
 
-func (o *output) DelCheck(name string) (*response.Response, error) {
+func (o *Output) DelCheck(name string) (*response.Response, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (o *output) UpdateCheck(name string, value interface{}) (*response.Response, error) {
+func (o *Output) UpdateCheck(name string, value interface{}) (*response.Response, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (o *output) Get(ctx context.Context, name string) (*v1.Output, error) {
+func (o *Output) Get(ctx context.Context, name string) (*v1.Output, error) {
 	url := o.url + "/" + name
 	resp, err := o.client.Get(ctx, url)
 	if err != nil {
@@ -38,17 +39,17 @@ func (o *output) Get(ctx context.Context, name string) (*v1.Output, error) {
 	return &res, nil
 }
 
-func (o *output) List(ctx context.Context) ([]*response.Response, error) {
+func (o *Output) List(ctx context.Context) ([]*response.Response, error) {
 	return o.client.List(ctx, o.url)
 }
 
-func (o *output) Delete(ctx context.Context, name string) error {
+func (o *Output) Delete(ctx context.Context, name string) error {
 	url := o.url + "/" + name
 	_, err := o.client.Delete(ctx, url)
 	return err
 }
 
-func (o *output) Update(ctx context.Context, output *v1.Output) (string, error) {
+func (o *Output) Update(ctx context.Context, output *v1.Output) (string, error) {
 	data, err := json.Marshal(output)
 	if err != nil {
 		return "", err
@@ -61,7 +62,7 @@ func (o *output) Update(ctx context.Context, output *v1.Output) (string, error) 
 	return resp.ID, nil
 }
 
-func (o *output) Create(ctx context.Context, output *v1.Output) (string, error) {
+func (o *Output) Create(ctx context.Context, output *v1.Output) (string, error) {
 	data, err := json.Marshal(output)
 	if err != nil {
 		return "", err
@@ -73,9 +74,9 @@ func (o *output) Create(ctx context.Context, output *v1.Output) (string, error) 
 	return resp.ID, nil
 }
 
-func NewOutput(client Client) *output {
-	return &output{
-		url:    fmt.Sprintf("%s/%s", client.Url(), "output"),
+func NewOutput(client client.Client) *Output {
+	return &Output{
+		url:    fmt.Sprintf("%s/%s", client.Url(), "Output"),
 		client: client,
 	}
 }

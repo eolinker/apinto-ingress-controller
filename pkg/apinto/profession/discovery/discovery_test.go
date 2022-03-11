@@ -1,9 +1,10 @@
-package apinto
+package discovery
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/client"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/nettest"
@@ -15,20 +16,20 @@ import (
 	"testing"
 )
 
-type upstreams struct {
+type discoverys struct {
 	mu   sync.RWMutex
-	data map[string]*v1.Upstream
+	data map[string]*v1.Discovery
 }
 
-func (ro *upstreams) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (ro *discoverys) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	if !strings.HasPrefix(r.URL.Path, "/api/upstream") {
+	if !strings.HasPrefix(r.URL.Path, "/api/Discovery") {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	switch r.Method {
 	case http.MethodGet:
-		name := strings.TrimPrefix(r.URL.Path, "/api/upstream")
+		name := strings.TrimPrefix(r.URL.Path, "/api/Discovery")
 		if len(name) == 0 {
 			// list
 			resp := ro.list()
@@ -48,9 +49,9 @@ func (ro *upstreams) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPut:
-		name := strings.TrimPrefix(r.URL.Path, "/api/upstream/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/Discovery/")
 		data, _ := ioutil.ReadAll(r.Body)
-		var update v1.Upstream
+		var update v1.Discovery
 		err := json.Unmarshal(data, &update)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -64,7 +65,7 @@ func (ro *upstreams) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	case http.MethodPost:
 		data, _ := ioutil.ReadAll(r.Body)
-		var create v1.Upstream
+		var create v1.Discovery
 		err := json.Unmarshal(data, &create)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -77,7 +78,7 @@ func (ro *upstreams) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write(res)
 		return
 	case http.MethodDelete:
-		name := strings.TrimPrefix(r.URL.Path, "/api/upstream/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/Discovery/")
 		d, err := ro.del(name)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -92,44 +93,44 @@ func (ro *upstreams) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (ro *upstreams) genID(name string) string {
-	return fmt.Sprintf("%s@upstream", name)
+func (ro *discoverys) genID(name string) string {
+	return fmt.Sprintf("%s@Discovery", name)
 }
 
-func (r *upstreams) get(name string) (*v1.Upstream, error) {
+func (r *discoverys) get(name string) (*v1.Discovery, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 	v, ok := r.data[r.genID(name)]
 	if ok {
 		return v, nil
 	}
-	return nil, fmt.Errorf("upstream %s not exist", name)
+	return nil, fmt.Errorf("Discovery %s not exist", name)
 }
 
-func (r *upstreams) list() []*v1.Upstream {
+func (r *discoverys) list() []*v1.Discovery {
 	r.mu.RLock()
-	res := make([]*v1.Upstream, 0, len(r.data))
+	res := make([]*v1.Discovery, 0, len(r.data))
 	for _, v := range r.data {
 		res = append(res, v)
 	}
 	r.mu.RUnlock()
 	return res
 }
-func (r *upstreams) update(name string, upstream *v1.Upstream) string {
+func (r *discoverys) update(name string, discovery *v1.Discovery) string {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	upstream.ID = r.genID(name)
-	r.data[upstream.ID] = upstream
-	return upstream.ID
+	discovery.ID = r.genID(name)
+	r.data[discovery.ID] = discovery
+	return discovery.ID
 }
-func (r *upstreams) create(upstream *v1.Upstream) string {
+func (r *discoverys) create(discovery *v1.Discovery) string {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	upstream.ID = r.genID(upstream.Name)
-	r.data[upstream.ID] = upstream
-	return upstream.ID
+	discovery.ID = r.genID(discovery.Name)
+	r.data[discovery.ID] = discovery
+	return discovery.ID
 }
-func (r *upstreams) del(name string) (*v1.Upstream, error) {
+func (r *discoverys) del(name string) (*v1.Discovery, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	v, ok := r.data[r.genID(name)]
@@ -139,12 +140,12 @@ func (r *upstreams) del(name string) (*v1.Upstream, error) {
 	delete(r.data, r.genID(name))
 	return v, nil
 }
-func runUpstreamServer(t *testing.T) *http.Server {
+func runDiscoveryServer(t *testing.T) *http.Server {
 	ln, _ := nettest.NewLocalListener("tcp")
 	httpSrv := &http.Server{
 		Addr: ln.Addr().String(),
-		Handler: &upstreams{
-			data: make(map[string]*v1.Upstream),
+		Handler: &discoverys{
+			data: make(map[string]*v1.Discovery),
 		},
 	}
 	go func() {
@@ -154,8 +155,8 @@ func runUpstreamServer(t *testing.T) *http.Server {
 	}()
 	return httpSrv
 }
-func TestUpstream(t *testing.T) {
-	ser := runUpstreamServer(t)
+func TestDiscovery(t *testing.T) {
+	ser := runDiscoveryServer(t)
 	defer func() {
 		assert.Nil(t, ser.Shutdown(context.Background()))
 	}()
@@ -164,38 +165,42 @@ func TestUpstream(t *testing.T) {
 		Host:   ser.Addr,
 		Path:   "/api",
 	}
-	cli, err := NewClient(u.String(), 0, "")
+	cli, err := client.NewClient(u.String(), 0, "")
 	if err != nil {
 		t.Fatal(err)
 	}
-	cases := []*v1.Upstream{
+	cases := []*v1.Discovery{
 		{
 			Metadata: v1.Metadata{
 				Name:       "demo1",
-				Profession: "upstream",
-				Driver:     "http",
+				Profession: "Discovery",
+				Driver:     "static",
 			},
-			Discover: "demo1@discovery",
+			HealthON: true,
+			Health: v1.HealthConfig{
+				Method:      "GET",
+				SuccessCode: 200,
+			},
 		},
 		{
 			Metadata: v1.Metadata{
 				Name:       "demo2",
-				Profession: "upstream",
-				Driver:     "http",
+				Profession: "Discovery",
+				Driver:     "nacos",
 			},
-			Scheme: "http",
+			HealthON: false,
 		},
 	}
-	r := NewUpstream(cli)
+	r := NewDiscovery(cli)
 	c := context.Background()
 	// test create
 	id, err := r.Create(c, cases[0])
 	assert.Nil(t, err)
-	assert.Equal(t, "demo1@upstream", id)
+	assert.Equal(t, "demo1@Discovery", id)
 	cases[0].ID = id
 	id, err = r.Create(c, cases[1])
 	assert.Nil(t, err)
-	assert.Equal(t, "demo2@upstream", id)
+	assert.Equal(t, "demo2@Discovery", id)
 	cases[1].ID = id
 	t.Log("test create successfully")
 	// test get
@@ -209,7 +214,7 @@ func TestUpstream(t *testing.T) {
 	assert.Equal(t, 2, len(list))
 	t.Log("test list successfully")
 	// test update
-	cases[0].Discover = "update@discovery"
+	cases[0].Scheme = "https"
 	_, err = r.Update(c, cases[0])
 	assert.Nil(t, err)
 	res, err = r.Get(c, cases[0].Name)

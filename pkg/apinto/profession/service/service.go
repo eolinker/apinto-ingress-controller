@@ -1,30 +1,31 @@
-package apinto
+package service
 
 import (
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/client"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	"github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1/response"
 )
 
-type service struct {
-	client Client
+type Service struct {
+	client client.Client
 	url    string
 }
 
-func (s *service) DelCheck(name string) (*response.Response, error) {
+func (s *Service) DelCheck(name string) (*response.Response, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s *service) UpdateCheck(name string, value interface{}) (*response.Response, error) {
+func (s *Service) UpdateCheck(name string, value interface{}) (*response.Response, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s *service) Get(ctx context.Context, name string) (*v1.Service, error) {
+func (s *Service) Get(ctx context.Context, name string) (*v1.Service, error) {
 	url := s.url + "/" + name
 	resp, err := s.client.Get(ctx, url)
 	if err != nil {
@@ -38,17 +39,17 @@ func (s *service) Get(ctx context.Context, name string) (*v1.Service, error) {
 	return &res, nil
 }
 
-func (s *service) List(ctx context.Context) ([]*response.Response, error) {
+func (s *Service) List(ctx context.Context) ([]*response.Response, error) {
 	return s.client.List(ctx, s.url)
 }
 
-func (s *service) Delete(ctx context.Context, name string) error {
+func (s *Service) Delete(ctx context.Context, name string) error {
 	url := s.url + "/" + name
 	_, err := s.client.Delete(ctx, url)
 	return err
 }
 
-func (s *service) Update(ctx context.Context, service *v1.Service) (string, error) {
+func (s *Service) Update(ctx context.Context, service *v1.Service) (string, error) {
 	data, err := json.Marshal(service)
 	if err != nil {
 		return "", err
@@ -61,7 +62,7 @@ func (s *service) Update(ctx context.Context, service *v1.Service) (string, erro
 	return resp.ID, nil
 }
 
-func (s *service) Create(ctx context.Context, service *v1.Service) (string, error) {
+func (s *Service) Create(ctx context.Context, service *v1.Service) (string, error) {
 	data, err := json.Marshal(service)
 	if err != nil {
 		return "", err
@@ -73,9 +74,9 @@ func (s *service) Create(ctx context.Context, service *v1.Service) (string, erro
 	return resp.ID, nil
 }
 
-func NewService(client Client) *service {
-	return &service{
-		url:    fmt.Sprintf("%s/%s", client.Url(), "service"),
+func NewService(client client.Client) *Service {
+	return &Service{
+		url:    fmt.Sprintf("%s/%s", client.Url(), "Service"),
 		client: client,
 	}
 }

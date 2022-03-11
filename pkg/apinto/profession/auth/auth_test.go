@@ -1,9 +1,10 @@
-package apinto
+package auth
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/client"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/nettest"
@@ -22,13 +23,13 @@ type auths struct {
 
 func (ro *auths) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	if !strings.HasPrefix(r.URL.Path, "/api/auth") {
+	if !strings.HasPrefix(r.URL.Path, "/api/Auth") {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	switch r.Method {
 	case http.MethodGet:
-		name := strings.TrimPrefix(r.URL.Path, "/api/auth")
+		name := strings.TrimPrefix(r.URL.Path, "/api/Auth")
 		if len(name) == 0 {
 			// list
 			resp := ro.list()
@@ -48,7 +49,7 @@ func (ro *auths) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPut:
-		name := strings.TrimPrefix(r.URL.Path, "/api/auth/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/Auth/")
 		data, _ := ioutil.ReadAll(r.Body)
 		var update v1.Auth
 		err := json.Unmarshal(data, &update)
@@ -77,7 +78,7 @@ func (ro *auths) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write(res)
 		return
 	case http.MethodDelete:
-		name := strings.TrimPrefix(r.URL.Path, "/api/auth/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/Auth/")
 		d, err := ro.del(name)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -93,7 +94,7 @@ func (ro *auths) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ro *auths) genID(name string) string {
-	return fmt.Sprintf("%s@auth", name)
+	return fmt.Sprintf("%s@Auth", name)
 }
 
 func (r *auths) get(name string) (*v1.Auth, error) {
@@ -103,7 +104,7 @@ func (r *auths) get(name string) (*v1.Auth, error) {
 	if ok {
 		return v, nil
 	}
-	return nil, fmt.Errorf("auth %s not exist", name)
+	return nil, fmt.Errorf("Auth %s not exist", name)
 }
 
 func (r *auths) list() []*v1.Auth {
@@ -164,7 +165,7 @@ func TestAuth(t *testing.T) {
 		Host:   ser.Addr,
 		Path:   "/api",
 	}
-	cli, err := NewClient(u.String(), 0, "")
+	cli, err := client.NewClient(u.String(), 0, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -172,7 +173,7 @@ func TestAuth(t *testing.T) {
 		{
 			Metadata: v1.Metadata{
 				Name:       "demo1",
-				Profession: "auth",
+				Profession: "Auth",
 				Driver:     "apikey",
 			},
 			User: v1.Users{
@@ -191,7 +192,7 @@ func TestAuth(t *testing.T) {
 		{
 			Metadata: v1.Metadata{
 				Name:       "demo2",
-				Profession: "auth",
+				Profession: "Auth",
 				Driver:     "basic",
 			},
 			User: v1.Users{
@@ -207,11 +208,11 @@ func TestAuth(t *testing.T) {
 	// test create
 	id, err := r.Create(c, cases[0])
 	assert.Nil(t, err)
-	assert.Equal(t, "demo1@auth", id)
+	assert.Equal(t, "demo1@Auth", id)
 	cases[0].ID = id
 	id, err = r.Create(c, cases[1])
 	assert.Nil(t, err)
-	assert.Equal(t, "demo2@auth", id)
+	assert.Equal(t, "demo2@Auth", id)
 	cases[1].ID = id
 	t.Log("test create successfully")
 	// test get

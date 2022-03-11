@@ -1,9 +1,10 @@
-package apinto
+package upstream
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/client"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/nettest"
@@ -15,20 +16,20 @@ import (
 	"testing"
 )
 
-type outputs struct {
+type upstreams struct {
 	mu   sync.RWMutex
-	data map[string]*v1.Output
+	data map[string]*v1.Upstream
 }
 
-func (ro *outputs) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (ro *upstreams) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	if !strings.HasPrefix(r.URL.Path, "/api/output") {
+	if !strings.HasPrefix(r.URL.Path, "/api/Upstream") {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	switch r.Method {
 	case http.MethodGet:
-		name := strings.TrimPrefix(r.URL.Path, "/api/output")
+		name := strings.TrimPrefix(r.URL.Path, "/api/Upstream")
 		if len(name) == 0 {
 			// list
 			resp := ro.list()
@@ -48,9 +49,9 @@ func (ro *outputs) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPut:
-		name := strings.TrimPrefix(r.URL.Path, "/api/output/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/Upstream/")
 		data, _ := ioutil.ReadAll(r.Body)
-		var update v1.Output
+		var update v1.Upstream
 		err := json.Unmarshal(data, &update)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -64,7 +65,7 @@ func (ro *outputs) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	case http.MethodPost:
 		data, _ := ioutil.ReadAll(r.Body)
-		var create v1.Output
+		var create v1.Upstream
 		err := json.Unmarshal(data, &create)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -77,7 +78,7 @@ func (ro *outputs) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write(res)
 		return
 	case http.MethodDelete:
-		name := strings.TrimPrefix(r.URL.Path, "/api/output/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/Upstream/")
 		d, err := ro.del(name)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -92,44 +93,44 @@ func (ro *outputs) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (ro *outputs) genID(name string) string {
-	return fmt.Sprintf("%s@output", name)
+func (ro *upstreams) genID(name string) string {
+	return fmt.Sprintf("%s@Upstream", name)
 }
 
-func (r *outputs) get(name string) (*v1.Output, error) {
+func (r *upstreams) get(name string) (*v1.Upstream, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 	v, ok := r.data[r.genID(name)]
 	if ok {
 		return v, nil
 	}
-	return nil, fmt.Errorf("output %s not exist", name)
+	return nil, fmt.Errorf("Upstream %s not exist", name)
 }
 
-func (r *outputs) list() []*v1.Output {
+func (r *upstreams) list() []*v1.Upstream {
 	r.mu.RLock()
-	res := make([]*v1.Output, 0, len(r.data))
+	res := make([]*v1.Upstream, 0, len(r.data))
 	for _, v := range r.data {
 		res = append(res, v)
 	}
 	r.mu.RUnlock()
 	return res
 }
-func (r *outputs) update(name string, output *v1.Output) string {
+func (r *upstreams) update(name string, upstream *v1.Upstream) string {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	output.ID = r.genID(name)
-	r.data[output.ID] = output
-	return output.ID
+	upstream.ID = r.genID(name)
+	r.data[upstream.ID] = upstream
+	return upstream.ID
 }
-func (r *outputs) create(output *v1.Output) string {
+func (r *upstreams) create(upstream *v1.Upstream) string {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	output.ID = r.genID(output.Name)
-	r.data[output.ID] = output
-	return output.ID
+	upstream.ID = r.genID(upstream.Name)
+	r.data[upstream.ID] = upstream
+	return upstream.ID
 }
-func (r *outputs) del(name string) (*v1.Output, error) {
+func (r *upstreams) del(name string) (*v1.Upstream, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	v, ok := r.data[r.genID(name)]
@@ -139,12 +140,12 @@ func (r *outputs) del(name string) (*v1.Output, error) {
 	delete(r.data, r.genID(name))
 	return v, nil
 }
-func runOutputServer(t *testing.T) *http.Server {
+func runUpstreamServer(t *testing.T) *http.Server {
 	ln, _ := nettest.NewLocalListener("tcp")
 	httpSrv := &http.Server{
 		Addr: ln.Addr().String(),
-		Handler: &outputs{
-			data: make(map[string]*v1.Output),
+		Handler: &upstreams{
+			data: make(map[string]*v1.Upstream),
 		},
 	}
 	go func() {
@@ -154,8 +155,8 @@ func runOutputServer(t *testing.T) *http.Server {
 	}()
 	return httpSrv
 }
-func TestOutput(t *testing.T) {
-	ser := runOutputServer(t)
+func TestUpstream(t *testing.T) {
+	ser := runUpstreamServer(t)
 	defer func() {
 		assert.Nil(t, ser.Shutdown(context.Background()))
 	}()
@@ -164,42 +165,38 @@ func TestOutput(t *testing.T) {
 		Host:   ser.Addr,
 		Path:   "/api",
 	}
-	cli, err := NewClient(u.String(), 0, "")
+	cli, err := client.NewClient(u.String(), 0, "")
 	if err != nil {
 		t.Fatal(err)
 	}
-	cases := []*v1.Output{
+	cases := []*v1.Upstream{
 		{
 			Metadata: v1.Metadata{
 				Name:       "demo1",
-				Profession: "output",
-				Driver:     "nsqd",
+				Profession: "Upstream",
+				Driver:     "http",
 			},
-			Config: map[string]interface{}{
-				"Topic": "test_nsqd",
-			},
+			Discover: "demo1@discovery",
 		},
 		{
 			Metadata: v1.Metadata{
 				Name:       "demo2",
-				Profession: "output",
-				Driver:     "kafka",
+				Profession: "Upstream",
+				Driver:     "http",
 			},
-			Config: map[string]interface{}{
-				"Topic": "test_kafka",
-			},
+			Scheme: "http",
 		},
 	}
-	r := NewOutput(cli)
+	r := NewUpstream(cli)
 	c := context.Background()
 	// test create
 	id, err := r.Create(c, cases[0])
 	assert.Nil(t, err)
-	assert.Equal(t, "demo1@output", id)
+	assert.Equal(t, "demo1@Upstream", id)
 	cases[0].ID = id
 	id, err = r.Create(c, cases[1])
 	assert.Nil(t, err)
-	assert.Equal(t, "demo2@output", id)
+	assert.Equal(t, "demo2@Upstream", id)
 	cases[1].ID = id
 	t.Log("test create successfully")
 	// test get
@@ -213,12 +210,12 @@ func TestOutput(t *testing.T) {
 	assert.Equal(t, 2, len(list))
 	t.Log("test list successfully")
 	// test update
-	cases[1].Config["partition_type"] = "robin"
-	_, err = r.Update(c, cases[1])
+	cases[0].Discover = "update@discovery"
+	_, err = r.Update(c, cases[0])
 	assert.Nil(t, err)
-	res, err = r.Get(c, cases[1].Name)
+	res, err = r.Get(c, cases[0].Name)
 	assert.Nil(t, err)
-	assert.Equal(t, cases[1], res)
+	assert.Equal(t, cases[0], res)
 	t.Log("test update successfully")
 	// test delete
 	err = r.Delete(c, cases[1].Name)
