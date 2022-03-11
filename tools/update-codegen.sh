@@ -30,22 +30,22 @@ rm -rf "$GENERATED_ROOT"
 
 # 生成基本的client,informer,lister文件
 bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,informer,lister" \
-  "${PKG_NAME}"/pkg/client "${PKG_NAME}"/pkg/apis \
-  apinto:v1 \
+  "${PKG_NAME}"/pkg/kube/apinto/client "${PKG_NAME}"/pkg/kube/apinto/configs \
+  apinto:v1 ${PKG_NAME} \
   --output-base "$GENERATED_ROOT" \
   --go-header-file "${SCRIPT_ROOT}"/boilerplate.go.txt \
   "$@"
 
 bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy" \
   "${PKG_NAME}"/pkg/types "${PKG_NAME}"/pkg/types \
-  apinto:v1 \
+  apinto:v1 ${PKG_NAME} \
   --output-base "$GENERATED_ROOT" \
   --go-header-file "${SCRIPT_ROOT}"/boilerplate.go.txt \
   "$@"
 
 # 生成register文件
 bash "${CODEGEN_PKG}"/generate-groups.sh "register" \
-  ${PKG_NAME}/pkg/apis ${PKG_NAME}/pkg/apis \
+  ${PKG_NAME}/pkg/kube/apinto/configs ${PKG_NAME}/pkg/kube/apinto/configs \
   apinto:v1 ${PKG_NAME} \
   --output-base "$GENERATED_ROOT" \
   --go-header-file "${SCRIPT_ROOT}"/boilerplate.go.txt \
