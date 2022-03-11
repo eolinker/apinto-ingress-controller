@@ -28,32 +28,32 @@ type FakeApintoV1 struct {
 	*testing.Fake
 }
 
-func (c *FakeApintoV1) Auths(namespace string) v1.AuthInterface {
-	return &FakeAuths{c, namespace}
+func (c *FakeApintoV1) ApintoAuths(namespace string) v1.ApintoAuthInterface {
+	return &FakeApintoAuths{c, namespace}
 }
 
-func (c *FakeApintoV1) Discoveries(namespace string) v1.DiscoveryInterface {
-	return &FakeDiscoveries{c, namespace}
+func (c *FakeApintoV1) ApintoDiscoveries(namespace string) v1.ApintoDiscoveryInterface {
+	return &FakeApintoDiscoveries{c, namespace}
 }
 
-func (c *FakeApintoV1) Outputs(namespace string) v1.OutputInterface {
-	return &FakeOutputs{c, namespace}
+func (c *FakeApintoV1) ApintoOutputs(namespace string) v1.ApintoOutputInterface {
+	return &FakeApintoOutputs{c, namespace}
 }
 
-func (c *FakeApintoV1) Routers(namespace string) v1.RouterInterface {
-	return &FakeRouters{c, namespace}
+func (c *FakeApintoV1) ApintoRouters(namespace string) v1.ApintoRouterInterface {
+	return &FakeApintoRouters{c, namespace}
 }
 
-func (c *FakeApintoV1) Services(namespace string) v1.ServiceInterface {
-	return &FakeServices{c, namespace}
+func (c *FakeApintoV1) ApintoServices(namespace string) v1.ApintoServiceInterface {
+	return &FakeApintoServices{c, namespace}
 }
 
-func (c *FakeApintoV1) Settings(namespace string) v1.SettingInterface {
-	return &FakeSettings{c, namespace}
+func (c *FakeApintoV1) ApintoSettings(namespace string) v1.ApintoSettingInterface {
+	return &FakeApintoSettings{c, namespace}
 }
 
-func (c *FakeApintoV1) Upstreams(namespace string) v1.UpstreamInterface {
-	return &FakeUpstreams{c, namespace}
+func (c *FakeApintoV1) ApintoUpstreams(namespace string) v1.ApintoUpstreamInterface {
+	return &FakeApintoUpstreams{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate

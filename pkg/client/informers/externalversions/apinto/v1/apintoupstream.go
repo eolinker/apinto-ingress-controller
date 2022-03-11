@@ -32,59 +32,59 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// ServiceInformer provides access to a shared informer and lister for
-// Services.
-type ServiceInformer interface {
+// ApintoUpstreamInformer provides access to a shared informer and lister for
+// ApintoUpstreams.
+type ApintoUpstreamInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1.ServiceLister
+	Lister() v1.ApintoUpstreamLister
 }
 
-type serviceInformer struct {
+type apintoUpstreamInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 	namespace        string
 }
 
-// NewServiceInformer constructs a new informer for Service type.
+// NewApintoUpstreamInformer constructs a new informer for ApintoUpstream type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewServiceInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredServiceInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewApintoUpstreamInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredApintoUpstreamInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredServiceInformer constructs a new informer for Service type.
+// NewFilteredApintoUpstreamInformer constructs a new informer for ApintoUpstream type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredServiceInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredApintoUpstreamInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options metav1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.ApintoV1().Services(namespace).List(context.TODO(), options)
+				return client.ApintoV1().ApintoUpstreams(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options metav1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.ApintoV1().Services(namespace).Watch(context.TODO(), options)
+				return client.ApintoV1().ApintoUpstreams(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&apintov1.Service{},
+		&apintov1.ApintoUpstream{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *serviceInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredServiceInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *apintoUpstreamInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredApintoUpstreamInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *serviceInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&apintov1.Service{}, f.defaultInformer)
+func (f *apintoUpstreamInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&apintov1.ApintoUpstream{}, f.defaultInformer)
 }
 
-func (f *serviceInformer) Lister() v1.ServiceLister {
-	return v1.NewServiceLister(f.Informer().GetIndexer())
+func (f *apintoUpstreamInformer) Lister() v1.ApintoUpstreamLister {
+	return v1.NewApintoUpstreamLister(f.Informer().GetIndexer())
 }

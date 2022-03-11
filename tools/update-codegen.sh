@@ -36,12 +36,12 @@ bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,informer,lister" \
   --go-header-file "${SCRIPT_ROOT}"/boilerplate.go.txt \
   "$@"
 
-#bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy" \
-#  "${PKG_NAME}"/pkg/types "${PKG_NAME}"/pkg/types \
-#  apinto:v1 \
-#  --output-base "$GENERATED_ROOT" \
-#  --go-header-file "${SCRIPT_ROOT}"/boilerplate.go.txt \
-#  "$@"
+bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy" \
+  "${PKG_NAME}"/pkg/types "${PKG_NAME}"/pkg/types \
+  apinto:v1 \
+  --output-base "$GENERATED_ROOT" \
+  --go-header-file "${SCRIPT_ROOT}"/boilerplate.go.txt \
+  "$@"
 
 # 生成register文件
 bash "${CODEGEN_PKG}"/generate-groups.sh "register" \

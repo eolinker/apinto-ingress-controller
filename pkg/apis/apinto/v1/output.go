@@ -7,7 +7,7 @@ import (
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-type Output struct {
+type ApintoOutput struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 	Spec              OutputSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
@@ -23,10 +23,10 @@ type OutputSpec struct {
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-type OutputList struct {
+type ApintoOutputList struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Items             []Output `json:"items,omitempty" yaml:"items,omitempty"`
+	Items             []ApintoOutput `json:"items,omitempty" yaml:"items,omitempty"`
 }
 
 type FileOutput struct {

@@ -7,7 +7,7 @@ import (
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-type Upstream struct {
+type ApintoUpstream struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 	Spec              UpstreamSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
@@ -26,8 +26,8 @@ type UpstreamSpec struct {
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-type UpstreamList struct {
+type ApintoUpstreamList struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Items             []Upstream `json:"items,omitempty" yaml:"items,omitempty"`
+	Items             []ApintoUpstream `json:"items,omitempty" yaml:"items,omitempty"`
 }

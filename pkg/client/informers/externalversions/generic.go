@@ -53,20 +53,20 @@ func (f *genericInformer) Lister() cache.GenericLister {
 func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource) (GenericInformer, error) {
 	switch resource {
 	// Group=apinto.com, Version=v1
-	case v1.SchemeGroupVersion.WithResource("auths"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().Auths().Informer()}, nil
-	case v1.SchemeGroupVersion.WithResource("discoveries"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().Discoveries().Informer()}, nil
-	case v1.SchemeGroupVersion.WithResource("outputs"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().Outputs().Informer()}, nil
-	case v1.SchemeGroupVersion.WithResource("routers"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().Routers().Informer()}, nil
-	case v1.SchemeGroupVersion.WithResource("services"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().Services().Informer()}, nil
-	case v1.SchemeGroupVersion.WithResource("settings"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().Settings().Informer()}, nil
-	case v1.SchemeGroupVersion.WithResource("upstreams"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().Upstreams().Informer()}, nil
+	case v1.SchemeGroupVersion.WithResource("apintoauths"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().ApintoAuths().Informer()}, nil
+	case v1.SchemeGroupVersion.WithResource("apintodiscoveries"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().ApintoDiscoveries().Informer()}, nil
+	case v1.SchemeGroupVersion.WithResource("apintooutputs"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().ApintoOutputs().Informer()}, nil
+	case v1.SchemeGroupVersion.WithResource("apintorouters"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().ApintoRouters().Informer()}, nil
+	case v1.SchemeGroupVersion.WithResource("apintoservices"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().ApintoServices().Informer()}, nil
+	case v1.SchemeGroupVersion.WithResource("apintosettings"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().ApintoSettings().Informer()}, nil
+	case v1.SchemeGroupVersion.WithResource("apintoupstreams"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().ApintoUpstreams().Informer()}, nil
 
 	}
 

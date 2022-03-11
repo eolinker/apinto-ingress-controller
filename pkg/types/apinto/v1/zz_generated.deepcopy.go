@@ -191,15 +191,9 @@ func (in *Setting) DeepCopyInto(out *Setting) {
 	*out = *in
 	if in.Plugins != nil {
 		in, out := &in.Plugins, &out.Plugins
-		*out = make([]SettingPlugins, len(*in))
+		*out = make(SettingPlugins, len(*in))
 		for i := range *in {
-			if (*in)[i] != nil {
-				in, out := &(*in)[i], &(*out)[i]
-				*out = make(SettingPlugins, len(*in))
-				for i := range *in {
-					(*in)[i].DeepCopyInto(&(*out)[i])
-				}
-			}
+			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
 	}
 	return

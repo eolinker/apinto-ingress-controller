@@ -32,59 +32,59 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// OutputInformer provides access to a shared informer and lister for
-// Outputs.
-type OutputInformer interface {
+// ApintoAuthInformer provides access to a shared informer and lister for
+// ApintoAuths.
+type ApintoAuthInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1.OutputLister
+	Lister() v1.ApintoAuthLister
 }
 
-type outputInformer struct {
+type apintoAuthInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 	namespace        string
 }
 
-// NewOutputInformer constructs a new informer for Output type.
+// NewApintoAuthInformer constructs a new informer for ApintoAuth type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewOutputInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredOutputInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewApintoAuthInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredApintoAuthInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredOutputInformer constructs a new informer for Output type.
+// NewFilteredApintoAuthInformer constructs a new informer for ApintoAuth type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredOutputInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredApintoAuthInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options metav1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.ApintoV1().Outputs(namespace).List(context.TODO(), options)
+				return client.ApintoV1().ApintoAuths(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options metav1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.ApintoV1().Outputs(namespace).Watch(context.TODO(), options)
+				return client.ApintoV1().ApintoAuths(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&apintov1.Output{},
+		&apintov1.ApintoAuth{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *outputInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredOutputInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *apintoAuthInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredApintoAuthInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *outputInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&apintov1.Output{}, f.defaultInformer)
+func (f *apintoAuthInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&apintov1.ApintoAuth{}, f.defaultInformer)
 }
 
-func (f *outputInformer) Lister() v1.OutputLister {
-	return v1.NewOutputLister(f.Informer().GetIndexer())
+func (f *apintoAuthInformer) Lister() v1.ApintoAuthLister {
+	return v1.NewApintoAuthLister(f.Informer().GetIndexer())
 }

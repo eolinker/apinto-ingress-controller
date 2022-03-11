@@ -18,16 +18,16 @@ limitations under the License.
 
 package v1
 
-type AuthExpansion interface{}
+type ApintoAuthExpansion interface{}
 
-type DiscoveryExpansion interface{}
+type ApintoDiscoveryExpansion interface{}
 
-type OutputExpansion interface{}
+type ApintoOutputExpansion interface{}
 
-type RouterExpansion interface{}
+type ApintoRouterExpansion interface{}
 
-type ServiceExpansion interface{}
+type ApintoServiceExpansion interface{}
 
-type SettingExpansion interface{}
+type ApintoSettingExpansion interface{}
 
-type UpstreamExpansion interface{}
+type ApintoUpstreamExpansion interface{}

@@ -6,7 +6,7 @@ import (
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-type Auth struct {
+type ApintoAuth struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 	Spec              AuthSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
@@ -24,10 +24,10 @@ type AuthSpec struct {
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-type AuthList struct {
+type ApintoAuthList struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Items             []Auth `json:"items,omitempty" yaml:"items,omitempty"`
+	Items             []ApintoAuth `json:"items,omitempty" yaml:"items,omitempty"`
 }
 
 type Users []User

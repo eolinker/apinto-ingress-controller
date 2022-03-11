@@ -7,7 +7,7 @@ import (
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-type Discovery struct {
+type ApintoDiscovery struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 	Spec              DiscoverySpec `json:"spec,omitempty" yaml:"spec,omitempty"`
@@ -25,10 +25,10 @@ type DiscoverySpec struct {
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-type DiscoveryList struct {
+type ApintoDiscoveryList struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Items             []Discovery `json:"items,omitempty" yaml:"items,omitempty"`
+	Items             []ApintoDiscovery `json:"items,omitempty" yaml:"items,omitempty"`
 }
 
 type HealthConfig struct {

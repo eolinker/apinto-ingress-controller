@@ -32,59 +32,59 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// SettingInformer provides access to a shared informer and lister for
-// Settings.
-type SettingInformer interface {
+// ApintoSettingInformer provides access to a shared informer and lister for
+// ApintoSettings.
+type ApintoSettingInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1.SettingLister
+	Lister() v1.ApintoSettingLister
 }
 
-type settingInformer struct {
+type apintoSettingInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 	namespace        string
 }
 
-// NewSettingInformer constructs a new informer for Setting type.
+// NewApintoSettingInformer constructs a new informer for ApintoSetting type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewSettingInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredSettingInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewApintoSettingInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredApintoSettingInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredSettingInformer constructs a new informer for Setting type.
+// NewFilteredApintoSettingInformer constructs a new informer for ApintoSetting type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredSettingInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredApintoSettingInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options metav1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.ApintoV1().Settings(namespace).List(context.TODO(), options)
+				return client.ApintoV1().ApintoSettings(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options metav1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.ApintoV1().Settings(namespace).Watch(context.TODO(), options)
+				return client.ApintoV1().ApintoSettings(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&apintov1.Setting{},
+		&apintov1.ApintoSetting{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *settingInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredSettingInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *apintoSettingInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredApintoSettingInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *settingInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&apintov1.Setting{}, f.defaultInformer)
+func (f *apintoSettingInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&apintov1.ApintoSetting{}, f.defaultInformer)
 }
 
-func (f *settingInformer) Lister() v1.SettingLister {
-	return v1.NewSettingLister(f.Informer().GetIndexer())
+func (f *apintoSettingInformer) Lister() v1.ApintoSettingLister {
+	return v1.NewApintoSettingLister(f.Informer().GetIndexer())
 }

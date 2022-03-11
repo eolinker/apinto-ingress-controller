@@ -24,37 +24,34 @@ spec:
           type: object
           properties:
             spec:
-              type: array
-              minItems: 1
-              items:
-                type: object
-                properties:
-                  name:
-                    type: string
-                    minLength: 1
-                  driver:
-                    type: string
-                    enum:
-                      - http_proxy
-                  desc:
-                    type: string
-                  discovery:
-                    type: string
-                    pattern: '\w+(@discovery)$'
-                  config:
-                    type: string
-                    minLength: 1
-                  scheme:
-                    type: string
-                    enum:
-                      - http
-                      - https
-                  "type":
-                    type: string
-                    enum:
-                      - round_robin
-                  plugins:
-                    type: object
-                    nullable: true
-                    x-kubernetes-preserve-unknown-fields: true
-                required: ["name","driver","discovery","config","scheme","type"]
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                driver:
+                  type: string
+                  enum:
+                    - http_proxy
+                desc:
+                  type: string
+                discovery:
+                  type: string
+                  pattern: '\w+(@discovery)$'
+                config:
+                  type: string
+                  minLength: 1
+                scheme:
+                  type: string
+                  enum:
+                    - http
+                    - https
+                "type":
+                  type: string
+                  enum:
+                    - round_robin
+                plugins:
+                  type: object
+                  nullable: true
+                  x-kubernetes-preserve-unknown-fields: true
+              required: ["name","driver","discovery","config","scheme","type"]

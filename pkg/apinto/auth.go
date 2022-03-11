@@ -14,6 +14,16 @@ type auth struct {
 	url    string
 }
 
+func (a *auth) DelCheck(name string) (*response.Response, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *auth) UpdateCheck(name string, value interface{}) (*response.Response, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (a *auth) Get(ctx context.Context, name string) (*v1.Auth, error) {
 	// 先查缓存
 	url := a.url + "/" + name

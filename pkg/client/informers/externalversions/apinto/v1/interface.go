@@ -24,20 +24,20 @@ import (
 
 // Interface provides access to all the informers in this group version.
 type Interface interface {
-	// Auths returns a AuthInformer.
-	Auths() AuthInformer
-	// Discoveries returns a DiscoveryInformer.
-	Discoveries() DiscoveryInformer
-	// Outputs returns a OutputInformer.
-	Outputs() OutputInformer
-	// Routers returns a RouterInformer.
-	Routers() RouterInformer
-	// Services returns a ServiceInformer.
-	Services() ServiceInformer
-	// Settings returns a SettingInformer.
-	Settings() SettingInformer
-	// Upstreams returns a UpstreamInformer.
-	Upstreams() UpstreamInformer
+	// ApintoAuths returns a ApintoAuthInformer.
+	ApintoAuths() ApintoAuthInformer
+	// ApintoDiscoveries returns a ApintoDiscoveryInformer.
+	ApintoDiscoveries() ApintoDiscoveryInformer
+	// ApintoOutputs returns a ApintoOutputInformer.
+	ApintoOutputs() ApintoOutputInformer
+	// ApintoRouters returns a ApintoRouterInformer.
+	ApintoRouters() ApintoRouterInformer
+	// ApintoServices returns a ApintoServiceInformer.
+	ApintoServices() ApintoServiceInformer
+	// ApintoSettings returns a ApintoSettingInformer.
+	ApintoSettings() ApintoSettingInformer
+	// ApintoUpstreams returns a ApintoUpstreamInformer.
+	ApintoUpstreams() ApintoUpstreamInformer
 }
 
 type version struct {
@@ -51,37 +51,37 @@ func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakList
 	return &version{factory: f, namespace: namespace, tweakListOptions: tweakListOptions}
 }
 
-// Auths returns a AuthInformer.
-func (v *version) Auths() AuthInformer {
-	return &authInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// ApintoAuths returns a ApintoAuthInformer.
+func (v *version) ApintoAuths() ApintoAuthInformer {
+	return &apintoAuthInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
-// Discoveries returns a DiscoveryInformer.
-func (v *version) Discoveries() DiscoveryInformer {
-	return &discoveryInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// ApintoDiscoveries returns a ApintoDiscoveryInformer.
+func (v *version) ApintoDiscoveries() ApintoDiscoveryInformer {
+	return &apintoDiscoveryInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
-// Outputs returns a OutputInformer.
-func (v *version) Outputs() OutputInformer {
-	return &outputInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// ApintoOutputs returns a ApintoOutputInformer.
+func (v *version) ApintoOutputs() ApintoOutputInformer {
+	return &apintoOutputInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
-// Routers returns a RouterInformer.
-func (v *version) Routers() RouterInformer {
-	return &routerInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// ApintoRouters returns a ApintoRouterInformer.
+func (v *version) ApintoRouters() ApintoRouterInformer {
+	return &apintoRouterInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
-// Services returns a ServiceInformer.
-func (v *version) Services() ServiceInformer {
-	return &serviceInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// ApintoServices returns a ApintoServiceInformer.
+func (v *version) ApintoServices() ApintoServiceInformer {
+	return &apintoServiceInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
-// Settings returns a SettingInformer.
-func (v *version) Settings() SettingInformer {
-	return &settingInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// ApintoSettings returns a ApintoSettingInformer.
+func (v *version) ApintoSettings() ApintoSettingInformer {
+	return &apintoSettingInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
-// Upstreams returns a UpstreamInformer.
-func (v *version) Upstreams() UpstreamInformer {
-	return &upstreamInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// ApintoUpstreams returns a ApintoUpstreamInformer.
+func (v *version) ApintoUpstreams() ApintoUpstreamInformer {
+	return &apintoUpstreamInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }

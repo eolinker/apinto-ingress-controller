@@ -32,59 +32,59 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// DiscoveryInformer provides access to a shared informer and lister for
-// Discoveries.
-type DiscoveryInformer interface {
+// ApintoOutputInformer provides access to a shared informer and lister for
+// ApintoOutputs.
+type ApintoOutputInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1.DiscoveryLister
+	Lister() v1.ApintoOutputLister
 }
 
-type discoveryInformer struct {
+type apintoOutputInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 	namespace        string
 }
 
-// NewDiscoveryInformer constructs a new informer for Discovery type.
+// NewApintoOutputInformer constructs a new informer for ApintoOutput type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewDiscoveryInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredDiscoveryInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewApintoOutputInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredApintoOutputInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredDiscoveryInformer constructs a new informer for Discovery type.
+// NewFilteredApintoOutputInformer constructs a new informer for ApintoOutput type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredDiscoveryInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredApintoOutputInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options metav1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.ApintoV1().Discoveries(namespace).List(context.TODO(), options)
+				return client.ApintoV1().ApintoOutputs(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options metav1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.ApintoV1().Discoveries(namespace).Watch(context.TODO(), options)
+				return client.ApintoV1().ApintoOutputs(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&apintov1.Discovery{},
+		&apintov1.ApintoOutput{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *discoveryInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredDiscoveryInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *apintoOutputInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredApintoOutputInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *discoveryInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&apintov1.Discovery{}, f.defaultInformer)
+func (f *apintoOutputInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&apintov1.ApintoOutput{}, f.defaultInformer)
 }
 
-func (f *discoveryInformer) Lister() v1.DiscoveryLister {
-	return v1.NewDiscoveryLister(f.Informer().GetIndexer())
+func (f *apintoOutputInformer) Lister() v1.ApintoOutputLister {
+	return v1.NewApintoOutputLister(f.Informer().GetIndexer())
 }

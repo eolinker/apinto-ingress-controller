@@ -5,7 +5,7 @@ import metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-type Router struct {
+type ApintoRouter struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 	Spec              RouterSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
@@ -26,10 +26,10 @@ type RouterSpec struct {
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-type RouterList struct {
+type ApintoRouterList struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Items             []Router `json:"items,omitempty" yaml:"items,omitempty"`
+	Items             []ApintoRouter `json:"items,omitempty" yaml:"items,omitempty"`
 }
 
 //Cert http路由驱动配置证书Cert结构体
