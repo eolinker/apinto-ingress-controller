@@ -2,9 +2,12 @@ package profession
 
 import (
 	"context"
+	"errors"
 	v1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	"github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1/response"
 )
+
+var ErrClusterNotExist = errors.New("cluster not exist")
 
 type ProfessionCheck interface {
 	RouterChecker() Checker

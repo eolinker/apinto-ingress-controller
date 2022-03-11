@@ -15,5 +15,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	client.Cluster("default")
+
+	_, err = client.Cluster("test").AuthChecker().DelCheck("")
+	if err != nil {
+		log.Fatal(err)
+	}
 }

@@ -12,7 +12,7 @@ var (
 )
 
 type Apinto interface {
-	Cluster(name string) (cluster.Cluster, error)
+	Cluster(name string) cluster.Cluster
 	AddCluster(*cluster.ClusterOptions) error
 	UpdateCluster(*cluster.ClusterOptions) error
 	ListClusters() []cluster.Cluster
@@ -21,24 +21,26 @@ type Apinto interface {
 
 func NewApinto() Apinto {
 	cli := &apinto{
-		data: make(map[string]cluster.Cluster),
+		dummy: cluster.NewDummy(),
+		data:  make(map[string]cluster.Cluster),
 	}
 	return cli
 }
 
 type apinto struct {
-	mu   sync.RWMutex
-	data map[string]cluster.Cluster
+	mu    sync.RWMutex
+	dummy cluster.Cluster
+	data  map[string]cluster.Cluster
 }
 
-func (a *apinto) Cluster(name string) (cluster.Cluster, error) {
+func (a *apinto) Cluster(name string) cluster.Cluster {
 	a.mu.RLock()
 	defer a.mu.RUnlock()
 	c, ok := a.data[name]
 	if !ok {
-		return nil, _errClusterNotExist
+		return a.dummy
 	}
-	return c, nil
+	return c
 }
 
 func (a *apinto) AddCluster(options *cluster.ClusterOptions) error {
