@@ -3,9 +3,9 @@ kind: ApintoOutout
 metadata:
   name: kafkalog1
 spec:
+  name: kafkaLog.1
+  driver: kafka_output
   kafka_output:
-    name: kafkaLog.1
-    driver: kafka_output
     config:
       topic: "test1"
       address: 127.0.0.1
@@ -20,9 +20,9 @@ kind: ApintoOutout
 metadata:
   name: kafkalog.2
 spec:
+  name: kafkaLog2
+  driver: kafka_output
   kafka_output:
-    name: kafkaLog2
-    driver: kafka_output
     config:
       topic: "test2"
       address: 127.0.0.2
@@ -36,9 +36,9 @@ kind: ApintoOutout
 metadata:
   name: kafkalog3
 spec:
+  name: kafkaLog.3
+  driver: kafka_output
   kafka_output:
-    name: kafkaLog.3
-    driver: kafka_output
     config:
       topic: "test3"
       address: 127.0.0.3
@@ -52,9 +52,9 @@ kind: ApintoOutout
 metadata:
   name: nsqdlog
 spec:
+  name: nsqdLog
+  driver: nsqd
   nsqd:
-    name: nsqdLog
-    driver: nsqd
     config:
       topic: "test"
       address:
@@ -67,9 +67,9 @@ kind: ApintoOutout
 metadata:
   name: httpaccesslog
 spec:
+  name: httpAccessLog
+  driver: http_output
   http_output:
-    name: httpAccessLog
-    driver: http_output
     config:
       url: http://127.0.0.1
       method: POST
@@ -94,9 +94,9 @@ kind: ApintoOutout
 metadata:
   name: fileaccesslog
 spec:
+  name: fileAccessLog
+  driver: file_output
   file_output:
-    name: fileAccessLog
-    driver: file_output
     config:
       dir: work
       file: access.log

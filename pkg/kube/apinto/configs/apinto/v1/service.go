@@ -1,6 +1,9 @@
 package v1
 
-import metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+import (
+	"encoding/json"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+)
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -36,4 +39,18 @@ type ApintoServiceList struct {
 type AnonymousConfig struct {
 	Type   string `json:"type,omitempty" yaml:"type,omitempty"`
 	Config string `json:"config,omitempty" yaml:"config,omitempty"`
+}
+
+func (p *AnonymousConfig) DeepCopyInto(out *AnonymousConfig) {
+	b, _ := json.Marshal(&p)
+	_ = json.Unmarshal(b, out)
+}
+
+func (p *AnonymousConfig) DeepCopy() *AnonymousConfig {
+	if p == nil {
+		return nil
+	}
+	out := new(AnonymousConfig)
+	p.DeepCopyInto(out)
+	return out
 }
