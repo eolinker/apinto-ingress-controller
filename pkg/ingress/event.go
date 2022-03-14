@@ -1,10 +1,10 @@
 package ingress
 
 type IIngressControllerEvent interface {
-	// run while receive add event form kubernetes api server
-	onAdd(obj interface{})
-	// run while receive update event form kubernetes api server
-	onUpdate(obj interface{})
-	// run while receive delete event form kubernetes api server
-	onDelete(obj interface{})
+	// OnAdd Run while receive add event form kubernetes api server
+	OnAdd(obj interface{})
+	// OnUpdate Run while receive update event form kubernetes api server
+	OnUpdate(obj interface{})
+	// OnDelete Run while receive delete event form kubernetes api server
+	OnDelete(obj interface{})
 }
