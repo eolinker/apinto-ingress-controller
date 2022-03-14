@@ -3,6 +3,7 @@ package validation
 import (
 	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/cluster"
 	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/profession"
+	"github.com/eolinker/eosc/log"
 )
 
 type admissionCheck interface {
@@ -21,8 +22,7 @@ func InitAdmissionChecker(cfg *cluster.ClusterOptions) error {
 
 	c, err := cluster.NewCluster(cfg)
 	if err != nil {
-		//TODO 打印日志
-
+		log.Errorf("failed to init admissionChecker: %s", err)
 		return err
 	}
 

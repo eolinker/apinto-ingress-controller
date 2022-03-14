@@ -27,7 +27,7 @@ var ApintoAuthValidator = kwhvalidating.ValidatorFunc(
 			apintoAuth := apintov1.Auth{
 				Metadata: apintov1.Metadata{
 					Name:       kAuth.Name,
-					Profession: "upstream",
+					Profession: "auth",
 					Driver:     kAuth.Driver,
 					ID:         fmt.Sprintf("%s@auth", kAuth.Name),
 				},

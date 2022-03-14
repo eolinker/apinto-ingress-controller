@@ -1,6 +1,7 @@
 package validation
 
 import (
+	"github.com/eolinker/eosc/log"
 	"github.com/gin-gonic/gin"
 	kwhhttp "github.com/slok/kubewebhook/v2/pkg/http"
 	kwhvalidating "github.com/slok/kubewebhook/v2/pkg/webhook/validating"
@@ -18,14 +19,12 @@ func NewHandler(ID string, validator kwhvalidating.Validator) gin.HandlerFunc {
 	})
 
 	if err != nil {
-		//TODO 打印日志
-		//log.Errorf("failed to create webhook: %s", err)
+		log.Errorf("failed to create webhook: %s", err)
 	}
 
 	h, err := kwhhttp.HandlerFor(kwhhttp.HandlerConfig{Webhook: wh})
 	if err != nil {
-		//TODO 打印日志
-		//	log.Errorf("failed to create webhook handle: %s", err)
+		log.Errorf("failed to create webhook: %s", err)
 	}
 
 	return gin.WrapH(h)
