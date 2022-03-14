@@ -1,9 +1,13 @@
 package ingress
 
-type factory struct {
+type manager struct {
 }
 
-func (f *factory) NewController(name string, workers int) IIngressController {
+func Register() {
+
+}
+
+func (m *manager) NewController(name string, workers int) IIngressController {
 	//TODO implement me
 	panic("implement me")
 }
