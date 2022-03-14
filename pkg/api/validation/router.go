@@ -3,6 +3,7 @@ package validation
 import (
 	"context"
 	"errors"
+	"fmt"
 	kubev1 "github.com/eolinker/apinto-ingress-controller/pkg/kube/apinto/configs/apinto/v1"
 	apintov1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	kwhmodel "github.com/slok/kubewebhook/v2/pkg/model"
@@ -52,6 +53,7 @@ var ApintoRouterValidator = kwhvalidating.ValidatorFunc(
 					Name:       kRouter.Name,
 					Profession: "router",
 					Driver:     kRouter.Driver,
+					ID:         fmt.Sprintf("%s@router", kRouter.Name),
 				},
 				Listen:   kRouter.Listen,
 				Target:   kRouter.Target,

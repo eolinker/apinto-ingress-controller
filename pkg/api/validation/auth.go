@@ -20,6 +20,9 @@ var ApintoAuthValidator = kwhvalidating.ValidatorFunc(
 		kAuth := aa.Spec
 
 		switch review.Operation {
+		case "create", "update":
+			//TODO
+
 		case "delete":
 			_, err = validator.AuthChecker().DelCheck(kAuth.Name)
 			if err != nil {

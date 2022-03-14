@@ -20,6 +20,9 @@ var ApintoOutputValidator = kwhvalidating.ValidatorFunc(
 		kOutput := ao.Spec
 
 		switch review.Operation {
+		case "create", "update":
+			//TODO
+
 		case "delete":
 			_, err = validator.OutputChecker().DelCheck(kOutput.Name)
 			if err != nil {

@@ -26,6 +26,9 @@ var ApintoDiscoveryValidator = kwhvalidating.ValidatorFunc(
 		kDiscovery := ad.Spec
 
 		switch review.Operation {
+		case "create", "update":
+			//TODO
+
 		case "delete":
 			_, err = validator.DiscoveryChecker().DelCheck(kDiscovery.Name)
 			if err != nil {

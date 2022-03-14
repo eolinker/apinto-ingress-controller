@@ -1,21 +1,15 @@
 package validation
 
 import (
-	"encoding/json"
 	"github.com/gin-gonic/gin"
 	kwhhttp "github.com/slok/kubewebhook/v2/pkg/http"
 	kwhvalidating "github.com/slok/kubewebhook/v2/pkg/webhook/validating"
 	"net/http"
-	"time"
 )
 
 type SourceClient struct {
 	cli *http.Client
 }
-
-type listResponse []json.RawMessage
-
-const _defaultTimeout = 5 * time.Second
 
 func NewHandler(ID string, validator kwhvalidating.Validator) gin.HandlerFunc {
 	wh, err := kwhvalidating.NewWebhook(kwhvalidating.WebhookConfig{

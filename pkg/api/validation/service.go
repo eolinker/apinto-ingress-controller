@@ -3,6 +3,7 @@ package validation
 import (
 	"context"
 	"errors"
+	"fmt"
 	kubev1 "github.com/eolinker/apinto-ingress-controller/pkg/kube/apinto/configs/apinto/v1"
 	apintov1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	kwhmodel "github.com/slok/kubewebhook/v2/pkg/model"
@@ -40,6 +41,7 @@ var ApintoServiceValidator = kwhvalidating.ValidatorFunc(
 					Name:       kService.Name,
 					Profession: "service",
 					Driver:     kService.Driver,
+					ID:         fmt.Sprintf("%s@service", kService.Name),
 				},
 				Timeout:     kService.Timeout,
 				Retry:       kService.Retry,
