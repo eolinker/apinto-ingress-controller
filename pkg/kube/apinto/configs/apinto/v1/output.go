@@ -14,6 +14,8 @@ type ApintoOutput struct {
 }
 
 type OutputSpec struct {
+	Name        string      `json:"name,omitempty" yaml:"name,omitempty"`
+	Driver      string      `json:"driver,omitempty" yaml:"driver,omitempty"`
 	FileOutput  FileOutput  `json:"file_output,omitempty" yaml:"file_output,omitempty"`
 	Nsqd        NsqdOutput  `json:"nsqd,omitempty" yaml:"nsqd,omitempty"`
 	HttpOutput  HttpOutput  `json:"http_output,omitempty" yaml:"http_output,omitempty"`
@@ -30,8 +32,6 @@ type ApintoOutputList struct {
 }
 
 type FileOutput struct {
-	Name   string     `json:"name,omitempty" yaml:"name,omitempty"`
-	Driver string     `json:"driver,omitempty" yaml:"driver,omitempty"`
 	Config FileConfig `json:"config,omitempty" yaml:"config,omitempty"`
 }
 type FileConfig struct {
@@ -43,8 +43,6 @@ type FileConfig struct {
 	Formatter FormatterConfig `json:"formatter,omitempty" yaml:"formatter,omitempty"`
 }
 type NsqdOutput struct {
-	Name   string     `json:"name,omitempty" yaml:"name,omitempty"`
-	Driver string     `json:"driver,omitempty" yaml:"driver,omitempty"`
 	Config NsqdConfig `json:"config,omitempty" yaml:"config,omitempty"`
 }
 type NsqdConfig struct {
@@ -55,8 +53,6 @@ type NsqdConfig struct {
 	Formatter  FormatterConfig `json:"formatter,omitempty" yaml:"formatter,omitempty"`
 }
 type HttpOutput struct {
-	Name   string     `json:"name,omitempty" yaml:"name,omitempty"`
-	Driver string     `json:"driver,omitempty" yaml:"driver,omitempty"`
 	Config HttpConfig `json:"config,omitempty" yaml:"config,omitempty"`
 }
 type HttpConfig struct {
@@ -67,8 +63,6 @@ type HttpConfig struct {
 	Formatter FormatterConfig   `json:"formatter,omitempty" yaml:"formatter,omitempty"`
 }
 type SysOutput struct {
-	Name   string    `json:"name,omitempty" yaml:"name,omitempty"`
-	Driver string    `json:"driver,omitempty" yaml:"driver,omitempty"`
 	Config SysConfig `json:"config,omitempty" yaml:"config,omitempty"`
 }
 type SysConfig struct {
@@ -79,8 +73,6 @@ type SysConfig struct {
 	Formatter FormatterConfig `json:"formatter,omitempty" yaml:"formatter,omitempty"`
 }
 type KafkaOutput struct {
-	Name   string      `json:"name,omitempty" yaml:"name,omitempty"`
-	Driver string      `json:"driver,omitempty" yaml:"driver,omitempty"`
 	Config KafkaConfig `json:"config,omitempty" yaml:"config,omitempty"`
 }
 
