@@ -25,42 +25,25 @@ import (
 	"text/template"
 
 	"gopkg.in/yaml.v2"
-	v1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/util/validation"
 )
 
 const (
-	// NamespaceAll represents all namespaces.
-	NamespaceAll = "*"
-	// IngressClass is the default ingress class name, used for Ingress
-	// object's IngressClassName field in Kubernetes clusters version v1.18.0
-	// or higher, or the annotation "kubernetes.io/ingress.class" (deprecated).
-	IngressClass = "apinto"
-
-	// IngressNetworkingV1 represents ingress.networking/v1
-	IngressNetworkingV1 = "networking/v1"
-	// IngressNetworkingV1beta1 represents ingress.networking/v1beta1
-	IngressNetworkingV1beta1 = "networking/v1beta1"
-	// IngressExtensionsV1beta1 represents ingress.extensions/v1beta1
-	// WARNING: ingress.extensions/v1beta1 is deprecated in v1.14+, and will be unavilable
-	// in v1.22.
-	IngressExtensionsV1beta1 = "extensions/v1beta1"
+	apintoDefaultClusterName = "default"
 )
 
 // Config contains all config items which are necessary for
-// apisix-ingress-controller's running.
+// apinto-ingress-controller's running.
 type Config struct {
-	CertFilePath          string           `json:"cert_file" yaml:"cert_file"`
-	KeyFilePath           string           `json:"key_file" yaml:"key_file"`
-	LogLevel              string           `json:"log_level" yaml:"log_level"`
-	LogOutput             string           `json:"log_output" yaml:"log_output"`
-	HTTPListen            string           `json:"http_listen" yaml:"http_listen"`
-	HTTPSListen           string           `json:"https_listen" yaml:"https_listen"`
-	IngressPublishService string           `json:"ingress_publish_service" yaml:"ingress_publish_service"`
-	IngressStatusAddress  []string         `json:"ingress_status_address" yaml:"ingress_status_address"`
-	EnableProfiling       bool             `json:"enable_profiling" yaml:"enable_profiling"`
-	Kubernetes            KubernetesConfig `json:"kubernetes" yaml:"kubernetes"`
-	APINTO                APINTOConfig     `json:"apinto" yaml:"apinto"`
+	CertFilePath    string       `json:"cert_file" yaml:"cert_file"`
+	KeyFilePath     string       `json:"key_file" yaml:"key_file"`
+	LogLevel        string       `json:"log_level" yaml:"log_level"`
+	LogOutput       string       `json:"log_output" yaml:"log_output"`
+	LogPeriod       string       `json:"log-period" yaml:"log-period"`
+	LogExpire       string       `json:"log-expire" yaml:"log-expire"`
+	HTTPListen      string       `json:"http_listen" yaml:"http_listen"`
+	HTTPSListen     string       `json:"https_listen" yaml:"https_listen"`
+	EnableProfiling bool         `json:"enable_profiling" yaml:"enable_profiling"`
+	APINTO          APINTOConfig `json:"apinto" yaml:"apinto"`
 }
 
 // KubernetesConfig contains all Kubernetes related config items.
@@ -74,6 +57,7 @@ type KubernetesConfig struct {
 
 // APINTOConfig contains all APINTO related config items.
 type APINTOConfig struct {
+	DefaultClusterName string `json:"default_cluster_name"`
 	// DefaultClusterBaseURL is the base url configuration for the default cluster.
 	DefaultClusterBaseURL string `json:"default_cluster_base_url" yaml:"default_cluster_base_url"`
 	// DefaultClusterAdminKey is the admin key for the default cluster.
@@ -85,21 +69,16 @@ type APINTOConfig struct {
 // default value.
 func NewDefaultConfig() *Config {
 	return &Config{
-		LogLevel:              "warn",
-		LogOutput:             "stderr",
-		HTTPListen:            ":8080",
-		HTTPSListen:           ":8443",
-		IngressPublishService: "",
-		IngressStatusAddress:  []string{},
-		CertFilePath:          "/etc/webhook/certs/cert.pem",
-		KeyFilePath:           "/etc/webhook/certs/key.pem",
-		EnableProfiling:       true,
-		Kubernetes: KubernetesConfig{
-			Kubeconfig:     "", // Use in-cluster configurations.
-			AppNamespaces:  []string{v1.NamespaceAll},
-			IngressClass:   IngressClass,
-			IngressVersion: IngressNetworkingV1,
+		LogLevel:    "warn",
+		LogOutput:   "stderr",
+		HTTPListen:  ":8080",
+		HTTPSListen: ":8443",
+		APINTO: APINTOConfig{
+			DefaultClusterBaseURL:  "http://127.0.0.1:9400",
+			DefaultClusterAdminKey: "",
+			DefaultClusterName:     "default",
 		},
+		EnableProfiling: true,
 	}
 }
 
@@ -148,76 +127,9 @@ func (cfg *Config) Validate() error {
 	if cfg.APINTO.DefaultClusterBaseURL == "" {
 		return errors.New("apisix base url is required")
 	}
-	switch cfg.Kubernetes.IngressVersion {
-	case IngressNetworkingV1, IngressNetworkingV1beta1, IngressExtensionsV1beta1:
-		break
-	default:
-		return errors.New("unsupported ingress version")
+	if cfg.APINTO.DefaultClusterName == "" {
+		cfg.APINTO.DefaultClusterName = apintoDefaultClusterName
 	}
-	cfg.Kubernetes.AppNamespaces = purifyAppNamespaces(cfg.Kubernetes.AppNamespaces)
-	ok, err := cfg.verifyNamespaceSelector()
-	if !ok {
-		return err
-	}
+
 	return nil
-}
-
-func purifyAppNamespaces(namespaces []string) []string {
-	exists := make(map[string]struct{})
-	var ultimate []string
-	for _, ns := range namespaces {
-		if ns == NamespaceAll {
-			return []string{v1.NamespaceAll}
-		}
-		if _, ok := exists[ns]; !ok {
-			ultimate = append(ultimate, ns)
-			exists[ns] = struct{}{}
-		}
-	}
-	return ultimate
-}
-
-func (cfg *Config) verifyNamespaceSelector() (bool, error) {
-	labels := cfg.Kubernetes.NamespaceSelector
-	// default is [""]
-	if len(labels) == 1 && labels[0] == "" {
-		cfg.Kubernetes.NamespaceSelector = []string{}
-	}
-
-	for _, s := range cfg.Kubernetes.NamespaceSelector {
-		parts := strings.Split(s, "=")
-		if len(parts) != 2 {
-			return false, fmt.Errorf("Illegal namespaceSelector: %s, should be key-value pairs divided by = ", s)
-		} else {
-			if err := cfg.validateLabelKey(parts[0]); err != nil {
-				return false, err
-			}
-			if err := cfg.validateLabelValue(parts[1]); err != nil {
-				return false, err
-			}
-		}
-	}
-	return true, nil
-}
-
-// validateLabelKey validate the key part of label
-// ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#syntax-and-character-set
-func (cfg *Config) validateLabelKey(key string) error {
-	errorMsg := validation.IsQualifiedName(key)
-	msg := strings.Join(errorMsg, "\n")
-	if msg == "" {
-		return nil
-	}
-	return fmt.Errorf("Illegal namespaceSelector: %s, "+msg, key)
-}
-
-// validateLabelValue validate the value part of label
-// ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#syntax-and-character-set
-func (cfg *Config) validateLabelValue(value string) error {
-	errorMsg := validation.IsValidLabelValue(value)
-	msg := strings.Join(errorMsg, "\n")
-	if msg == "" {
-		return nil
-	}
-	return fmt.Errorf("Illegal namespaceSelector: %s, "+msg, value)
 }

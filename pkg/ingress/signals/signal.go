@@ -17,6 +17,7 @@ limitations under the License.
 package signals
 
 import (
+	"github.com/eolinker/eosc/log"
 	"os"
 	"os/signal"
 	"syscall"

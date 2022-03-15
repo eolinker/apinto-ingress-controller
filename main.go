@@ -1,23 +1,15 @@
 package main
 
 import (
-	"github.com/eolinker/apinto-ingress-controller/pkg/apinto"
-	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/cluster"
-	"github.com/eolinker/eosc/log"
+	"fmt"
+	"github.com/eolinker/apinto-ingress-controller/cmd"
+	"os"
 )
 
 func main() {
-	client := apinto.NewApinto()
-	err := client.AddCluster(&cluster.ClusterOptions{
-		Name:    "default",
-		BaseURL: "/api/",
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = client.Cluster("test").AuthChecker().DelCheck("")
-	if err != nil {
-		log.Fatal(err)
+	root := cmd.NewIngressControllerCommand()
+	if err := root.Execute(); err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		os.Exit(1)
 	}
 }
