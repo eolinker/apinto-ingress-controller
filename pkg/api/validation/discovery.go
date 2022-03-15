@@ -3,7 +3,9 @@ package validation
 import (
 	"context"
 	"errors"
+	"fmt"
 	kubev1 "github.com/eolinker/apinto-ingress-controller/pkg/kube/apinto/configs/apinto/v1"
+	apintov1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	kwhmodel "github.com/slok/kubewebhook/v2/pkg/model"
 	kwhvalidating "github.com/slok/kubewebhook/v2/pkg/webhook/validating"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -27,7 +29,25 @@ var ApintoDiscoveryValidator = kwhvalidating.ValidatorFunc(
 
 		switch review.Operation {
 		case "create", "update":
-			//TODO
+
+			apintoDiscovery := apintov1.Discovery{
+				Metadata: apintov1.Metadata{
+					Name:       kDiscovery.Name,
+					Profession: "discovery",
+					Driver:     kDiscovery.Driver,
+					ID:         fmt.Sprintf("%s@discovery", kDiscovery.Name),
+				},
+				Scheme:   kDiscovery.Scheme,
+				HealthON: kDiscovery.HealthON,
+				Config:   apintov1.Config(kDiscovery.Config),
+				Health:   apintov1.HealthConfig(kDiscovery.Health),
+			}
+
+			_, err = validator.DiscoveryChecker().UpdateCheck(kDiscovery.Name, apintoDiscovery)
+			if err != nil {
+				valid = false
+				msg = err.Error()
+			}
 
 		case "delete":
 			_, err = validator.DiscoveryChecker().DelCheck(kDiscovery.Name)

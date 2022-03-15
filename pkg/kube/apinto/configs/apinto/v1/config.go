@@ -23,6 +23,10 @@ func (p *PluginConfig) DeepCopy() *PluginConfig {
 
 type Config map[string]interface{}
 
+func (c Config) IsExported() bool {
+	return true
+}
+
 func (c *Config) DeepCopyInto(out *Config) {
 	b, _ := json.Marshal(&c)
 	_ = json.Unmarshal(b, out)
@@ -38,6 +42,10 @@ func (c *Config) DeepCopy() *Config {
 }
 
 type FormatterConfig map[string][]string
+
+func (f FormatterConfig) IsExported() bool {
+	return true
+}
 
 func (c *FormatterConfig) DeepCopyInto(out *FormatterConfig) {
 	b, _ := json.Marshal(&c)

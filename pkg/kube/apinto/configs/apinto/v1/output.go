@@ -62,6 +62,7 @@ type HttpConfig struct {
 	Type      string            `json:"type,omitempty" yaml:"type,omitempty"`
 	Formatter FormatterConfig   `json:"formatter,omitempty" yaml:"formatter,omitempty"`
 }
+
 type SysOutput struct {
 	Config SysConfig `json:"config,omitempty" yaml:"config,omitempty"`
 }
