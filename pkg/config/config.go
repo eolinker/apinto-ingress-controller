@@ -36,10 +36,7 @@ const (
 type Config struct {
 	CertFilePath    string       `json:"cert_file" yaml:"cert_file"`
 	KeyFilePath     string       `json:"key_file" yaml:"key_file"`
-	LogLevel        string       `json:"log_level" yaml:"log_level"`
-	LogOutput       string       `json:"log_output" yaml:"log_output"`
-	LogPeriod       string       `json:"log-period" yaml:"log-period"`
-	LogExpire       string       `json:"log-expire" yaml:"log-expire"`
+	Log             LogConfig    `json:"log" yaml:"log"`
 	HTTPListen      string       `json:"http_listen" yaml:"http_listen"`
 	HTTPSListen     string       `json:"https_listen" yaml:"https_listen"`
 	EnableProfiling bool         `json:"enable_profiling" yaml:"enable_profiling"`
@@ -53,6 +50,12 @@ type KubernetesConfig struct {
 	NamespaceSelector []string `json:"namespace_selector" yaml:"namespace_selector"`
 	IngressClass      string   `json:"ingress_class" yaml:"ingress_class"`
 	IngressVersion    string   `json:"ingress_version" yaml:"ingress_version"`
+}
+type LogConfig struct {
+	LogOutput string `json:"log_output" yaml:"log_output"`
+	LogLevel  string `json:"log_level" yaml:"log_level"`
+	LogPeriod string `json:"log_period" yaml:"log_period"`
+	LogExpire string `json:"log_expire" yaml:"log_expire"`
 }
 
 // APINTOConfig contains all APINTO related config items.
@@ -69,8 +72,13 @@ type APINTOConfig struct {
 // default value.
 func NewDefaultConfig() *Config {
 	return &Config{
-		LogLevel:    "warn",
-		LogOutput:   "stderr",
+		Log: LogConfig{
+			LogLevel:  "warn",
+			LogOutput: "stderr",
+			LogExpire: "1",
+			LogPeriod: "day",
+		},
+
 		HTTPListen:  ":8080",
 		HTTPSListen: ":8443",
 		APINTO: APINTOConfig{

@@ -3,10 +3,9 @@ package ingress
 import (
 	"fmt"
 	"github.com/eolinker/apinto-ingress-controller/pkg/config"
-	"github.com/eolinker/eosc/log"
-
 	"github.com/eolinker/apinto-ingress-controller/pkg/ingress"
 	"github.com/eolinker/apinto-ingress-controller/pkg/ingress/signals"
+	"github.com/eolinker/eosc/log"
 
 	"github.com/spf13/cobra"
 	"os"
@@ -57,17 +56,7 @@ func NewIngressCommand() *cobra.Command {
 			if err := cfg.Validate(); err != nil {
 				dief("bad configuration: %s", err)
 			}
-			//log.
-			//
-			//
-			//	logger, err := log.NewLogger(
-			//	log.WithLogLevel(cfg.LogLevel),
-			//	log.WithOutputFile(cfg.LogOutput),
-			//)
-			//if err != nil {
-			//	dief("failed to initialize logging: %s", err)
-			//}
-			//log.DefaultLogger = logger
+			InitLogger(cfg.Log)
 			log.Info("apinto ingress controller started")
 
 			stop := signals.SetupSignalHandler()
@@ -85,12 +74,13 @@ func NewIngressCommand() *cobra.Command {
 			}()
 			wg.Wait()
 			log.Info("apinto ingress controller exited")
+			log.Close()
 		},
 	}
 
 	cmd.PersistentFlags().StringVar(&configPath, "config-path", "", "configuration file path for apinto-ingress-controller")
-	cmd.PersistentFlags().StringVar(&cfg.LogLevel, "log-level", "info", "error log level")
-	cmd.PersistentFlags().StringVar(&cfg.LogOutput, "log-output", "stderr", "error log output file")
+	cmd.PersistentFlags().StringVar(&cfg.Log.LogLevel, "log-level", "info", "error log level")
+	cmd.PersistentFlags().StringVar(&cfg.Log.LogOutput, "log-output", "stderr", "error log output file")
 	cmd.PersistentFlags().StringVar(&cfg.HTTPListen, "http-listen", ":8080", "the HTTP Server listen address")
 	cmd.PersistentFlags().StringVar(&cfg.HTTPSListen, "https-listen", ":8443", "the HTTPS Server listen address")
 	cmd.PersistentFlags().BoolVar(&cfg.EnableProfiling, "enable-profiling", true, "enable profiling via web interface host:port/debug/pprof")

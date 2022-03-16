@@ -3,10 +3,13 @@
 config-path: "/etc/ingress" # configuration file path for apinto-ingress-controller
 
 # log option
-log_level: "info"    # error log level
-log_output: "stderr" # error log output file
-log-period: 1 # error log file split period
-log-expire: 1 # error log file after several days
+log:
+  log_level: "info"    # error log level
+  log_output: "stderr" # error log output file
+  # 日志分割周期
+  log_period: day # error log file split period,day or hour or month
+  # 日志过期时间
+  log_expire: 1 # error log file after several days
 
 # listen
 http_listen: ":8080"   # the HTTP Server listen address, default is ":8080"

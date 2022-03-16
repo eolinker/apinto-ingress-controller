@@ -3,7 +3,6 @@ module github.com/eolinker/apinto-ingress-controller
 go 1.17
 
 require (
-	github.com/apache/apisix-ingress-controller v0.0.0-20220311013744-11bd92beb7e4
 	github.com/eolinker/eosc v0.4.2
 	github.com/gin-gonic/gin v1.7.7
 	github.com/slok/kubewebhook/v2 v2.2.0
@@ -21,6 +20,7 @@ require (
 require (
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
+	github.com/apache/apisix-ingress-controller v0.0.0-20220311013744-11bd92beb7e4 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
