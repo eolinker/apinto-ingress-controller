@@ -3,9 +3,8 @@ package validation
 import (
 	"context"
 	"errors"
-	"fmt"
+	"github.com/eolinker/apinto-ingress-controller/pkg/api/transformation"
 	kubev1 "github.com/eolinker/apinto-ingress-controller/pkg/kube/apinto/configs/apinto/v1"
-	apintov1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	kwhmodel "github.com/slok/kubewebhook/v2/pkg/model"
 	kwhvalidating "github.com/slok/kubewebhook/v2/pkg/webhook/validating"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -25,32 +24,28 @@ var ApintoDiscoveryValidator = kwhvalidating.ValidatorFunc(
 		if !ok {
 			return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoDiscovery.Error()}, errNotApintoDiscovery
 		}
-		kDiscovery := ad.Spec
 
 		switch review.Operation {
-		case "create", "update":
+		case "create":
+			apintoDiscovery := transformation.KubeDiscoveryToApinto(ad)
 
-			apintoDiscovery := apintov1.Discovery{
-				Metadata: apintov1.Metadata{
-					Name:       kDiscovery.Name,
-					Profession: "discovery",
-					Driver:     kDiscovery.Driver,
-					ID:         fmt.Sprintf("%s@discovery", kDiscovery.Name),
-				},
-				Scheme:   kDiscovery.Scheme,
-				HealthON: kDiscovery.HealthON,
-				Config:   apintov1.Config(kDiscovery.Config),
-				Health:   apintov1.HealthConfig(kDiscovery.Health),
+			_, err = validator.Discovery().Create(ctx, apintoDiscovery)
+			if err != nil {
+				valid = false
+				msg = err.Error()
 			}
+		case "update":
 
-			_, err = validator.DiscoveryChecker().UpdateCheck(kDiscovery.Name, apintoDiscovery)
+			apintoDiscovery := transformation.KubeDiscoveryToApinto(ad)
+
+			_, err = validator.Discovery().Update(ctx, apintoDiscovery)
 			if err != nil {
 				valid = false
 				msg = err.Error()
 			}
 
 		case "delete":
-			_, err = validator.DiscoveryChecker().DelCheck(kDiscovery.Name)
+			err = validator.Discovery().Delete(ctx, ad.Spec.Name)
 			if err != nil {
 				valid = false
 				msg = err.Error()

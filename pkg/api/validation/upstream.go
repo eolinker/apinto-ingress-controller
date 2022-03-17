@@ -3,9 +3,8 @@ package validation
 import (
 	"context"
 	"errors"
-	"fmt"
+	"github.com/eolinker/apinto-ingress-controller/pkg/api/transformation"
 	kubev1 "github.com/eolinker/apinto-ingress-controller/pkg/kube/apinto/configs/apinto/v1"
-	apintov1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	kwhmodel "github.com/slok/kubewebhook/v2/pkg/model"
 	kwhvalidating "github.com/slok/kubewebhook/v2/pkg/webhook/validating"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -25,39 +24,28 @@ var ApintoUpstreamValidator = kwhvalidating.ValidatorFunc(
 		if !ok {
 			return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoUpstream.Error()}, errNotApintoUpstream
 		}
-		kUpstream := au.Spec
 
 		switch review.Operation {
-		case "create", "update":
+		case "create":
+			apintoUpstream := transformation.KubeUpstreamToApinto(au)
 
-			//拷贝Plugins
-			plugins := make(map[string]apintov1.PluginConfig)
-			for k, v := range kUpstream.Plugins {
-				plugins[k] = apintov1.PluginConfig{Disable: v.Disable, Config: v.Config}
+			_, err = validator.Upstream().Create(ctx, apintoUpstream)
+			if err != nil {
+				valid = false
+				msg = err.Error()
 			}
 
-			apintoUpstream := apintov1.Upstream{
-				Metadata: apintov1.Metadata{
-					Name:       kUpstream.Name,
-					Profession: "upstream",
-					Driver:     kUpstream.Driver,
-					ID:         fmt.Sprintf("%s@upstream", kUpstream.Name),
-				},
-				Discovery: kUpstream.Discovery,
-				Config:    kUpstream.Config,
-				Scheme:    kUpstream.Scheme,
-				Type:      kUpstream.Type,
-				Plugins:   plugins,
-			}
+		case "update":
+			apintoUpstream := transformation.KubeUpstreamToApinto(au)
 
-			_, err = validator.UpstreamChecker().UpdateCheck(kUpstream.Name, apintoUpstream)
+			_, err = validator.Upstream().Update(ctx, apintoUpstream)
 			if err != nil {
 				valid = false
 				msg = err.Error()
 			}
 
 		case "delete":
-			_, err = validator.UpstreamChecker().DelCheck(kUpstream.Name)
+			err = validator.Upstream().Delete(ctx, au.Spec.Name)
 			if err != nil {
 				valid = false
 				msg = err.Error()

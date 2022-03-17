@@ -2,6 +2,7 @@ package validation
 
 import (
 	"context"
+	"github.com/eolinker/apinto-ingress-controller/pkg/api/transformation"
 	kubev1 "github.com/eolinker/apinto-ingress-controller/pkg/kube/apinto/configs/apinto/v1"
 	apintov1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	kwhmodel "github.com/slok/kubewebhook/v2/pkg/model"
@@ -18,31 +19,25 @@ var ApintoGlobalSettingValidator = kwhvalidating.ValidatorFunc(
 		if !ok {
 			return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoUpstream.Error()}, nil
 		}
-		kSetting := as.Spec
 
 		switch review.Operation {
 		case "create", "update":
-			//拷贝Plugins
-			plugins := make(apintov1.SettingPlugins, 0, len(kSetting.Plugins))
-			for _, v := range kSetting.Plugins {
-				plugins = append(plugins, apintov1.SettingPlugin{
-					ID:         v.ID,
-					Name:       v.Name,
-					Type:       v.Type,
-					Status:     v.Status,
-					Config:     apintov1.Config(v.Config),
-					InitConfig: apintov1.Config(v.InitConfig),
-				})
-			}
+			apintoSetting := transformation.KubeSettingToApinto(as)
 
-			apintoService := apintov1.Setting{
+			_, err = validator.Setting().UpdatePlugin(ctx, apintoSetting)
+			if err != nil {
+				valid = false
+				msg = err.Error()
+			}
+		case "delete":
+			apintoSetting := &apintov1.Setting{
 				Name:       "plugin",
 				Profession: "setting",
 				Driver:     "plugin",
-				Plugins:    plugins,
+				Plugins:    apintov1.SettingPlugins{},
 			}
 
-			_, err = validator.SettingChecker().UpdateCheck("plugin", apintoService)
+			_, err = validator.Setting().UpdatePlugin(ctx, apintoSetting)
 			if err != nil {
 				valid = false
 				msg = err.Error()

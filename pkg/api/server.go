@@ -11,8 +11,6 @@ import (
 func NewAdmissionServer(cfg *config.Config) (*http.Server, error) {
 	cert, err := tls.LoadX509KeyPair(cfg.CertFilePath, cfg.KeyFilePath)
 	if err != nil {
-		//TODO 返回报错
-
 		return nil, err
 	} else {
 		admission := gin.New()

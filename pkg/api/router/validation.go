@@ -8,8 +8,8 @@ import (
 )
 
 func ValidatingWebhook(g *gin.Engine, cfg *config.Config) error {
-	err := validation.InitAdmissionChecker(&cluster.ClusterOptions{
-		Name:     "default",
+	err := validation.InitAdmission(&cluster.ClusterOptions{
+		Name:     cfg.APINTO.DefaultClusterName,
 		AdminKey: cfg.APINTO.DefaultClusterAdminKey,
 		BaseURL:  cfg.APINTO.DefaultClusterBaseURL,
 	})
@@ -20,13 +20,13 @@ func ValidatingWebhook(g *gin.Engine, cfg *config.Config) error {
 
 	vGroup := g.Group("/validation")
 	{
-		vGroup.POST("/apintorouters", validation.NewHandler("ApintoRouter", validation.ApintoRouterValidator))
-		vGroup.POST("/apintoservices", validation.NewHandler("ApintoService", validation.ApintoServiceValidator))
-		vGroup.POST("/apintoupstreams", validation.NewHandler("ApintoUpstream", validation.ApintoUpstreamValidator))
-		vGroup.POST("/apintodiscoveries", validation.NewHandler("ApintoDiscovery", validation.ApintoDiscoveryValidator))
-		vGroup.POST("/apintooutputs", validation.NewHandler("ApintoOutout", validation.ApintoOutputValidator))
-		vGroup.POST("/apintoauths", validation.NewHandler("ApintoAuth", validation.ApintoAuthValidator))
-		vGroup.POST("/apintoglobalsettings", validation.NewHandler("ApintoGlobalSetting", validation.ApintoGlobalSettingValidator))
+		vGroup.POST("/router", validation.NewHandler("ApintoRouter", validation.ApintoRouterValidator))
+		vGroup.POST("/service", validation.NewHandler("ApintoService", validation.ApintoServiceValidator))
+		vGroup.POST("/upstream", validation.NewHandler("ApintoUpstream", validation.ApintoUpstreamValidator))
+		vGroup.POST("/discovery", validation.NewHandler("ApintoDiscovery", validation.ApintoDiscoveryValidator))
+		vGroup.POST("/output", validation.NewHandler("ApintoOutout", validation.ApintoOutputValidator))
+		vGroup.POST("/auth", validation.NewHandler("ApintoAuth", validation.ApintoAuthValidator))
+		vGroup.POST("/setting", validation.NewHandler("ApintoGlobalSetting", validation.ApintoGlobalSettingValidator))
 	}
 
 	return nil

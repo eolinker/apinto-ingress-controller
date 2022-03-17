@@ -6,19 +6,19 @@ import (
 	"github.com/eolinker/eosc/log"
 )
 
-type admissionCheck interface {
-	profession.ProfessionCheck
+type admissionServer interface {
+	profession.Profession
 }
 
-type admissionChecker struct {
+type admission struct {
 	cluster cluster.Cluster
 }
 
 var (
-	validator admissionCheck
+	validator admissionServer
 )
 
-func InitAdmissionChecker(cfg *cluster.ClusterOptions) error {
+func InitAdmission(cfg *cluster.ClusterOptions) error {
 
 	c, err := cluster.NewCluster(cfg)
 	if err != nil {
@@ -26,37 +26,37 @@ func InitAdmissionChecker(cfg *cluster.ClusterOptions) error {
 		return err
 	}
 
-	validator = &admissionChecker{
+	validator = &admission{
 		c,
 	}
 
 	return nil
 }
 
-func (a *admissionChecker) RouterChecker() profession.Checker {
-	return a.RouterChecker()
+func (a *admission) Router() profession.Router {
+	return a.cluster.Router()
 }
 
-func (a *admissionChecker) ServiceChecker() profession.Checker {
-	return a.ServiceChecker()
+func (a *admission) Service() profession.Service {
+	return a.cluster.Service()
 }
 
-func (a *admissionChecker) UpstreamChecker() profession.Checker {
-	return a.UpstreamChecker()
+func (a *admission) Upstream() profession.Upstream {
+	return a.cluster.Upstream()
 }
 
-func (a *admissionChecker) DiscoveryChecker() profession.Checker {
-	return a.DiscoveryChecker()
+func (a *admission) Discovery() profession.Discovery {
+	return a.cluster.Discovery()
 }
 
-func (a *admissionChecker) OutputChecker() profession.Checker {
-	return a.OutputChecker()
+func (a *admission) Output() profession.Output {
+	return a.cluster.Output()
 }
 
-func (a *admissionChecker) AuthChecker() profession.Checker {
-	return a.AuthChecker()
+func (a *admission) Auth() profession.Auth {
+	return a.cluster.Auth()
 }
 
-func (a *admissionChecker) SettingChecker() profession.Checker {
-	return a.SettingChecker()
+func (a *admission) Setting() profession.Setting {
+	return a.cluster.Setting()
 }

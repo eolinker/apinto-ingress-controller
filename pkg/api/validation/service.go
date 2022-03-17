@@ -3,9 +3,8 @@ package validation
 import (
 	"context"
 	"errors"
-	"fmt"
+	"github.com/eolinker/apinto-ingress-controller/pkg/api/transformation"
 	kubev1 "github.com/eolinker/apinto-ingress-controller/pkg/kube/apinto/configs/apinto/v1"
-	apintov1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	kwhmodel "github.com/slok/kubewebhook/v2/pkg/model"
 	kwhvalidating "github.com/slok/kubewebhook/v2/pkg/webhook/validating"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -25,46 +24,26 @@ var ApintoServiceValidator = kwhvalidating.ValidatorFunc(
 		if !ok {
 			return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoService.Error()}, errNotApintoService
 		}
-		kService := as.Spec
 
 		switch review.Operation {
-		case "create", "update":
-
-			//拷贝Plugins
-			plugins := make(map[string]apintov1.PluginConfig)
-			for k, v := range kService.Plugins {
-				plugins[k] = apintov1.PluginConfig{Disable: v.Disable, Config: v.Config}
+		case "create":
+			apintoService := transformation.KubeServiceToApinto(as)
+			_, err = validator.Service().Create(ctx, apintoService)
+			if err != nil {
+				valid = false
+				msg = err.Error()
 			}
 
-			apintoService := apintov1.Service{
-				Metadata: apintov1.Metadata{
-					Name:       kService.Name,
-					Profession: "service",
-					Driver:     kService.Driver,
-					ID:         fmt.Sprintf("%s@service", kService.Name),
-				},
-				Timeout:     kService.Timeout,
-				Retry:       kService.Retry,
-				RewriteUrl:  kService.RewriteUrl,
-				Scheme:      kService.Scheme,
-				ProxyMethod: kService.ProxyMethod,
-				Upstream:    kService.Upstream,
-				Plugins:     plugins,
-			}
-
-			//若Anonymous不为空
-			if kService.Anonymous != nil {
-				apintoService.Anonymous = &apintov1.AnonymousConfig{Type: kService.Anonymous.Type, Config: kService.Anonymous.Config}
-			}
-
-			_, err = validator.ServiceChecker().UpdateCheck(kService.Name, apintoService)
+		case "update":
+			apintoService := transformation.KubeServiceToApinto(as)
+			_, err = validator.Service().Update(ctx, apintoService)
 			if err != nil {
 				valid = false
 				msg = err.Error()
 			}
 
 		case "delete":
-			_, err = validator.ServiceChecker().DelCheck(kService.Name)
+			err = validator.Service().Delete(ctx, as.Spec.Name)
 			if err != nil {
 				valid = false
 				msg = err.Error()
