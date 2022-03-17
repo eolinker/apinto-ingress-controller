@@ -21,7 +21,7 @@ var ApintoGlobalSettingValidator = kwhvalidating.ValidatorFunc(
 		valid := true
 		var msg string
 		//将object转化成globalSetting
-		as := &kubev1.ApintoSetting{}
+		as := &kubev1.ApintoGlobalSetting{}
 		json.Unmarshal(review.NewObjectRaw, as)
 		//as, ok := object.(*kubev1.ApintoSetting)
 		//if !ok {

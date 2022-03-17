@@ -32,59 +32,59 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// ApintoSettingInformer provides access to a shared informer and lister for
-// ApintoSettings.
-type ApintoSettingInformer interface {
+// ApintoGlobalSettingInformer provides access to a shared informer and lister for
+// ApintoGlobalSettings.
+type ApintoGlobalSettingInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1.ApintoSettingLister
+	Lister() v1.ApintoGlobalSettingLister
 }
 
-type apintoSettingInformer struct {
+type apintoGlobalSettingInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 	namespace        string
 }
 
-// NewApintoSettingInformer constructs a new informer for ApintoSetting type.
+// NewApintoGlobalSettingInformer constructs a new informer for ApintoGlobalSetting type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewApintoSettingInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredApintoSettingInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewApintoGlobalSettingInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredApintoGlobalSettingInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredApintoSettingInformer constructs a new informer for ApintoSetting type.
+// NewFilteredApintoGlobalSettingInformer constructs a new informer for ApintoGlobalSetting type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredApintoSettingInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredApintoGlobalSettingInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options metav1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.ApintoV1().ApintoSettings(namespace).List(context.TODO(), options)
+				return client.ApintoV1().ApintoGlobalSettings(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options metav1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.ApintoV1().ApintoSettings(namespace).Watch(context.TODO(), options)
+				return client.ApintoV1().ApintoGlobalSettings(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&apintov1.ApintoSetting{},
+		&apintov1.ApintoGlobalSetting{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *apintoSettingInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredApintoSettingInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *apintoGlobalSettingInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredApintoGlobalSettingInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *apintoSettingInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&apintov1.ApintoSetting{}, f.defaultInformer)
+func (f *apintoGlobalSettingInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&apintov1.ApintoGlobalSetting{}, f.defaultInformer)
 }
 
-func (f *apintoSettingInformer) Lister() v1.ApintoSettingLister {
-	return v1.NewApintoSettingLister(f.Informer().GetIndexer())
+func (f *apintoGlobalSettingInformer) Lister() v1.ApintoGlobalSettingLister {
+	return v1.NewApintoGlobalSettingLister(f.Informer().GetIndexer())
 }

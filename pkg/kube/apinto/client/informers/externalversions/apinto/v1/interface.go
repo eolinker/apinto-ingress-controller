@@ -28,14 +28,14 @@ type Interface interface {
 	ApintoAuths() ApintoAuthInformer
 	// ApintoDiscoveries returns a ApintoDiscoveryInformer.
 	ApintoDiscoveries() ApintoDiscoveryInformer
+	// ApintoGlobalSettings returns a ApintoGlobalSettingInformer.
+	ApintoGlobalSettings() ApintoGlobalSettingInformer
 	// ApintoOutputs returns a ApintoOutputInformer.
 	ApintoOutputs() ApintoOutputInformer
 	// ApintoRouters returns a ApintoRouterInformer.
 	ApintoRouters() ApintoRouterInformer
 	// ApintoServices returns a ApintoServiceInformer.
 	ApintoServices() ApintoServiceInformer
-	// ApintoSettings returns a ApintoSettingInformer.
-	ApintoSettings() ApintoSettingInformer
 	// ApintoUpstreams returns a ApintoUpstreamInformer.
 	ApintoUpstreams() ApintoUpstreamInformer
 }
@@ -61,6 +61,11 @@ func (v *version) ApintoDiscoveries() ApintoDiscoveryInformer {
 	return &apintoDiscoveryInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
+// ApintoGlobalSettings returns a ApintoGlobalSettingInformer.
+func (v *version) ApintoGlobalSettings() ApintoGlobalSettingInformer {
+	return &apintoGlobalSettingInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
 // ApintoOutputs returns a ApintoOutputInformer.
 func (v *version) ApintoOutputs() ApintoOutputInformer {
 	return &apintoOutputInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
@@ -74,11 +79,6 @@ func (v *version) ApintoRouters() ApintoRouterInformer {
 // ApintoServices returns a ApintoServiceInformer.
 func (v *version) ApintoServices() ApintoServiceInformer {
 	return &apintoServiceInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
-}
-
-// ApintoSettings returns a ApintoSettingInformer.
-func (v *version) ApintoSettings() ApintoSettingInformer {
-	return &apintoSettingInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // ApintoUpstreams returns a ApintoUpstreamInformer.

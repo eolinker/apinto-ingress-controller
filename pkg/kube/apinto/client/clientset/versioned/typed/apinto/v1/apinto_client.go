@@ -30,10 +30,10 @@ type ApintoV1Interface interface {
 	RESTClient() rest.Interface
 	ApintoAuthsGetter
 	ApintoDiscoveriesGetter
+	ApintoGlobalSettingsGetter
 	ApintoOutputsGetter
 	ApintoRoutersGetter
 	ApintoServicesGetter
-	ApintoSettingsGetter
 	ApintoUpstreamsGetter
 }
 
@@ -50,6 +50,10 @@ func (c *ApintoV1Client) ApintoDiscoveries(namespace string) ApintoDiscoveryInte
 	return newApintoDiscoveries(c, namespace)
 }
 
+func (c *ApintoV1Client) ApintoGlobalSettings(namespace string) ApintoGlobalSettingInterface {
+	return newApintoGlobalSettings(c, namespace)
+}
+
 func (c *ApintoV1Client) ApintoOutputs(namespace string) ApintoOutputInterface {
 	return newApintoOutputs(c, namespace)
 }
@@ -60,10 +64,6 @@ func (c *ApintoV1Client) ApintoRouters(namespace string) ApintoRouterInterface {
 
 func (c *ApintoV1Client) ApintoServices(namespace string) ApintoServiceInterface {
 	return newApintoServices(c, namespace)
-}
-
-func (c *ApintoV1Client) ApintoSettings(namespace string) ApintoSettingInterface {
-	return newApintoSettings(c, namespace)
 }
 
 func (c *ApintoV1Client) ApintoUpstreams(namespace string) ApintoUpstreamInterface {

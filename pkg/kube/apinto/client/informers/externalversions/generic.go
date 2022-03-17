@@ -57,14 +57,14 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().ApintoAuths().Informer()}, nil
 	case v1.SchemeGroupVersion.WithResource("apintodiscoveries"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().ApintoDiscoveries().Informer()}, nil
+	case v1.SchemeGroupVersion.WithResource("apintoglobalsettings"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().ApintoGlobalSettings().Informer()}, nil
 	case v1.SchemeGroupVersion.WithResource("apintooutputs"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().ApintoOutputs().Informer()}, nil
 	case v1.SchemeGroupVersion.WithResource("apintorouters"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().ApintoRouters().Informer()}, nil
 	case v1.SchemeGroupVersion.WithResource("apintoservices"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().ApintoServices().Informer()}, nil
-	case v1.SchemeGroupVersion.WithResource("apintosettings"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().ApintoSettings().Informer()}, nil
 	case v1.SchemeGroupVersion.WithResource("apintoupstreams"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apinto().V1().ApintoUpstreams().Informer()}, nil
 

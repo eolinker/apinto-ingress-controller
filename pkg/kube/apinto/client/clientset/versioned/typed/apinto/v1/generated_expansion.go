@@ -22,12 +22,12 @@ type ApintoAuthExpansion interface{}
 
 type ApintoDiscoveryExpansion interface{}
 
+type ApintoGlobalSettingExpansion interface{}
+
 type ApintoOutputExpansion interface{}
 
 type ApintoRouterExpansion interface{}
 
 type ApintoServiceExpansion interface{}
-
-type ApintoSettingExpansion interface{}
 
 type ApintoUpstreamExpansion interface{}

@@ -5,7 +5,7 @@ import (
 	apintov1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 )
 
-func KubeSettingToApinto(as *kubev1.ApintoSetting) *apintov1.Setting {
+func KubeSettingToApinto(as *kubev1.ApintoGlobalSetting) *apintov1.Setting {
 	kSetting := as.Spec
 
 	//拷贝Plugins

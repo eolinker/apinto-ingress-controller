@@ -34,6 +34,14 @@ type ApintoDiscoveryListerExpansion interface{}
 // ApintoDiscoveryNamespaceLister.
 type ApintoDiscoveryNamespaceListerExpansion interface{}
 
+// ApintoGlobalSettingListerExpansion allows custom methods to be added to
+// ApintoGlobalSettingLister.
+type ApintoGlobalSettingListerExpansion interface{}
+
+// ApintoGlobalSettingNamespaceListerExpansion allows custom methods to be added to
+// ApintoGlobalSettingNamespaceLister.
+type ApintoGlobalSettingNamespaceListerExpansion interface{}
+
 // ApintoOutputListerExpansion allows custom methods to be added to
 // ApintoOutputLister.
 type ApintoOutputListerExpansion interface{}
@@ -57,14 +65,6 @@ type ApintoServiceListerExpansion interface{}
 // ApintoServiceNamespaceListerExpansion allows custom methods to be added to
 // ApintoServiceNamespaceLister.
 type ApintoServiceNamespaceListerExpansion interface{}
-
-// ApintoSettingListerExpansion allows custom methods to be added to
-// ApintoSettingLister.
-type ApintoSettingListerExpansion interface{}
-
-// ApintoSettingNamespaceListerExpansion allows custom methods to be added to
-// ApintoSettingNamespaceLister.
-type ApintoSettingNamespaceListerExpansion interface{}
 
 // ApintoUpstreamListerExpansion allows custom methods to be added to
 // ApintoUpstreamLister.

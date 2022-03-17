@@ -36,6 +36,10 @@ func (c *FakeApintoV1) ApintoDiscoveries(namespace string) v1.ApintoDiscoveryInt
 	return &FakeApintoDiscoveries{c, namespace}
 }
 
+func (c *FakeApintoV1) ApintoGlobalSettings(namespace string) v1.ApintoGlobalSettingInterface {
+	return &FakeApintoGlobalSettings{c, namespace}
+}
+
 func (c *FakeApintoV1) ApintoOutputs(namespace string) v1.ApintoOutputInterface {
 	return &FakeApintoOutputs{c, namespace}
 }
@@ -46,10 +50,6 @@ func (c *FakeApintoV1) ApintoRouters(namespace string) v1.ApintoRouterInterface 
 
 func (c *FakeApintoV1) ApintoServices(namespace string) v1.ApintoServiceInterface {
 	return &FakeApintoServices{c, namespace}
-}
-
-func (c *FakeApintoV1) ApintoSettings(namespace string) v1.ApintoSettingInterface {
-	return &FakeApintoSettings{c, namespace}
 }
 
 func (c *FakeApintoV1) ApintoUpstreams(namespace string) v1.ApintoUpstreamInterface {
