@@ -22,7 +22,7 @@ func InitAdmission(cfg *cluster.ClusterOptions) error {
 
 	c, err := cluster.NewCluster(cfg)
 	if err != nil {
-		log.Errorf("failed to init admissionChecker: %s", err)
+		log.Errorf("failed to init admissionServer: %s", err)
 		return err
 	}
 

@@ -1,4 +1,4 @@
-package transformation
+package translation
 
 import (
 	kubev1 "github.com/eolinker/apinto-ingress-controller/pkg/kube/apinto/configs/apinto/v1"

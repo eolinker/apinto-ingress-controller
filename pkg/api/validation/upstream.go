@@ -3,7 +3,7 @@ package validation
 import (
 	"context"
 	"errors"
-	"github.com/eolinker/apinto-ingress-controller/pkg/api/transformation"
+	"github.com/eolinker/apinto-ingress-controller/pkg/api/translation"
 	kubev1 "github.com/eolinker/apinto-ingress-controller/pkg/kube/apinto/configs/apinto/v1"
 	kwhmodel "github.com/slok/kubewebhook/v2/pkg/model"
 	kwhvalidating "github.com/slok/kubewebhook/v2/pkg/webhook/validating"
@@ -27,7 +27,7 @@ var ApintoUpstreamValidator = kwhvalidating.ValidatorFunc(
 
 		switch review.Operation {
 		case "create":
-			apintoUpstream := transformation.KubeUpstreamToApinto(au)
+			apintoUpstream := translation.KubeUpstreamToApinto(au)
 
 			_, err = validator.Upstream().Create(ctx, apintoUpstream)
 			if err != nil {
@@ -36,7 +36,7 @@ var ApintoUpstreamValidator = kwhvalidating.ValidatorFunc(
 			}
 
 		case "update":
-			apintoUpstream := transformation.KubeUpstreamToApinto(au)
+			apintoUpstream := translation.KubeUpstreamToApinto(au)
 
 			_, err = validator.Upstream().Update(ctx, apintoUpstream)
 			if err != nil {

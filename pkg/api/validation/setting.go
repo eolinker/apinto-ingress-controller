@@ -2,7 +2,9 @@ package validation
 
 import (
 	"context"
-	"github.com/eolinker/apinto-ingress-controller/pkg/api/transformation"
+	"encoding/json"
+	"errors"
+	"github.com/eolinker/apinto-ingress-controller/pkg/api/translation"
 	kubev1 "github.com/eolinker/apinto-ingress-controller/pkg/kube/apinto/configs/apinto/v1"
 	apintov1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
 	kwhmodel "github.com/slok/kubewebhook/v2/pkg/model"
@@ -10,19 +12,25 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+var (
+	errNotApintoSetting = errors.New("object is not ApintoSetting")
+)
+
 var ApintoGlobalSettingValidator = kwhvalidating.ValidatorFunc(
 	func(ctx context.Context, review *kwhmodel.AdmissionReview, object metav1.Object) (result *kwhvalidating.ValidatorResult, err error) {
 		valid := true
 		var msg string
 		//将object转化成globalSetting
-		as, ok := object.(*kubev1.ApintoSetting)
-		if !ok {
-			return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoUpstream.Error()}, nil
-		}
+		as := &kubev1.ApintoSetting{}
+		json.Unmarshal(review.NewObjectRaw, as)
+		//as, ok := object.(*kubev1.ApintoSetting)
+		//if !ok {
+		//	return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoUpstream.Error()}, nil
+		//}
 
 		switch review.Operation {
 		case "create", "update":
-			apintoSetting := transformation.KubeSettingToApinto(as)
+			apintoSetting := translation.KubeSettingToApinto(as)
 
 			_, err = validator.Setting().UpdatePlugin(ctx, apintoSetting)
 			if err != nil {

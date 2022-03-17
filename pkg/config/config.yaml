@@ -26,8 +26,8 @@ election_id: "ingress-apinto-leader"
 # APINTO related configurations.
 apinto:
   # 调用管理接口的集群路径，此时填写到service的访问地址即可
-  default-apinto-cluster-base-url: "http://172.18.189.43:31094/api" # the base URL of admin api / manager api for the default APINTO cluster
+  default_cluster_base_url: "http://172.18.189.43:31094/api" # the base URL of admin api / manager api for the default APINTO cluster
   # 调用管理接口时的默认管理密钥
-  default-apinto-cluster-admin-key: "" # admin key used for the authorization of admin api / manager api for the default APINTO cluster
+  default_cluster_admin_key: "" # admin key used for the authorization of admin api / manager api for the default APINTO cluster
   # 默认是default
-  default-apinto-cluster-name: "default" #  name of the default APINTO cluster.
+  default_cluster_name: "default" #  name of the default APINTO cluster.

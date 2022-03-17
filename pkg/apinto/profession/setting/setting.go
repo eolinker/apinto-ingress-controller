@@ -27,7 +27,7 @@ func (s *Setting) UpdateCheck(name string, value interface{}) (*response.Respons
 
 func NewSetting(client client.Client) *Setting {
 	return &Setting{
-		url:    fmt.Sprintf("%s/%s", client.Url(), "Setting/plugin"),
+		url:    fmt.Sprintf("%s/%s", client.Url(), "setting/plugin"),
 		client: client,
 	}
 }
