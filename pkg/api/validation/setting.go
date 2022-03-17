@@ -15,7 +15,7 @@ var ApintoGlobalSettingValidator = kwhvalidating.ValidatorFunc(
 		valid := true
 		var msg string
 		//将object转化成globalSetting
-		as, ok := object.(*kubev1.ApintoSetting)
+		as, ok := object.(*kubev1.ApintoGlobalSetting)
 		if !ok {
 			return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoUpstream.Error()}, nil
 		}

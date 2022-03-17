@@ -7,7 +7,7 @@ import (
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-type ApintoSetting struct {
+type ApintoGlobalSetting struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 	Spec              SettingSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
@@ -22,7 +22,7 @@ type SettingSpec struct {
 type ApintoSettingList struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Items             []ApintoSetting `json:"items,omitempty" yaml:"items,omitempty"`
+	Items             []ApintoGlobalSetting `json:"items,omitempty" yaml:"items,omitempty"`
 }
 
 type SettingPlugins []SettingPlugin
