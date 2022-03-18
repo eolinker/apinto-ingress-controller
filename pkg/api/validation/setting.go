@@ -22,11 +22,11 @@ var ApintoGlobalSettingValidator = kwhvalidating.ValidatorFunc(
 		var msg string
 		//将object转化成globalSetting
 		as := &kubev1.ApintoGlobalSetting{}
-		json.Unmarshal(review.NewObjectRaw, as)
-		//as, ok := object.(*kubev1.ApintoSetting)
-		//if !ok {
-		//	return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoUpstream.Error()}, nil
-		//}
+		err = json.Unmarshal(review.NewObjectRaw, as)
+		//as, ok := object.(*kubev1.ApintoGlobalSetting)
+		if err != nil {
+			return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoSetting.Error()}, nil
+		}
 
 		switch review.Operation {
 		case "create", "update":

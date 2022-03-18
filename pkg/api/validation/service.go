@@ -2,6 +2,7 @@ package validation
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"github.com/eolinker/apinto-ingress-controller/pkg/api/translation"
 	kubev1 "github.com/eolinker/apinto-ingress-controller/pkg/kube/apinto/configs/apinto/v1"
@@ -20,13 +21,19 @@ var ApintoServiceValidator = kwhvalidating.ValidatorFunc(
 		var msg string
 
 		//将object转化成service
-		as, ok := object.(*kubev1.ApintoService)
-		if !ok {
-			return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoService.Error()}, errNotApintoService
-		}
+		//as, ok := object.(*kubev1.ApintoService)
+		//if !ok {
+		//	return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoService.Error()}, errNotApintoService
+		//}
 
 		switch review.Operation {
 		case "create":
+			as := &kubev1.ApintoService{}
+			err = json.Unmarshal(review.NewObjectRaw, as)
+			if err != nil {
+				return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoService.Error()}, nil
+			}
+
 			apintoService := translation.KubeServiceToApinto(as)
 			_, err = validator.Service().Create(ctx, apintoService)
 			if err != nil {
@@ -35,6 +42,12 @@ var ApintoServiceValidator = kwhvalidating.ValidatorFunc(
 			}
 
 		case "update":
+			as := &kubev1.ApintoService{}
+			err = json.Unmarshal(review.NewObjectRaw, as)
+			if err != nil {
+				return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoService.Error()}, nil
+			}
+
 			apintoService := translation.KubeServiceToApinto(as)
 			_, err = validator.Service().Update(ctx, apintoService)
 			if err != nil {
@@ -43,6 +56,12 @@ var ApintoServiceValidator = kwhvalidating.ValidatorFunc(
 			}
 
 		case "delete":
+			as := &kubev1.ApintoService{}
+			err = json.Unmarshal(review.OldObjectRaw, as)
+			if err != nil {
+				return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoService.Error()}, nil
+			}
+
 			err = validator.Service().Delete(ctx, as.Spec.Name)
 			if err != nil {
 				valid = false

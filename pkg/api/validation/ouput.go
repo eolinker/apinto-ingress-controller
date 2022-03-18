@@ -2,6 +2,7 @@ package validation
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"github.com/eolinker/apinto-ingress-controller/pkg/api/translation"
 	kubev1 "github.com/eolinker/apinto-ingress-controller/pkg/kube/apinto/configs/apinto/v1"
@@ -22,13 +23,19 @@ var ApintoOutputValidator = kwhvalidating.ValidatorFunc(
 		valid := true
 		var msg string
 		//将object转化成output
-		ao, ok := object.(*kubev1.ApintoOutput)
-		if !ok {
-			return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoOutput.Error()}, nil
-		}
+		//ao, ok := object.(*kubev1.ApintoOutput)
+		//if !ok {
+		//	return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoOutput.Error()}, nil
+		//}
 
 		switch review.Operation {
 		case "create":
+			ao := &kubev1.ApintoOutput{}
+			err = json.Unmarshal(review.NewObjectRaw, ao)
+			if err != nil {
+				return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoOutput.Error()}, nil
+			}
+
 			apintoOutput := translation.KubeOutputToApinto(ao)
 
 			_, err = validator.Output().Create(ctx, apintoOutput)
@@ -37,6 +44,12 @@ var ApintoOutputValidator = kwhvalidating.ValidatorFunc(
 				msg = err.Error()
 			}
 		case "update":
+			ao := &kubev1.ApintoOutput{}
+			err = json.Unmarshal(review.NewObjectRaw, ao)
+			if err != nil {
+				return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoOutput.Error()}, nil
+			}
+
 			apintoOutput := translation.KubeOutputToApinto(ao)
 
 			_, err = validator.Output().Update(ctx, apintoOutput)
@@ -46,6 +59,12 @@ var ApintoOutputValidator = kwhvalidating.ValidatorFunc(
 			}
 
 		case "delete":
+			ao := &kubev1.ApintoOutput{}
+			err = json.Unmarshal(review.OldObjectRaw, ao)
+			if err != nil {
+				return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoOutput.Error()}, nil
+			}
+
 			err = validator.Output().Delete(ctx, ao.Spec.Name)
 			if err != nil {
 				valid = false

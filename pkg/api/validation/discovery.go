@@ -2,6 +2,7 @@ package validation
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"github.com/eolinker/apinto-ingress-controller/pkg/api/translation"
 	kubev1 "github.com/eolinker/apinto-ingress-controller/pkg/kube/apinto/configs/apinto/v1"
@@ -20,13 +21,19 @@ var ApintoDiscoveryValidator = kwhvalidating.ValidatorFunc(
 		var msg string
 
 		//将object转化成discovery
-		ad, ok := object.(*kubev1.ApintoDiscovery)
-		if !ok {
-			return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoDiscovery.Error()}, errNotApintoDiscovery
-		}
+		//ad, ok := object.(*kubev1.ApintoDiscovery)
+		//if !ok {
+		//	return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoDiscovery.Error()}, errNotApintoDiscovery
+		//}
 
 		switch review.Operation {
 		case "create":
+			ad := &kubev1.ApintoDiscovery{}
+			err = json.Unmarshal(review.NewObjectRaw, ad)
+			if err != nil {
+				return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoDiscovery.Error()}, nil
+			}
+
 			apintoDiscovery := translation.KubeDiscoveryToApinto(ad)
 
 			_, err = validator.Discovery().Create(ctx, apintoDiscovery)
@@ -35,6 +42,11 @@ var ApintoDiscoveryValidator = kwhvalidating.ValidatorFunc(
 				msg = err.Error()
 			}
 		case "update":
+			ad := &kubev1.ApintoDiscovery{}
+			err = json.Unmarshal(review.NewObjectRaw, ad)
+			if err != nil {
+				return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoDiscovery.Error()}, nil
+			}
 
 			apintoDiscovery := translation.KubeDiscoveryToApinto(ad)
 
@@ -45,6 +57,12 @@ var ApintoDiscoveryValidator = kwhvalidating.ValidatorFunc(
 			}
 
 		case "delete":
+			ad := &kubev1.ApintoDiscovery{}
+			err = json.Unmarshal(review.OldObjectRaw, ad)
+			if err != nil {
+				return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoDiscovery.Error()}, nil
+			}
+
 			err = validator.Discovery().Delete(ctx, ad.Spec.Name)
 			if err != nil {
 				valid = false
