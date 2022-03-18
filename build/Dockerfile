@@ -18,4 +18,4 @@ WORKDIR /ingress
 EXPOSE 8080 8443
 VOLUME /etc/ingress/
 
-CMD ["/ingress/apinto-ingress-controller ingress", "--config-path", "/etc/ingress/config.yaml"]
+CMD ["/ingress/apinto-ingress-controller", "ingress", "--config-path", "/etc/ingress/config.yaml"]
