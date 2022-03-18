@@ -23,13 +23,13 @@ type routers struct {
 
 func (ro *routers) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	if !strings.HasPrefix(r.URL.Path, "/api/Router") {
+	if !strings.HasPrefix(r.URL.Path, "/api/router") {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	switch r.Method {
 	case http.MethodGet:
-		name := strings.TrimPrefix(r.URL.Path, "/api/Router")
+		name := strings.TrimPrefix(r.URL.Path, "/api/router")
 		if len(name) == 0 {
 			// list
 			resp := ro.list()
@@ -49,7 +49,7 @@ func (ro *routers) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPut:
-		name := strings.TrimPrefix(r.URL.Path, "/api/Router/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/router/")
 		data, _ := ioutil.ReadAll(r.Body)
 		var update v1.Router
 		err := json.Unmarshal(data, &update)
@@ -78,7 +78,7 @@ func (ro *routers) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write(res)
 		return
 	case http.MethodDelete:
-		name := strings.TrimPrefix(r.URL.Path, "/api/Router/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/router/")
 		d, err := ro.del(name)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)

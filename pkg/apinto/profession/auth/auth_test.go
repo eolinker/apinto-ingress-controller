@@ -23,13 +23,13 @@ type auths struct {
 
 func (ro *auths) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	if !strings.HasPrefix(r.URL.Path, "/api/Auth") {
+	if !strings.HasPrefix(r.URL.Path, "/api/auth") {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	switch r.Method {
 	case http.MethodGet:
-		name := strings.TrimPrefix(r.URL.Path, "/api/Auth")
+		name := strings.TrimPrefix(r.URL.Path, "/api/auth")
 		if len(name) == 0 {
 			// list
 			resp := ro.list()
@@ -49,7 +49,7 @@ func (ro *auths) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPut:
-		name := strings.TrimPrefix(r.URL.Path, "/api/Auth/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/auth/")
 		data, _ := ioutil.ReadAll(r.Body)
 		var update v1.Auth
 		err := json.Unmarshal(data, &update)
@@ -78,7 +78,7 @@ func (ro *auths) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write(res)
 		return
 	case http.MethodDelete:
-		name := strings.TrimPrefix(r.URL.Path, "/api/Auth/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/auth/")
 		d, err := ro.del(name)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)

@@ -76,7 +76,7 @@ func (s *Service) Create(ctx context.Context, service *v1.Service) (string, erro
 
 func NewService(client client.Client) *Service {
 	return &Service{
-		url:    fmt.Sprintf("%s/%s", client.Url(), "Service"),
+		url:    fmt.Sprintf("%s/%s", client.Url(), "service"),
 		client: client,
 	}
 }

@@ -77,7 +77,7 @@ func (a *Auth) Create(ctx context.Context, auth *v1.Auth) (string, error) {
 
 func NewAuth(client client.Client) *Auth {
 	return &Auth{
-		url:    fmt.Sprintf("%s/%s", client.Url(), "Auth"),
+		url:    fmt.Sprintf("%s/%s", client.Url(), "auth"),
 		client: client,
 	}
 }

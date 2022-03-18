@@ -7,7 +7,7 @@ spec:
   driver: http-service
   desc: "示例服务"
   timeout: 30000
-  annoymous:
+  anonymous:
     type: round-robin
     config: "www.eolinker.com"
   retry: 2

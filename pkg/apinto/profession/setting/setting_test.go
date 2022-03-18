@@ -20,7 +20,7 @@ type settings struct {
 
 func (ro *settings) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	if !strings.HasPrefix(r.URL.Path, "/api/Setting/plugin") {
+	if !strings.HasPrefix(r.URL.Path, "/api/setting/plugin") {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}

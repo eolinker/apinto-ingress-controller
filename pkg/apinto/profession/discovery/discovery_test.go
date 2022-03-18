@@ -23,13 +23,13 @@ type discoverys struct {
 
 func (ro *discoverys) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	if !strings.HasPrefix(r.URL.Path, "/api/Discovery") {
+	if !strings.HasPrefix(r.URL.Path, "/api/discovery") {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	switch r.Method {
 	case http.MethodGet:
-		name := strings.TrimPrefix(r.URL.Path, "/api/Discovery")
+		name := strings.TrimPrefix(r.URL.Path, "/api/discovery")
 		if len(name) == 0 {
 			// list
 			resp := ro.list()
@@ -49,7 +49,7 @@ func (ro *discoverys) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPut:
-		name := strings.TrimPrefix(r.URL.Path, "/api/Discovery/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/discovery/")
 		data, _ := ioutil.ReadAll(r.Body)
 		var update v1.Discovery
 		err := json.Unmarshal(data, &update)
@@ -78,7 +78,7 @@ func (ro *discoverys) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write(res)
 		return
 	case http.MethodDelete:
-		name := strings.TrimPrefix(r.URL.Path, "/api/Discovery/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/discovery/")
 		d, err := ro.del(name)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)

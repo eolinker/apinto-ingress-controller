@@ -23,13 +23,13 @@ type upstreams struct {
 
 func (ro *upstreams) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	if !strings.HasPrefix(r.URL.Path, "/api/Upstream") {
+	if !strings.HasPrefix(r.URL.Path, "/api/upstream") {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	switch r.Method {
 	case http.MethodGet:
-		name := strings.TrimPrefix(r.URL.Path, "/api/Upstream")
+		name := strings.TrimPrefix(r.URL.Path, "/api/upstream")
 		if len(name) == 0 {
 			// list
 			resp := ro.list()
@@ -49,7 +49,7 @@ func (ro *upstreams) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPut:
-		name := strings.TrimPrefix(r.URL.Path, "/api/Upstream/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/upstream/")
 		data, _ := ioutil.ReadAll(r.Body)
 		var update v1.Upstream
 		err := json.Unmarshal(data, &update)
@@ -78,7 +78,7 @@ func (ro *upstreams) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write(res)
 		return
 	case http.MethodDelete:
-		name := strings.TrimPrefix(r.URL.Path, "/api/Upstream/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/upstream/")
 		d, err := ro.del(name)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -176,7 +176,7 @@ func TestUpstream(t *testing.T) {
 				Profession: "Upstream",
 				Driver:     "http",
 			},
-			Discover: "demo1@discovery",
+			Discovery: "demo1@discovery",
 		},
 		{
 			Metadata: v1.Metadata{
@@ -210,7 +210,7 @@ func TestUpstream(t *testing.T) {
 	assert.Equal(t, 2, len(list))
 	t.Log("test list successfully")
 	// test update
-	cases[0].Discover = "update@discovery"
+	cases[0].Discovery = "update@discovery"
 	_, err = r.Update(c, cases[0])
 	assert.Nil(t, err)
 	res, err = r.Get(c, cases[0].Name)

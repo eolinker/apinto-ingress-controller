@@ -23,13 +23,13 @@ type services struct {
 
 func (ro *services) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	if !strings.HasPrefix(r.URL.Path, "/api/Service") {
+	if !strings.HasPrefix(r.URL.Path, "/api/service") {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	switch r.Method {
 	case http.MethodGet:
-		name := strings.TrimPrefix(r.URL.Path, "/api/Service")
+		name := strings.TrimPrefix(r.URL.Path, "/api/service")
 		if len(name) == 0 {
 			// list
 			resp := ro.list()
@@ -49,7 +49,7 @@ func (ro *services) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPut:
-		name := strings.TrimPrefix(r.URL.Path, "/api/Service/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/service/")
 		data, _ := ioutil.ReadAll(r.Body)
 		var update v1.Service
 		err := json.Unmarshal(data, &update)
@@ -78,7 +78,7 @@ func (ro *services) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write(res)
 		return
 	case http.MethodDelete:
-		name := strings.TrimPrefix(r.URL.Path, "/api/Service/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/service/")
 		d, err := ro.del(name)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -184,7 +184,7 @@ func TestService(t *testing.T) {
 				Profession: "Service",
 				Driver:     "http",
 			},
-			Anonymous: v1.AnonymousConfig{
+			Anonymous: &v1.AnonymousConfig{
 				Type:   "round-robin",
 				Config: "demo.com:8888",
 			},

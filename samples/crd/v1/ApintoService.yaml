@@ -24,7 +24,7 @@ spec:
               type: object
               oneOf:
                 - required: ["name", "driver", "upstream"]
-                - required: ["name", "driver", "annoymous"]
+                - required: ["name", "driver", "anonymous"]
               properties:
                 name:
                   type: string
@@ -39,7 +39,7 @@ spec:
                 upstream:
                   type: string
                   pattern: '\w+(@upstream)$'
-                annoymous:
+                anonymous:
                   type: object
                   properties:
                     type:

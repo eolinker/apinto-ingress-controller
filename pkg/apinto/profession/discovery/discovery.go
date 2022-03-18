@@ -77,7 +77,7 @@ func (d *Discovery) Create(ctx context.Context, discovery *v1.Discovery) (string
 
 func NewDiscovery(client client.Client) *Discovery {
 	return &Discovery{
-		url:    fmt.Sprintf("%s/%s", client.Url(), "Discovery"),
+		url:    fmt.Sprintf("%s/%s", client.Url(), "discovery"),
 		client: client,
 	}
 }

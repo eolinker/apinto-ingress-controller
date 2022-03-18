@@ -17,7 +17,7 @@ type Router struct {
 
 func NewRouter(client client.Client) *Router {
 	return &Router{
-		url:    fmt.Sprintf("%s/%s", client.Url(), "Router"),
+		url:    fmt.Sprintf("%s/%s", client.Url(), "router"),
 		client: client,
 	}
 }

@@ -23,13 +23,13 @@ type outputs struct {
 
 func (ro *outputs) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	if !strings.HasPrefix(r.URL.Path, "/api/Output") {
+	if !strings.HasPrefix(r.URL.Path, "/api/output") {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	switch r.Method {
 	case http.MethodGet:
-		name := strings.TrimPrefix(r.URL.Path, "/api/Output")
+		name := strings.TrimPrefix(r.URL.Path, "/api/output")
 		if len(name) == 0 {
 			// list
 			resp := ro.list()
@@ -49,7 +49,7 @@ func (ro *outputs) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPut:
-		name := strings.TrimPrefix(r.URL.Path, "/api/Output/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/output/")
 		data, _ := ioutil.ReadAll(r.Body)
 		var update v1.Output
 		err := json.Unmarshal(data, &update)
@@ -78,7 +78,7 @@ func (ro *outputs) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write(res)
 		return
 	case http.MethodDelete:
-		name := strings.TrimPrefix(r.URL.Path, "/api/Output/")
+		name := strings.TrimPrefix(r.URL.Path, "/api/output/")
 		d, err := ro.del(name)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)

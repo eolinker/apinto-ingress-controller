@@ -76,7 +76,7 @@ func (u *Upstream) Create(ctx context.Context, upstream *v1.Upstream) (string, e
 
 func NewUpstream(client client.Client) *Upstream {
 	return &Upstream{
-		url:    fmt.Sprintf("%s/%s", client.Url(), "Upstream"),
+		url:    fmt.Sprintf("%s/%s", client.Url(), "upstream"),
 		client: client,
 	}
 }

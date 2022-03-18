@@ -76,7 +76,7 @@ func (o *Output) Create(ctx context.Context, output *v1.Output) (string, error) 
 
 func NewOutput(client client.Client) *Output {
 	return &Output{
-		url:    fmt.Sprintf("%s/%s", client.Url(), "Output"),
+		url:    fmt.Sprintf("%s/%s", client.Url(), "output"),
 		client: client,
 	}
 }
