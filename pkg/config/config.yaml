@@ -6,7 +6,7 @@ key_file: "./cert/server.key"
 # log option
 log:
   log_level: "info"    # error log level
-  log_output: "stderr" # error log output file
+  log_output: "stdout" # error log output file
   # 日志分割周期
   log_period: day # error log file split period,day or hour or month
   # 日志过期时间

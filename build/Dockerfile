@@ -6,9 +6,7 @@ ENV APPNAME=apinto-ingress-controller
 
 COPY . /go/src/${APPNAME}
 
-RUN cd /go/src/${APPNAME}
-RUN go install ./...
-
+RUN go install /go/src/${APPNAME}
 
 FROM alpine:latest
 COPY --from=builder /go/src/${APPNAME}/config/config.yaml /etc/ingress/config.yaml

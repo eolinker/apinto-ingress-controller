@@ -7,6 +7,7 @@ import (
 	"github.com/eolinker/apinto-ingress-controller/pkg/api/translation"
 	kubev1 "github.com/eolinker/apinto-ingress-controller/pkg/kube/apinto/configs/apinto/v1"
 	apintov1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
+	"github.com/eolinker/eosc/log"
 	kwhmodel "github.com/slok/kubewebhook/v2/pkg/model"
 	kwhvalidating "github.com/slok/kubewebhook/v2/pkg/webhook/validating"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -21,6 +22,7 @@ var ApintoGlobalSettingValidator = kwhvalidating.ValidatorFunc(
 		valid := true
 		var msg string
 		//将object转化成globalSetting
+		log.Info(review)
 		as := &kubev1.ApintoGlobalSetting{}
 		err = json.Unmarshal(review.NewObjectRaw, as)
 		//as, ok := object.(*kubev1.ApintoGlobalSetting)
