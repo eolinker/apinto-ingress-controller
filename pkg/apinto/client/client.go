@@ -82,6 +82,7 @@ func (c *client) applyAuth(req *http.Request) {
 	if c.adminKey != "" {
 		req.Header.Set("APINTO-API-Key", c.adminKey)
 	}
+	req.Header.Set("Content-Type", "application/json")
 }
 
 // 发送请求
@@ -107,18 +108,17 @@ func drainBody(r io.ReadCloser, url string) {
 }
 
 // 读取响应内容
-func readBody(r io.ReadCloser, url string) string {
+func readBody(r io.ReadCloser) ([]byte, error) {
 	defer func() {
 		if err := r.Close(); err != nil {
-			log.Errorf("failed to close body from %s, err: %s", url, err.Error())
+			log.Errorf("failed to close body, err: %s", err.Error())
 		}
 	}()
 	data, err := ioutil.ReadAll(r)
 	if err != nil {
-		log.Errorf("failed to read body from %s, err: %s", url, err.Error())
-		return ""
+		return nil, fmt.Errorf("failed to read body, err: %s", err.Error())
 	}
-	return string(data)
+	return data, nil
 }
 
 func (c *client) Url() string {
@@ -133,17 +133,21 @@ func (c *client) Get(ctx context.Context, url string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer drainBody(resp.Body, url)
+
+	data, err := readBody(resp.Body)
+	if err != nil {
+		return nil, err
+	}
 	if resp.StatusCode != http.StatusOK {
 		if resp.StatusCode == http.StatusNotFound {
 			return nil, _errNotFound
 		} else {
 			err = multierr.Append(err, fmt.Errorf("unexpected status code %d", resp.StatusCode))
-			err = multierr.Append(err, fmt.Errorf("error message: %s", readBody(resp.Body, url)))
+			err = multierr.Append(err, fmt.Errorf("error message: %s, url: %s", string(data), url))
 		}
 		return nil, err
 	}
-	return ioutil.ReadAll(resp.Body)
+	return data, nil
 }
 
 func (c *client) List(ctx context.Context, url string) ([]*response.Response, error) {
@@ -155,15 +159,18 @@ func (c *client) List(ctx context.Context, url string) ([]*response.Response, er
 	if err != nil {
 		return nil, err
 	}
-	defer drainBody(resp.Body, url)
+
+	data, err := readBody(resp.Body)
+	if err != nil {
+		return nil, err
+	}
 	if resp.StatusCode != http.StatusOK {
 		err = multierr.Append(err, fmt.Errorf("unexpected status code %d", resp.StatusCode))
-		err = multierr.Append(err, fmt.Errorf("error message: %s", readBody(resp.Body, url)))
+		err = multierr.Append(err, fmt.Errorf("error message: %s, url: %s", string(data), url))
 		return nil, err
 	}
 	var list []*response.Response
-	dec := json.NewDecoder(resp.Body)
-	if err = dec.Decode(&list); err != nil {
+	if err = json.Unmarshal(data, &list); err != nil {
 		return nil, err
 	}
 	return list, nil
@@ -179,18 +186,17 @@ func (c *client) Create(ctx context.Context, url string, body io.Reader) (*respo
 	if err != nil {
 		return nil, err
 	}
-
-	defer drainBody(resp.Body, url)
-
-	if resp.StatusCode != http.StatusOK {
-		err = multierr.Append(err, fmt.Errorf("unexpected status code %d", resp.StatusCode))
-		err = multierr.Append(err, fmt.Errorf("error message: %s", readBody(resp.Body, url)))
+	data, err := readBody(resp.Body)
+	if err != nil {
 		return nil, err
 	}
-
+	if resp.StatusCode != http.StatusOK {
+		err = multierr.Append(err, fmt.Errorf("unexpected status code %d", resp.StatusCode))
+		err = multierr.Append(err, fmt.Errorf("error message: %s, url: %s", string(data), url))
+		return nil, err
+	}
 	var cr response.Response
-	dec := json.NewDecoder(resp.Body)
-	if err = dec.Decode(&cr); err != nil {
+	if err = json.Unmarshal(data, &cr); err != nil {
 		return nil, err
 	}
 	return &cr, nil
@@ -205,21 +211,22 @@ func (c *client) Delete(ctx context.Context, url string) (*response.Response, er
 	if err != nil {
 		return nil, err
 	}
-
-	defer drainBody(resp.Body, url)
+	data, err := readBody(resp.Body)
+	if err != nil {
+		return nil, err
+	}
 	// 错误处理
 	if resp.StatusCode != http.StatusOK {
-		message := readBody(resp.Body, url)
+		message := string(data)
 		if strings.Contains(message, "requiring") {
 			return nil, _errStillInUse
 		}
-		err = multierr.Append(err, fmt.Errorf("error message: %s", message))
+		err = multierr.Append(err, fmt.Errorf("error message: %s, url: %s", message, url))
 		err = multierr.Append(err, fmt.Errorf("unexpected status code %d", resp.StatusCode))
 		return nil, err
 	}
 	var res response.Response
-	dec := json.NewDecoder(resp.Body)
-	if err = dec.Decode(&res); err != nil {
+	if err = json.Unmarshal(data, &res); err != nil {
 		return nil, err
 	}
 	return &res, nil
@@ -236,17 +243,18 @@ func (c *client) Update(ctx context.Context, url string, body io.Reader) (*respo
 		return nil, err
 	}
 
-	defer drainBody(resp.Body, url)
-
+	data, err := readBody(resp.Body)
+	if err != nil {
+		return nil, err
+	}
 	if resp.StatusCode != http.StatusOK {
 		err = multierr.Append(err, fmt.Errorf("unexpected status code %d", resp.StatusCode))
-		err = multierr.Append(err, fmt.Errorf("error message: %s", readBody(resp.Body, url)))
+		err = multierr.Append(err, fmt.Errorf("error message: %s, url: %s", string(data), url))
 		return nil, err
 	}
-	var ur response.Response
-	dec := json.NewDecoder(resp.Body)
-	if err = dec.Decode(&ur); err != nil {
+	var res response.Response
+	if err = json.Unmarshal(data, &res); err != nil {
 		return nil, err
 	}
-	return &ur, nil
+	return &res, nil
 }
