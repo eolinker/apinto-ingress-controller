@@ -78,7 +78,7 @@ func NewIngressCommand() *cobra.Command {
 		},
 	}
 
-	cmd.PersistentFlags().StringVar(&configPath, "config-path", "", "configuration file path for apinto-ingress-controller")
+	cmd.PersistentFlags().StringVar(&configPath, "config-path", "/etc/ingress/config.yaml", "configuration file path for apinto-ingress-controller")
 	cmd.PersistentFlags().StringVar(&cfg.Log.LogLevel, "log-level", "info", "error log level")
 	cmd.PersistentFlags().StringVar(&cfg.Log.LogOutput, "log-output", "stderr", "error log output file")
 	cmd.PersistentFlags().StringVar(&cfg.HTTPListen, "http-listen", ":8080", "the HTTP Server listen address")

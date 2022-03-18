@@ -6,8 +6,11 @@ import (
 	"github.com/eolinker/apinto-ingress-controller/pkg/apinto"
 	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/cluster"
 	"github.com/eolinker/apinto-ingress-controller/pkg/config"
+	scheme2 "github.com/eolinker/apinto-ingress-controller/pkg/kube/apinto/client/clientset/versioned/scheme"
 	"github.com/eolinker/apinto-ingress-controller/pkg/types"
 	"github.com/eolinker/eosc/log"
+	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
+	"k8s.io/client-go/kubernetes/scheme"
 	"net/http"
 	"os"
 	"time"
@@ -34,6 +37,7 @@ func NewController(cfg *config.Config) (*Controller, error) {
 	if err != nil {
 		return nil, err
 	}
+	utilruntime.Must(scheme2.AddToScheme(scheme.Scheme))
 	return &Controller{
 		name:      podName,
 		namespace: podNamespace,
