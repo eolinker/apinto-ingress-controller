@@ -7,7 +7,6 @@ import (
 	"github.com/eolinker/apinto-ingress-controller/pkg/api/translation"
 	kubev1 "github.com/eolinker/apinto-ingress-controller/pkg/kube/apinto/configs/apinto/v1"
 	apintov1 "github.com/eolinker/apinto-ingress-controller/pkg/types/apinto/v1"
-	"github.com/eolinker/eosc/log"
 	kwhmodel "github.com/slok/kubewebhook/v2/pkg/model"
 	kwhvalidating "github.com/slok/kubewebhook/v2/pkg/webhook/validating"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -28,7 +27,8 @@ var ApintoOutputValidator = kwhvalidating.ValidatorFunc(
 		//if !ok {
 		//	return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoOutput.Error()}, nil
 		//}
-		log.Info(review)
+		//log.Info(review)
+
 		switch review.Operation {
 		case "create":
 			ao := &kubev1.ApintoOutput{}
@@ -38,7 +38,6 @@ var ApintoOutputValidator = kwhvalidating.ValidatorFunc(
 			}
 
 			apintoOutput := translation.KubeOutputToApinto(ao)
-
 			_, err = validator.Output().Create(ctx, apintoOutput)
 			if err != nil {
 				valid = false

@@ -6,7 +6,6 @@ import (
 	"errors"
 	"github.com/eolinker/apinto-ingress-controller/pkg/api/translation"
 	kubev1 "github.com/eolinker/apinto-ingress-controller/pkg/kube/apinto/configs/apinto/v1"
-	"github.com/eolinker/eosc/log"
 	kwhmodel "github.com/slok/kubewebhook/v2/pkg/model"
 	kwhvalidating "github.com/slok/kubewebhook/v2/pkg/webhook/validating"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -21,11 +20,6 @@ var ApintoRouterValidator = kwhvalidating.ValidatorFunc(
 
 		valid := true
 		var msg string
-		log.Info(review)
-		//ar, ok := object.(*kubev1.ApintoRouter)
-		//if !ok {
-		//	return &kwhvalidating.ValidatorResult{Valid: false, Message: errNotApintoRouter.Error()}, errNotApintoRouter
-		//}
 
 		switch review.Operation {
 		case "create":
