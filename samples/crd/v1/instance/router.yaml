@@ -3,7 +3,7 @@ kind: ApintoRouter
 metadata:
   name: apinto.router
 spec:
-  name: apinto.router# 路由名称
+  name: apinto.router # 路由名称
   listen: 8080    # 监听端口
   driver: http # 驱动
   protocol: http
