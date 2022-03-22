@@ -33,7 +33,8 @@ func NewController(cfg *config.Config) (*Controller, error) {
 	if podNamespace == "" {
 		podNamespace = "default"
 	}
-	admission, err := api.NewAdmissionServer(cfg)
+	client := apinto.NewApinto()
+	admission, err := api.NewAdmissionServer(cfg, client)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +44,7 @@ func NewController(cfg *config.Config) (*Controller, error) {
 		namespace: podNamespace,
 		cfg:       cfg,
 		admission: admission,
-		apinto:    apinto.NewApinto(),
+		apinto:    client,
 	}, nil
 }
 

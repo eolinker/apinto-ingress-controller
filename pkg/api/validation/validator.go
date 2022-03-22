@@ -1,9 +1,10 @@
 package validation
 
 import (
+	"github.com/eolinker/apinto-ingress-controller/pkg/apinto"
 	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/cluster"
 	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/profession"
-	"github.com/eolinker/eosc/log"
+	"github.com/eolinker/apinto-ingress-controller/pkg/config"
 )
 
 type admissionServer interface {
@@ -18,18 +19,10 @@ var (
 	validator admissionServer
 )
 
-func InitAdmission(cfg *cluster.ClusterOptions) error {
-
-	c, err := cluster.NewCluster(cfg)
-	if err != nil {
-		log.Errorf("failed to init admissionServer: %s", err)
-		return err
-	}
-
+func InitAdmission(cfg *config.Config, apinto apinto.Apinto) error {
 	validator = &admission{
-		c,
+		apinto.Cluster(cfg.APINTO.DefaultClusterName),
 	}
-
 	return nil
 }
 

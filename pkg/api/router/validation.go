@@ -2,17 +2,13 @@ package router
 
 import (
 	"github.com/eolinker/apinto-ingress-controller/pkg/api/validation"
-	"github.com/eolinker/apinto-ingress-controller/pkg/apinto/cluster"
+	"github.com/eolinker/apinto-ingress-controller/pkg/apinto"
 	"github.com/eolinker/apinto-ingress-controller/pkg/config"
 	"github.com/gin-gonic/gin"
 )
 
-func ValidatingWebhook(g *gin.Engine, cfg *config.Config) error {
-	err := validation.InitAdmission(&cluster.ClusterOptions{
-		Name:     cfg.APINTO.DefaultClusterName,
-		AdminKey: cfg.APINTO.DefaultClusterAdminKey,
-		BaseURL:  cfg.APINTO.DefaultClusterBaseURL,
-	})
+func ValidatingWebhook(g *gin.Engine, cfg *config.Config, apinto apinto.Apinto) error {
+	err := validation.InitAdmission(cfg, apinto)
 
 	if err != nil {
 		return err
