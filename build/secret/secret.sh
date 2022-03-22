@@ -13,3 +13,5 @@ openssl rsa -in server.pem -out server.key
 openssl req -new -subj "/CN=apinto-admission-server.default.svc" -key server.pem -out server.csr
 #用ca证书签发服务端证书（含公钥）
 openssl x509 -req -sha256 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 365000 -out server.crt
+
+#最终生成的文件有ca.crt
