@@ -1,0 +1,212 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: apintooutputs.apinto.com
+spec:
+  group: apinto.com
+  names:
+    plural: apintooutputs
+    singular: apintooutput
+    kind: ApintoOutout
+    shortNames:
+      - ao
+      - output
+  scope: Namespaced
+  versions:
+    - name: v1beta
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              oneOf:
+                - required: ["name", "driver", "file_output"]
+                - required: ["name", "driver", "nsqd"]
+                - required: ["name", "driver", "http_output"]
+                - required: ["name", "driver", "syslog_output"]
+                - required: ["name", "driver", "kafka_output"]
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                driver:
+                  type: string
+                  enum: ["file_output","nsqd","http_output","syslog_output","kafka_output"]
+                file_output:
+                  type: object
+                  required: ["config"]
+                  properties:
+                    config:
+                      type: object
+                      properties:
+                        file:
+                          type: string
+                          minLength: 1
+                        dir:
+                          type: string
+                          minLength: 1
+                        period:
+                          type: string
+                          default: "day"
+                          enum: [ "day", "hour" ]
+                        expire:
+                          type: integer
+                          minimum: 0
+                        type:
+                          type: string
+                          default: line
+                          enum: [ "line", "json" ]
+                        formatter:
+                          type: object
+                          x-kubernetes-preserve-unknown-fields: true
+                          required: ["fields"]
+                          properties:
+                            fields:
+                              type: array
+                              items:
+                                nullable: true
+                                type: string
+                nsqd:
+                  type: object
+                  required: ["config"]
+                  properties:
+                    config:
+                      type: object
+                      properties:
+                        topic:
+                          type: string
+                          minLength: 1
+                        address:
+                          type: array
+                          minItems: 1
+                          items:
+                            type: string
+                        nsq_conf:
+                          type: object
+                          nullable: true
+                          x-kubernetes-preserve-unknown-fields: true
+                        type:
+                          type: string
+                          default: line
+                          enum: [ "line", "json" ]
+                        formatter:
+                          type: object
+                          x-kubernetes-preserve-unknown-fields: true
+                          required: ["fields"]
+                          properties:
+                            fields:
+                              type: array
+                              items:
+                                nullable: true
+                                type: string
+                http_output:
+                  type: object
+                  required: ["config"]
+                  properties:
+                    config:
+                      type: object
+                      properties:
+                        method:
+                          type: string
+                          default: "POST"
+                          enum: [ "GET", "POST", "HEAD", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE" ]
+                        url:
+                          type: string
+                          pattern: '(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?'
+                        headers:
+                          type: object
+                          nullable: true
+                          x-kubernetes-preserve-unknown-fields: true
+                        type:
+                          type: string
+                          default: "line"
+                          enum: [ "line", "json" ]
+                        formatter:
+                          type: object
+                          x-kubernetes-preserve-unknown-fields: true
+                          required: ["fields"]
+                          properties:
+                            fields:
+                              type: array
+                              items:
+                                nullable: true
+                                type: string
+                syslog_output:
+                  type: object
+                  required: ["config"]
+                  properties:
+                    config:
+                      type: object
+                      properties:
+                        network:
+                          type: string
+                          default: "tcp"
+                          enum: [ "tcp","udp","unix" ]
+                        level:
+                          type: string
+                          default: "error"
+                          enum: [ "error","warn","warning","info","debug","trace" ]
+                        address:
+                          type: string
+                          minLength: 1
+                        type:
+                          type: string
+                          default: "line"
+                          enum: [ "line", "json" ]
+                        formatter:
+                          type: object
+                          required: ["fields"]
+                          x-kubernetes-preserve-unknown-fields: true
+                          properties:
+                            fields:
+                              type: array
+                              items:
+                                nullable: true
+                                type: string
+                kafka_output:
+                  type: object
+                  required: ["config"]
+                  properties:
+                    config:
+                      type: object
+                      required: [ "topic", "address", "partition_type"]
+                      properties:
+                        topic:
+                          type: string
+                          minLength: 1
+                        address:
+                          type: string
+                          minLength: 1
+                        timeout:
+                          default: 10
+                          type: integer
+                        version:
+                          nullable: true
+                          type: string
+                        partition_type:
+                          type: string
+                          default: "random"
+                          enum: [ "random", "robin", "hash", "manual" ]
+                        partition:
+                          default: 0
+                          type: integer
+                        partition_key:
+                          type: string
+                          minLength: 1
+                        type:
+                          type: string
+                          default: line
+                          enum: [ "line", "json" ]
+                        formatter:
+                          type: object
+                          x-kubernetes-preserve-unknown-fields: true
+                          required: ["fields"]
+                          properties:
+                            fields:
+                              type: array
+                              items:
+                                nullable: true
+                                type: string

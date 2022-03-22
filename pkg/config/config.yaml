@@ -1,0 +1,33 @@
+
+# config
+config-path: "/etc/ingress" # configuration file path for apinto-ingress-controller
+cert_file: "./cert/server.crt"
+key_file: "./cert/server.key"
+# log option
+log:
+  log_level: "info"    # error log level
+  log_output: "stdout" # error log output file
+  # 日志分割周期
+  log_period: day # error log file split period,day or hour or month
+  # 日志过期时间
+  log_expire: 1 # error log file after several days
+
+# listen
+http_listen: ":8080"   # the HTTP Server listen address, default is ":8080"
+https_listen: ":8443"   # the HTTPS Server listen address, default is ":8443"
+
+# profiling
+enable_profiling: true # enable profiling via web interfaces
+# host:port/debug/pprof, default is true.
+
+# 竞选负责人使用的选举id
+election_id: "ingress-apinto-leader"
+
+# APINTO related configurations.
+apinto:
+  # 调用管理接口的集群路径，此时填写到service的访问地址即可
+  default_cluster_base_url: "http://172.18.189.43:31094/api" # the base URL of admin api / manager api for the default APINTO cluster
+  # 调用管理接口时的默认管理密钥
+  default_cluster_admin_key: "" # admin key used for the authorization of admin api / manager api for the default APINTO cluster
+  # 默认是default
+  default_cluster_name: "default" #  name of the default APINTO cluster.

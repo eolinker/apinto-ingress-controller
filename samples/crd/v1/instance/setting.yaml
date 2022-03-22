@@ -1,0 +1,21 @@
+apiVersion: apinto.com/v1beta
+kind: ApintoGlobalSetting
+metadata:
+  name: test-ags
+spec:
+  plugins:
+    - id: eolinker.com:apinto:extra_params
+      name: extra_params_one
+      type: service
+      status: global
+      config:
+        params:
+          - name: a
+            position: query
+            value: "1"
+            conflict: Convert
+        error_type: text
+    - id: eolinker.com:apinto:extra_params
+      name: extra_params_two
+      type: service
+      status: enable

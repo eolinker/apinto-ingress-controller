@@ -1,0 +1,30 @@
+apiVersion: apinto.com/v1beta
+kind: ApintoDiscovery
+metadata:
+  name: demo-ad-1
+spec:
+  name: demo-ad-1
+  driver: consul
+  scheme: http
+  config:
+    address: ["127.0.0.1:8501","127.0.0.1:8500"]
+    params:
+      token: "a92316d8-5c99-4fa0-b4cd-30b9e66718aa"
+      namespace: default
+---
+apiVersion: apinto.com/v1beta
+kind: ApintoDiscovery
+metadata:
+  name: demo-ad-2
+spec:
+  name: demo-ad-2
+  driver: static
+  scheme: http
+  health:
+    scheme: http
+    method: GET
+    url: http://test.com/health/check
+    success_code: 200
+    period: 30
+    timeout: 3000
+    

@@ -1,0 +1,16 @@
+apiVersion: apinto.com/v1beta
+kind: ApintoRouter
+metadata:
+  name: apinto.router
+spec:
+  name: apinto.router# 路由名称
+  listen: 8080    # 监听端口
+  driver: http # 驱动
+  protocol: http
+  method:
+    - POST
+  host: # 域名列表，满足该监听端口且域名在下列列表中的可进入该路由，不填则允许IP访问
+    - demo.com
+  rules:      # 规则列表
+    - location: "/*"  # 匹配路径，该示例为前缀匹配，即只要前缀是 “/” 的路径都可匹配成功
+  target: demo@service    # 目标服务ID，格式为：{服务名称}@service

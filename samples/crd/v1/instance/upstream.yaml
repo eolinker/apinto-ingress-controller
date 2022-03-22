@@ -1,0 +1,18 @@
+apiVersion: apinto.com/v1beta
+kind: ApintoUpstream
+metadata:
+  name: test-au
+spec:
+  name: test-au
+  driver: http_proxy
+  desc: 测试
+  discovery: static_no_health@discovery
+  config: "127.0.0.1:8580 weight=1000;10.1.1.2 weight=10"
+  scheme: http
+  type: round_robin
+  plugins:
+    ip_restriction:
+      disable: false
+      config:
+        ip_list_type: black
+        ip_black_list: ["127.0.0.1"]

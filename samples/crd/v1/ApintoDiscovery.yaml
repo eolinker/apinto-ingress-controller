@@ -1,0 +1,68 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  # 名字必需与下面的 spec 字段匹配，并且格式为 '<名称的复数形式>.<组名>'
+  name: apintodiscoveries.apinto.com
+spec:
+  # 组名称，用于 REST API: /apis/<组>/<版本>
+  group: apinto.com
+  # 可以是 Namespaced 或 Cluster
+  scope: Namespaced
+  names:
+    plural: apintodiscoveries
+    singular: apintodiscovery
+    kind: ApintoDiscovery
+    shortNames:
+      - ad
+  # 列举此 CustomResourceDefinition 所支持的版本
+  versions:
+    - name: v1beta
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              oneOf:
+                - required: ["name","driver","scheme","health_on","health"]
+                - required: ["name","driver","scheme","config"]
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                driver:
+                  type: string
+                  enum: ["static","consul","nacos","eureka"]
+                scheme:
+                  type: string
+                  enum: ["http","https"]
+                config:
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+                health_on:
+                  type: boolean
+                  default: false
+                health:
+                  type: object
+                  required: ["scheme", "method", "url", "success_code", "period", "timeout"]
+                  properties:
+                    scheme:
+                      type: string
+                      enum: ["http","https"]
+                    method:
+                      type: string
+                      enum: ["CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE"]
+                    url:
+                      type: string
+                      pattern: '^http://([\w-]+\.)+[\w-]+(/[\w-./?%&=]*)?$'
+                    success_code:
+                      type: integer
+                      minimum: 1
+                    period:
+                      type: integer
+                      minimum: 1
+                    timeout:
+                      type: integer
+                      minimum: 1

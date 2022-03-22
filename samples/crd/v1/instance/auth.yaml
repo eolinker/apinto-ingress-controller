@@ -1,0 +1,53 @@
+apiVersion: apinto.com/v1beta
+kind: ApintoAuth
+metadata:
+  name: demo-aa-aksk
+spec:
+  name: demo-aa-aksk
+  driver: aksk
+  user:
+    - expire: 168714456465
+      ak: test
+      sk: test
+---
+apiVersion: apinto.com/v1beta
+kind: ApintoAuth
+metadata:
+  name: demo-aa-apikey
+spec:
+  name: demo-aa-apikey
+  driver: apikey
+  user:
+    - expire: 168714456465
+      apikey: test
+---
+apiVersion: apinto.com/v1beta
+kind: ApintoAuth
+metadata:
+  name: demo-aa-basic
+spec:
+  name: demo-aa-basic
+  driver: basic
+  user:
+    - expire: 168714456465
+      username: test
+      password: test
+---
+apiVersion: apinto.com/v1beta
+kind: ApintoAuth
+metadata:
+  name: demo-aa-jwt
+spec:
+  name: demo-aa-jwt
+  driver: jwt
+  signature_is_base64: false
+  run_on_preflight: true
+  claims_to_verify:
+    - exp
+  credentials:
+    - iss: test1
+      secret: test
+      algorithm: HS256
+    - iss: test2
+      rsa_public_key: test_rsa
+      algorithm: RS256

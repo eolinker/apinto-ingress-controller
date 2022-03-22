@@ -1,0 +1,111 @@
+apiVersion: apinto.com/v1beta
+kind: ApintoOutout
+metadata:
+  name: kafkalog1
+spec:
+  name: kafkaLog.1
+  driver: kafka_output
+  kafka_output:
+    config:
+      topic: "test1"
+      address: 127.0.0.1
+      version: 2.0.0.2
+      partition_type: "random"
+      type: "json"
+      formatter:
+        fields: []
+---
+apiVersion: apinto.com/v1beta
+kind: ApintoOutout
+metadata:
+  name: kafkalog.2
+spec:
+  name: kafkaLog2
+  driver: kafka_output
+  kafka_output:
+    config:
+      topic: "test2"
+      address: 127.0.0.2
+      partition_type: "hash"
+      partition_key: "$read_ip"
+      formatter:
+        fields: []
+---
+apiVersion: apinto.com/v1beta
+kind: ApintoOutout
+metadata:
+  name: kafkalog3
+spec:
+  name: kafkaLog.3
+  driver: kafka_output
+  kafka_output:
+    config:
+      topic: "test3"
+      address: 127.0.0.3
+      partition_type: "manual"
+      partition: 0
+      formatter:
+        fields: []
+---
+apiVersion: apinto.com/v1beta
+kind: ApintoOutout
+metadata:
+  name: nsqdlog
+spec:
+  name: nsqdLog
+  driver: nsqd
+  nsqd:
+    config:
+      topic: "test"
+      address:
+        - 127.0.0.1
+      formatter:
+        fields: []
+---
+apiVersion: apinto.com/v1beta
+kind: ApintoOutout
+metadata:
+  name: httpaccesslog
+spec:
+  name: httpAccessLog
+  driver: http_output
+  http_output:
+    config:
+      url: http://127.0.0.1
+      method: POST
+      type: json
+      formatter:
+        fields: #当长度为0时默认输出所有字段
+          - "$http_hedaer_text"
+          - "$read_ip"
+          - "$service"
+          - "$proxy_header_authorization"
+          - "$proxy_uri"
+          - "$proxy_scheme" # http
+          - "$cookie"
+          - "$cookie_eolinker"
+          - "$service"
+          - "@proxys"
+        proxys:
+          - "$header"
+---
+apiVersion: apinto.com/v1beta
+kind: ApintoOutout
+metadata:
+  name: fileaccesslog
+spec:
+  name: fileAccessLog
+  driver: file_output
+  file_output:
+    config:
+      dir: work
+      file: access.log
+      period: day
+      expire: 3
+      formatter:
+        fields:
+          - "$http_hedaer_text"
+          - "$read_ip"
+          - "$service"
+          - "$proxy_header_authorization"
+          - "$proxy_uri"

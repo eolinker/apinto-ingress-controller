@@ -1,0 +1,98 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  # 名字必需与下面的 spec 字段匹配，并且格式为 '<名称的复数形式>.<组名>'
+  name: apintoauths.apinto.com
+spec:
+  # 组名称，用于 REST API: /apis/<组>/<版本>
+  group: apinto.com
+  # 可以是 Namespaced 或 Cluster
+  scope: Namespaced
+  names:
+    plural: apintoauths
+    singular: apintoauth
+    kind: ApintoAuth
+    shortNames:
+      - aa
+  # 列举此 CustomResourceDefinition 所支持的版本
+  versions:
+    - name: v1beta
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              oneOf:
+                - required: ["name","driver","hide_credentials","user"]
+                - required: ["name","driver","hide_credentials","signature_is_base64","run_on_preflight","credentials"]
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                driver:
+                  type: string
+                  enum: ["aksk","apikey","basic","jwt"]
+                hide_credentials:
+                  type: boolean
+                  default: false
+                user:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    oneOf:
+                      - required: ["expire","ak","sk"]
+                      - required: ["expire","apikey"]
+                      - required: ["expire","username","password"]
+                    properties:
+                      expire:
+                        type: integer
+                        minimum: 0
+                      ak:
+                        type: string
+                        minLength: 1
+                      sk:
+                        type: string
+                        minLength: 1
+                      apikey:
+                        type: string
+                        minLength: 1
+                      username:
+                        type: string
+                        minLength: 1
+                      password:
+                        type: string
+                        minLength: 1
+                signature_is_base64:
+                  type: boolean
+                run_on_preflight:
+                  type: boolean
+                claims_to_verify:
+                  type: array
+                  items:
+                    type: string
+                    enum: ["exp","nbf"]
+                credentials:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    oneOf:
+                      - required: ["iss","secret","algorithm"]
+                      - required: ["iss","rsa_public_key","algorithm"]
+                    properties:
+                      iss:
+                        type: string
+                        minLength: 1
+                      secret:
+                        type: string
+                        minLength: 1
+                      rsa_public_key:
+                        type: string
+                        minLength: 1
+                      algorithm:
+                        type: string
+                        enum: ["HS256","HS384","HS512","RS256","RS384","RS512","ES256","ES384","ES512"]

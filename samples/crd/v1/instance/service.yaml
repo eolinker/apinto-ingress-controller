@@ -1,0 +1,35 @@
+apiVersion: apinto.com/v1beta
+kind: ApintoService
+metadata:
+  name: demo-annoymous
+spec:
+  name: demo-annoymous
+  driver: http-service
+  desc: "示例服务"
+  timeout: 30000
+  anonymous:
+    type: round-robin
+    config: "www.eolinker.com"
+  retry: 2
+  rewrite_url: /
+---
+apiVersion: apinto.com/v1beta
+kind: ApintoService
+metadata:
+  name: demo-upstream
+spec:
+  name: demo-upstream    # 服务名称
+  driver: http-service  # http驱动
+  desc: "示例服务"  # 服务描述
+  timeout: 30000  # 超时时间，单位：ms
+  upstream: demo@upstream  # 负载配置
+  retry: 2
+  rewrite_url: /
+  scheme: http
+  plugins:
+    access_log:
+      disable: false
+      config:
+        output:
+          - filelog@output
+          - httplog@output

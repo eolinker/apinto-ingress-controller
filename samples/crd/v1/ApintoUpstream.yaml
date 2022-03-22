@@ -1,0 +1,57 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  # 名字必需与下面的 spec 字段匹配，并且格式为 '<名称的复数形式>.<组名>'
+  name: apintoupstreams.apinto.com
+spec:
+  # 组名称，用于 REST API: /apis/<组>/<版本>
+  group: apinto.com
+  # 可以是 Namespaced 或 Cluster
+  scope: Namespaced
+  names:
+    plural: apintoupstreams
+    singular: apintoupstream
+    kind: ApintoUpstream
+    shortNames:
+      - au
+  # 列举此 CustomResourceDefinition 所支持的版本
+  versions:
+    - name: v1beta
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                driver:
+                  type: string
+                  enum:
+                    - http_proxy
+                desc:
+                  type: string
+                discovery:
+                  type: string
+                  pattern: '\w+(@discovery)$'
+                config:
+                  type: string
+                  minLength: 1
+                scheme:
+                  type: string
+                  enum:
+                    - http
+                    - https
+                "type":
+                  type: string
+                  enum:
+                    - round_robin
+                plugins:
+                  type: object
+                  nullable: true
+                  x-kubernetes-preserve-unknown-fields: true
+              required: ["name","driver","discovery","config","scheme","type"]
