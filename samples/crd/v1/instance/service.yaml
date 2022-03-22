@@ -9,6 +9,6 @@ spec:
   timeout: 30000
   anonymous:
     type: round-robin
-    config: "http://demo-apinto.eolink.com:8280"
+    config: "demo-apinto.eolink.com:8280"
   retry: 2
   rewrite_url: /
