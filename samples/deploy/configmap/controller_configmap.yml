@@ -4,17 +4,23 @@ metadata:
   name: apinto_ingress_conf
 data:
   config.yml: |
+    # the certificate path for admission
     cert_file: "/etc/webhook/certs/server.crt"
     key_file: "/etc/webhook/certs/server.key"
+    
+    # listen options
+    http_listen: ":8080" # the HTTP Server listen address, default is ":8080"
+    https_listen: ":8443" # the HTTPS Server listen address, default is ":8443"
+    
+    # log options
     log:
-      log_level: "info"
-      log_output: "stderr"
-      log_period: day
-      log_expire: 1
-    http_listen: ":8080"
-    https_listen: ":8443"
-    enable_profiling: true
+      log_level: "info" # the error log level, default is info, optional values are: debug, info, warn, error, panic, fatal
+      log_output: "stderr" # the error log path, default is stderr, when the file path is "stderr" or "stdout", logs are marshalled plainly, which is more readable for human
+      log_period: day # error log file split period,day or hour or month
+      log_expire: 1 # error log file after several days
+    
+    # apinto options
     apinto:
-      default_cluster_base_url: "${apinto_svc_name}.${namespace}.svc:9400/api"
-      default_cluster_admin_key: ""
-      default_cluster_name: "default"
+      default_cluster_base_url: "${apinto_svc_name}.${namespace}.svc:9400/api"  # the base URL of admin api / manager api for the default APINTO cluster
+      default_cluster_admin_key: "" # admin key used for the authorization of admin api / manager api for the default APINTO cluster
+      default_cluster_name: "default" #  name of the default APINTO cluster.
