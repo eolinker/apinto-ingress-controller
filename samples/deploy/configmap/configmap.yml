@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apinto_ingress_conf
+data:
+  config.yml: |
+    cert_file: "/etc/webhook/certs/server.crt"
+    key_file: "/etc/webhook/certs/server.key"
+    log:
+      log_level: "info"
+      log_output: "stderr"
+      log_period: day
+      log_expire: 1
+    http_listen: ":8080"
+    https_listen: ":8443"
+    enable_profiling: true
+    apinto:
+      default_cluster_base_url: "${apinto_svc_name}.${namespace}.svc:9400/api"
+      default_cluster_admin_key: ""
+      default_cluster_name: "default"
