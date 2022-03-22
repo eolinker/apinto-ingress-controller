@@ -23,7 +23,7 @@ spec:
             spec:
               type: object
               oneOf:
-                - required: ["name", "driver", "file_output"]
+                - required: ["name", "driver", "file"]
                 - required: ["name", "driver", "nsqd"]
                 - required: ["name", "driver", "http_output"]
                 - required: ["name", "driver", "syslog_output"]
@@ -34,8 +34,8 @@ spec:
                   minLength: 1
                 driver:
                   type: string
-                  enum: ["file_output","nsqd","http_output","syslog_output","kafka_output"]
-                file_output:
+                  enum: ["file","nsqd","http_output","syslog_output","kafka_output"]
+                file:
                   type: object
                   required: ["config"]
                   properties:
