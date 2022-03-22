@@ -6,11 +6,14 @@ ENV APPNAME=apinto-ingress-controller
 
 COPY . /go/src/${APPNAME}
 
-RUN cd /go/src/${APPNAME}
-RUN go install ./...
+WORKDIR /go/src/${APPNAME}
+RUN go install /go/src/${APPNAME}
 
 
 FROM alpine:latest
+
+ENV APPNAME=apinto-ingress-controller
+RUN mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
 
 COPY --from=builder /go/bin/${APPNAME} /ingress/${APPNAME}
 WORKDIR /ingress

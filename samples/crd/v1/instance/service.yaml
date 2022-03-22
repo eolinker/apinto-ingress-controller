@@ -1,10 +1,10 @@
 apiVersion: apinto.com/v1beta
 kind: ApintoService
 metadata:
-  name: demo-annoymous
+  name: demo-anonymous
 spec:
-  name: demo-annoymous
-  driver: http-service
+  name: demo-anonymous
+  driver: http
   desc: "示例服务"
   timeout: 30000
   anonymous:
@@ -19,7 +19,7 @@ metadata:
   name: demo-upstream
 spec:
   name: demo-upstream    # 服务名称
-  driver: http-service  # http驱动
+  driver: http  # http驱动
   desc: "示例服务"  # 服务描述
   timeout: 30000  # 超时时间，单位：ms
   upstream: demo@upstream  # 负载配置
