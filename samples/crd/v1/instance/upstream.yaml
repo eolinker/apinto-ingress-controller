@@ -1,12 +1,12 @@
 apiVersion: apinto.com/v1beta
 kind: ApintoUpstream
 metadata:
-  name: test-au
+  name: test-au-1
 spec:
-  name: test-au
+  name: test-au-1
   driver: http_proxy
   desc: 测试
-  discovery: static_no_health@discovery
+  discovery: static_health@discovery
   config: "127.0.0.1:8580 weight=1000;10.1.1.2 weight=10"
   scheme: http
   type: round_robin

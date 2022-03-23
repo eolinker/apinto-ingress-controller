@@ -19,7 +19,7 @@ func KubeOutputToApinto(ao *kubev1.ApintoOutput) *apintov1.Output {
 	}
 
 	switch kOutput.Driver {
-	case "file_output":
+	case "file":
 		fileConf := kOutput.FileOutput.Config
 		cfg := make(apintov1.Config)
 		cfg["file"] = fileConf.File

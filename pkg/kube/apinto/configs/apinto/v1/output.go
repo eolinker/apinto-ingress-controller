@@ -16,7 +16,7 @@ type ApintoOutput struct {
 type OutputSpec struct {
 	Name        string      `json:"name,omitempty" yaml:"name,omitempty"`
 	Driver      string      `json:"driver,omitempty" yaml:"driver,omitempty"`
-	FileOutput  FileOutput  `json:"file_output,omitempty" yaml:"file_output,omitempty"`
+	FileOutput  FileOutput  `json:"file,omitempty" yaml:"file,omitempty"`
 	Nsqd        NsqdOutput  `json:"nsqd,omitempty" yaml:"nsqd,omitempty"`
 	HttpOutput  HttpOutput  `json:"http_output,omitempty" yaml:"http_output,omitempty"`
 	SysOutput   SysOutput   `json:"syslog_output,omitempty" yaml:"syslog_output,omitempty"`

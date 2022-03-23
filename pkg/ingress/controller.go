@@ -33,7 +33,22 @@ func NewController(cfg *config.Config) (*Controller, error) {
 	if podNamespace == "" {
 		podNamespace = "default"
 	}
-	admission, err := api.NewAdmissionServer(cfg)
+	client := apinto.NewApinto()
+
+	// apinto默认集群
+	option := &cluster.ClusterOptions{
+		Name:     cfg.APINTO.DefaultClusterName,
+		AdminKey: cfg.APINTO.DefaultClusterAdminKey,
+		BaseURL:  cfg.APINTO.DefaultClusterBaseURL,
+	}
+
+	err := client.AddCluster(option)
+	if err != nil {
+		log.Errorf("failed to add %s cluster: %s", option.Name, err)
+		return nil, err
+	}
+
+	admission, err := api.NewAdmissionServer(cfg, client)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +58,7 @@ func NewController(cfg *config.Config) (*Controller, error) {
 		namespace: podNamespace,
 		cfg:       cfg,
 		admission: admission,
-		apinto:    apinto.NewApinto(),
+		apinto:    client,
 	}, nil
 }
 
@@ -65,19 +80,6 @@ func (c *Controller) Run(stopCh <-chan struct{}) error {
 			log.Debug("close a server")
 		}
 	}()
-
-	// apinto默认集群
-	option := &cluster.ClusterOptions{
-		Name:     c.cfg.APINTO.DefaultClusterName,
-		AdminKey: c.cfg.APINTO.DefaultClusterAdminKey,
-		BaseURL:  c.cfg.APINTO.DefaultClusterBaseURL,
-	}
-
-	err := c.apinto.AddCluster(option)
-	if err != nil {
-		log.Errorf("failed to add %s cluster: %s", option.Name, err)
-		return err
-	}
 
 	// admission监听堵塞
 	log.Debug("starting admission server")

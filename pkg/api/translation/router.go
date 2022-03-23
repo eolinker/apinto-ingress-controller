@@ -10,13 +10,13 @@ func KubeRouterToApinto(ar *kubev1.ApintoRouter) *apintov1.Router {
 	kRouter := ar.Spec
 
 	//拷贝Cert
-	cert := make([]apintov1.Cert, 0, len(kRouter.Cert))
+	cert := make([]apintov1.Cert, len(kRouter.Cert))
 	for i, v := range kRouter.Cert {
 		cert[i] = apintov1.Cert{Key: v.Key, Crt: v.Crt}
 	}
 
 	//拷贝rules
-	rules := make([]apintov1.Rule, 0, len(kRouter.Rules))
+	rules := make([]apintov1.Rule, len(kRouter.Rules))
 	for i, v := range kRouter.Rules {
 		rules[i] = apintov1.Rule{Location: v.Location, Header: v.Header, Query: v.Query}
 	}

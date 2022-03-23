@@ -33,7 +33,7 @@ spec:
                   type: string
                 driver:
                   type: string
-                  enum: ["http-service"]
+                  enum: ["http"]
                 timeout:
                   type: integer
                 upstream:
