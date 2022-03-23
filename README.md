@@ -1,6 +1,6 @@
 # Apinto-Ingress-Controller
 
-​		Apinto-Ingress-Controller是Kubernetes集群中Apinto网关的Ingress控制器，使得Apinto能够作为Ingress资源在集群中运作。
+​		Apinto-Ingress-Controller是Kubernetes集群中[Apinto网关](https://github.com/eolinker/apinto)的Ingress控制器，使得Apinto能够作为Ingress资源在集群中运作。
 ​		该控制器的所有配置均参考Apinto网关的配置格式，并以Kubernetes CRDs（自定义资源）实现。支持配置诸如`router`、`service`、`auth`等Apinto已实现的模块，同时也支持配置插件。
 
 
@@ -173,10 +173,3 @@ EOLINK 是领先的 API 管理服务供应商，为全球超过3000家企业提�
 
 免费下载PC桌面端：[https://www.eolink.com/pc/](https://www.eolink.com/pc/ "免费下载PC客户端")
 
-
-
-
-
-TODO 
-
-重新生成新的controller镜像
