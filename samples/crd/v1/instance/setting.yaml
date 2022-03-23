@@ -19,3 +19,11 @@ spec:
       name: extra_params_two
       type: service
       status: enable
+    - id: eolinker.com:apinto:auth
+      name: auth
+      type: service
+      status: enable
+    - id: eolinker.com:apinto:access_log
+      name: my_access_log
+      type: router
+      status: enable

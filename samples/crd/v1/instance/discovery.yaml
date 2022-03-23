@@ -1,9 +1,9 @@
 apiVersion: apinto.com/v1beta
 kind: ApintoDiscovery
 metadata:
-  name: demo-ad-1
+  name: static-no-health
 spec:
-  name: demo-ad-1
+  name: static_no_health
   driver: consul
   scheme: http
   config:
@@ -15,9 +15,9 @@ spec:
 apiVersion: apinto.com/v1beta
 kind: ApintoDiscovery
 metadata:
-  name: demo-ad-2
+  name: static-health
 spec:
-  name: demo-ad-2
+  name: static_health
   driver: static
   scheme: http
   health:
