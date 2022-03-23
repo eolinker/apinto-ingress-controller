@@ -11,4 +11,4 @@ spec:
     - GET
   rules:      # 规则列表
     - location: "/demo"  # 匹配路径，该示例为前缀匹配，即只要前缀是 “/” 的路径都可匹配成功
-  target: demo@service    # 目标服务ID，格式为：{服务名称}@service
+  target: demo-anonymous@service    # 目标服务ID，格式为：{服务名称}@service

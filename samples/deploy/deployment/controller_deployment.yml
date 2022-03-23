@@ -20,8 +20,8 @@ spec:
         app: apinto-ingress-controller
     spec:
       containers:
-        - image: docker.eolink.com/product/demo_apinto_controller:0.1.0
-          imagePullPolicy: Never
+        - image: eolinker/apinto-ingress-controller:latest
+          imagePullPolicy: IfNotPresent
           name: ingress-controller
           ports:
             - containerPort: 8080
@@ -36,13 +36,6 @@ spec:
             - name: admission-webhook-certs
               mountPath: /etc/webhook/certs
               readOnly: true
-          volumes:
-            - name: apinto-ingress-configmap
-              configMap:
-                name: apinto_ingress_conf
-            - name: admission-webhook-certs
-              secret:
-                secretName: admission-webhook-certs
           env:
             - name: POD_NAMESPACE
               valueFrom:
@@ -52,3 +45,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+      volumes:
+        - name: apinto-ingress-configmap
+          configMap:
+            name: apinto-ingress-conf
+        - name: admission-webhook-certs
+          secret:
+            secretName: admission-webhook-certs

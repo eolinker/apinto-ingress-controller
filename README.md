@@ -74,7 +74,7 @@ spec:
   timeout: 30000
   anonymous:
     type: round-robin
-    config: "http://demo-apinto.eolink.com:8280"
+    config: "http://demo-apinto.eolink.com:8280" #该接口返回http调用信息
   retry: 2
   rewrite_url: /
 ```
@@ -95,7 +95,7 @@ spec:
     - GET
   rules:      # 规则列表
     - location: "/demo"  # 匹配路径，该示例为前缀匹配，即只要前缀是 “/” 的路径都可匹配成功
-  target: demo@service    # 目标服务ID，格式为：{服务名称}@service
+  target: demo-anonymous@service    # 目标服务ID，格式为：{服务名称}@service
 ```
 
 ```shell
@@ -103,10 +103,54 @@ kubectl create -f service.yml
 kubectl create -f router.yml
 ```
 
-创建完服务以及路由之后，调用apinto的服务来查看是否存在该路由
+创建完服务以及路由之后，调用apinto暴露到集群外的服务来查看是否存在该路由
 
+```shell
+curl -X GET 'http://{node_ip}:{admin_port}/api/router/apinto.router'
 ```
-curl -X GET 'http://{node_ip}:{port}/api/router/apinto.router'
+
+返回
+
+```json
+{
+	"create": "2022-03-23 06:14:48",
+	"driver": "http",
+	"id": "apinto.router@router",
+	"listen": 8080,
+	"method": ["GET"],
+	"name": "apinto.router",
+	"profession": "router",
+	"protocol": "http",
+	"rules": [{
+		"location": "/demo"
+	}],
+	"target": "demo-anonymous@service",
+	"update": "2022-03-23 06:14:48"
+}
+```
+
+通过调用apinto暴露到集群外的服务来请求该路由
+
+```shell
+curl -X GET 'http://{node_ip}:{http_port}/demo'
+```
+
+返回
+
+```json
+{
+	"body": "",
+	"header": {
+		"Accept": ["*/*"],
+		"User-Agent": ["curl/7.75.0"],
+		"X-Forwarded-For": ["10.24.1.1,10.24.1.1"]
+	},
+	"host": "192.2.9.43:31080",  //非原始数据
+	"method": "GET",
+	"path": "/demo",
+	"remote_addr": "192.4.5.22:19091", //非原始数据
+	"url": "/demo"
+}
 ```
 
 
@@ -128,3 +172,11 @@ EOLINK 是领先的 API 管理服务供应商，为全球超过3000家企业提�
 官方网站：[https://www.eolink.com](https://www.eolink.com "EOLINKER官方网站")
 
 免费下载PC桌面端：[https://www.eolink.com/pc/](https://www.eolink.com/pc/ "免费下载PC客户端")
+
+
+
+
+
+TODO 
+
+重新生成新的controller镜像
