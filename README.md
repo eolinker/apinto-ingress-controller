@@ -94,7 +94,7 @@ spec:
   method:
     - GET
   rules:      # 规则列表
-    - location: "/demo"  # 匹配路径，该示例为前缀匹配，即只要前缀是 “/” 的路径都可匹配成功
+    - location: "/demo"  # 匹配路径
   target: demo-anonymous@service    # 目标服务ID，格式为：{服务名称}@service
 ```
 
@@ -145,14 +145,14 @@ curl -X GET 'http://{node_ip}:{http_port}/demo'
 		"User-Agent": ["curl/7.75.0"],
 		"X-Forwarded-For": ["10.24.1.1,10.24.1.1"]
 	},
-	"host": "192.2.9.43:31080",  //非原始数据
+	"host": "192.2.9.43:31080",  
 	"method": "GET",
 	"path": "/demo",
-	"remote_addr": "192.4.5.22:19091", //非原始数据
+	"remote_addr": "192.4.5.22:19091", 
 	"url": "/demo"
 }
 ```
-
+备注：以上的ip数据非原始数据
 
 
 使用示例[点此](https://github.com/eolinker/apinto-ingress-controller/tree/main/samples/crd/v1/instance)进行跳转。
