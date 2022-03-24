@@ -16,6 +16,7 @@ ENV APPNAME=apinto-ingress-controller
 RUN mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
 
 COPY --from=builder /go/bin/${APPNAME} /ingress/${APPNAME}
+COPY --from=builder /go/src/${APPNAME}/pkg/config/config.yaml /etc/ingress/config.yaml
 WORKDIR /ingress
 
 EXPOSE 8080 8443
